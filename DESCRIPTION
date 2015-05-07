@@ -1,9 +1,18 @@
 Package: bikeData
 Type: Package
-Title: What the package does (short line)
+Title: Processes bike sensor data
 Version: 1.0
 Date: 2015-05-07
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Authors@R: c(
+    person("Zev", "Ross", , "zev@zevross.com", c("aut", "cre")),
+    person("Darby", "Jack", , "a@a.com", role = "aut"),
+    person("Steve", "Chillrud", role = "aut"),
+    person("Ashlinn", "Quinn", role = "aut")
+    )
+Description: 
+License: 
+Imports: 
+  dplyr
+Suggests: knitr,
+    testthat
+VignetteBuilder: knitr

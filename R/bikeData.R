@@ -1,3 +1,21 @@
+#' foo: A package for computating the notorious bar statistic.
+#'
+#' The foo package provides three categories of important functions:
+#' foo, bar and baz.
+#' 
+#' @section Foo functions:
+#' The foo functions ...
+#'
+#' @docType package
+#' @name foo
+
+
+
+
+# *****************************************************************************
+# Load data ---------------------------
+# *****************************************************************************
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("A package to load and process bike sensor data")
 }
@@ -21,14 +39,3 @@
 }
 
 
-
-createDatabase<-function(){
-  
-  
-}
-
-
-addTables<-function(){
-  
-  
-}
