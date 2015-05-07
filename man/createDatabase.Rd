@@ -15,10 +15,13 @@ createDatabase()
 The sum of \code{x} and \code{y}.
 }
 \description{
-This function creates a new postgreSQL database .
+\code{sum} returns the sum of all the values present in its arguments.
 }
 \examples{
 add(1, 1)
 add(10, 1)
+}
+\seealso{
+Other postgresql.functions: \code{\link{addTables}}
 }
 

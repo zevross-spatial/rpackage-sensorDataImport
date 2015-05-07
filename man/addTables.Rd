@@ -21,4 +21,7 @@ This function adds tables to a postgreSQL database.
 add(1, 1)
 add(10, 1)
 }
+\seealso{
+Other postgresql.functions: \code{\link{createDatabase}}
+}
 

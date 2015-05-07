@@ -1,19 +1,24 @@
 # *****************************************************************************
-# Load data ---------------------------
+# Create PostgreSQL Database ---------------------------
 # *****************************************************************************
 
 #' This function creates a new postgreSQL database .
 #' 
-#' \code{sum} returns the sum of all the values present in its arguments.
+#' \code{createDatabase} will create a new postgresql database.
 #' @family postgresql functions
-#' @param x A number.
-#' @param y A number.
-#' @return The sum of \code{x} and \code{y}.
+#' @param dbname Give the database a name.
+#' @param port. You likely don't need to change this.
+#' @return user.
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
-createDatabase<-function(){
+createDatabase<-function(dbname, port=5432, user="postgres"){  
   
+  #TODO, might want a test to see if DB exists
+  #val<-"psql -U postgres -c \"select count(*) from pg_catalog.pg_database where datname = 'cehtp_pesticide'\""
+  #system(val)
+  
+  system(paste("createdb -h localhost -p", port, "-U", user, dbname))
   
 }
 
@@ -27,10 +32,13 @@ createDatabase<-function(){
 #' @param y A number.
 #' @return The sum of \code{x} and \code{y}.
 #' @examples
-#' add(1, 1)
+#' addTables("mytable")
 #' add(10, 1)
-addTables<-function(){
-  
+addTables<-function(dbname, port=5432, user="postgres"){
+
+  sqlfile<-system.file("sql", "create_tables.sql", package = "bikeData")
+  runsql<-paste("psql -p", port, "-U", user,"-d", dbname,"-a -f", sqlfile)
+  system(runsql)
   
 }
 
@@ -46,3 +54,5 @@ my_fun <- function(a, b) {
          call. = FALSE)
   }
 }
+
+
