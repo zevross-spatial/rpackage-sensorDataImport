@@ -4,7 +4,7 @@
 \alias{addTables}
 \title{This function adds tables to a postgreSQL database.}
 \usage{
-addTables()
+addTables(dbname, port = 5432, user = "postgres")
 }
 \arguments{
 \item{x}{A number.}
@@ -18,7 +18,7 @@ The sum of \code{x} and \code{y}.
 This function adds tables to a postgreSQL database.
 }
 \examples{
-add(1, 1)
+addTables("mytable")
 add(10, 1)
 }
 \seealso{

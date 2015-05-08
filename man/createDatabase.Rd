@@ -4,18 +4,18 @@
 \alias{createDatabase}
 \title{This function creates a new postgreSQL database .}
 \usage{
-createDatabase()
+createDatabase(dbname, port = 5432, user = "postgres")
 }
 \arguments{
-\item{x}{A number.}
+\item{dbname}{Give the database a name.}
 
-\item{y}{A number.}
+\item{port.}{You likely don't need to change this.}
 }
 \value{
-The sum of \code{x} and \code{y}.
+user.
 }
 \description{
-\code{sum} returns the sum of all the values present in its arguments.
+\code{createDatabase} will create a new postgresql database.
 }
 \examples{
 add(1, 1)

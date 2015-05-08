@@ -24,8 +24,9 @@ createDatabase<-function(dbname, port=5432, user="postgres"){
 
 
 # *****************************************************************************
-# Load data ---------------------------
+# Add tables ---------------------------
 # *****************************************************************************
+
 #' This function adds tables to a postgreSQL database.
 #' @family postgresql functions
 #' @param x A number.

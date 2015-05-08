@@ -1,0 +1,48 @@
+body{
+	background-color: #58676F;
+	margin:30px;
+	color:white;
+}
+
+.well{
+	background-color:#d3d3d3;
+	color:black;
+	min-width:500px;
+}
+
+
+h1{
+	font-size: 3em;
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
+.bar{
+visibility: hidden;
+}
+
+.shiny-progress .progress-text {
+position: absolute;
+right: 30px;
+height: 30px;
+width: 400px;
+background-color: green;
+margin: 0px;
+padding: 2px 2px;
+margin-right:10px;
+opacity: 0.85;
+}
+
+.mysidebar{
+	background-color: green;
+}
+
+#contents{
+	color: #918f8f;
+}
+
+#contents.shiny-output-error-validation{
+	color: red;
+}
+
+

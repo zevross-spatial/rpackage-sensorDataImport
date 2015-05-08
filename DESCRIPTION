@@ -14,5 +14,6 @@ License:
 Imports: 
   dplyr
 Suggests: knitr,
-    testthat
+    testthat,
+    shiny
 VignetteBuilder: knitr
