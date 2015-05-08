@@ -30,6 +30,7 @@ createDatabase<-function(dbname, port=5432, user="postgres"){
 #' This function adds tables to a postgreSQL database.
 #' @family postgresql functions
 #' @param x A number.
+#' @export
 #' @param y A number.
 #' @return The sum of \code{x} and \code{y}.
 #' @examples

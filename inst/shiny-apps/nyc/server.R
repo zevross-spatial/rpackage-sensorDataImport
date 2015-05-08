@@ -1,6 +1,6 @@
 
 library(shiny)
-setwd("X:/projects/columbia_bike/bikeStats/bikeApp/app_files")
+setwd(system.file("shiny-apps", "nyc", package = "bikeData"))
 source("shiny_helper_functions.R", chdir=TRUE)
 
 options(shiny.maxRequestSize = 1000*1024^2)

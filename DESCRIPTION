@@ -12,8 +12,15 @@ Authors@R: c(
 Description: 
 License: 
 Imports: 
-  dplyr
-Suggests: knitr,
-    testthat,
-    shiny
+  dplyr,
+  magrittr,
+  knitr,
+  testthat,
+  shiny,
+  stringr,
+  RPostgreSQL,
+  plotKML
 VignetteBuilder: knitr
+
+
+

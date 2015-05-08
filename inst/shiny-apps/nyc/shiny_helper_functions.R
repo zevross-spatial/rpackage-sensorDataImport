@@ -6,13 +6,17 @@
 # -----------------------------------------------------------------------------
 
 
-library(magrittr)
-library(dplyr)
-library(stringr)#str_pad
-library(RPostgreSQL)#for dbwritetable
-library(plotKML)# for readGPX
+# library(magrittr)
+# library(dplyr)
+# library(stringr)#str_pad
+# library(RPostgreSQL)#for dbwritetable
+# library(plotKML)# for readGPX
 
 source("process_input_file.R")
+
+xx<-data.frame(a=1:5, b=1:5)
+
+print(xx%>%sum)
 
 
 # -----------------------------------------------------------------------------
@@ -21,7 +25,7 @@ source("process_input_file.R")
 
 getConnection<-function(){
   # note the double arrow to make global
-  .connection<<-try(src_postgres(dbname="columbiaBike", host="localhost",
+  .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
                                  password="spatial", port=5433, user="postgres"),
                     silent=TRUE)
 }

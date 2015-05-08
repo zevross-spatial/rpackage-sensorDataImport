@@ -26,3 +26,8 @@
 }
 
 
+#' @importFrom magrittr %>%
+#' @name %>%
+#' @export
+#' @usage lhs \%>\% rhs
+NULL
