@@ -18,14 +18,14 @@ processGPS<-function(filepath, filename, fileinfo){
   prePGtry<-try({
     
   
-  data<-readGPX(filepath)
+  data<-plotKML::readGPX(filepath)
   data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
   names(data)<-c("longitude", "latitude", "elevation", "datetime")
   
   data%<>%select(datetime, which(!names(data)%in%"datetime"))%>%
     mutate(datetime = gsub("T|Z", " ", datetime))
  
-  
+  print("half way GPS")
   metadata<-repeatFileInfo(fileinfo, nrow(data))
   data<-cbind(data, metadata)
   

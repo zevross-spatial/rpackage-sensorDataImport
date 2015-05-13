@@ -36,12 +36,36 @@ createDatabase<-function(dbname, port=5432, user="postgres"){
 #' @examples
 #' addTables("mytable")
 #' add(10, 1)
+
 addTables<-function(dbname, port=5432, user="postgres"){
 
   sqlfile<-system.file("sql", "create_tables.sql", package = "bikeData")
   runsql<-paste("psql -p", port, "-U", user,"-d", dbname,"-a -f", sqlfile)
   system(runsql)
   
+}
+
+
+
+# *****************************************************************************
+# Add tables ---------------------------
+# *****************************************************************************
+
+#' This function creates the connection to a database
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return .connection -- which is a global variable
+#' @examples
+#' .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
+#'password="spatial", port=5433, user="postgres"),silent=TRUE)
+#' @export
+
+getConnection<-function(dbname="columbiaBike", host="localhost", password="spatial",port=5432, user="postgres"){
+  # note the double arrow to make global
+  .connection<<-try(dplyr::src_postgres(dbname=dbname, host=host,
+                                        password=password, port=port, user=user),
+                    silent=TRUE)
 }
 
 

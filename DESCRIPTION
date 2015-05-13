@@ -1,6 +1,6 @@
-Package: bikeData
+Package: sensorDataImport
 Type: Package
-Title: Processes bike sensor data
+Title: Processes environmental sensor data
 Version: 1.0
 Date: 2015-05-07
 Authors@R: c(
@@ -19,7 +19,8 @@ Imports:
   shiny,
   stringr,
   RPostgreSQL,
-  plotKML
+  plotKML,
+  stringr
 VignetteBuilder: knitr
 
 

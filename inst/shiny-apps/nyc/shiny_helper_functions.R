@@ -50,7 +50,7 @@ parseFileName<-function(filepath, filename){
   
   #filename<-"BIKE0001_MPM01_S01_BK0001_150306"
   
-  fileinfo<-unlist(str_split(filename, "_"))
+  fileinfo<-unlist(stringr::str_split(filename, "_"))
   filetype <- substring(fileinfo[2], 1,3)
   
   processMsg<-switch(filetype,
@@ -93,7 +93,7 @@ body(postgresqlWriteTableAlt) <- parse(text = new_body_lines)
 # -----------------------------------------------------------------------------
 
 addZero<-function(dat,width=2){
-  str_pad(dat, width=width, side="left", pad="0")
+  stringr::str_pad(dat, width=width, side="left", pad="0")
 }
 
 

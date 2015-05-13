@@ -4,7 +4,7 @@
 # *****************************************************************************
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("A package to load and process bike sensor data")
+  packageStartupMessage("A package to load and process environmental sensor data")
 }
 
 
@@ -28,6 +28,7 @@
 
 #' @importFrom magrittr %>%
 #' @name %>%
+#' @title pipe from magrittr
 #' @export
 #' @usage lhs \%>\% rhs
 NULL

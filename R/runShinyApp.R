@@ -5,16 +5,16 @@
 #' This function will run the shiny app.
 #' Thanks to Dean Attali: http://bit.ly/1bDae2R
 #' 
-#' blah.
 #' @param sdf
 #' @return user.
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
-runShiny <- function(example) {
+#' @export
+runShiny <- function(example, package="sensorDataImport") {
   # locate all the shiny app examples that exist
   #example<-"nyc"
-  validExamples <- list.files(system.file("shiny-apps", package = "bikeData"))
+  validExamples <- list.files(system.file("shiny-apps", package = package))
   print(validExamples)
   
   validExamplesMsg <-
@@ -33,8 +33,8 @@ runShiny <- function(example) {
   }
   
   # find and launch the app
-  appDir <- system.file("shiny-apps", example, package = "bikeData")
+  appDir <- system.file("shiny-apps", example, package=package)
   #pp
-  shiny::runApp(appDir, display.mode = "normal", launch.browser=TRUE)
+  shiny::runApp(appDir)
   #shiny::runApp("C:/Users/Zev Ross/R/win-library/3.1/bikeData/shiny-apps/nyc")
 }

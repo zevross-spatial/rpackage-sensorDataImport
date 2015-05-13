@@ -1,6 +1,6 @@
 
 library(shiny)
-setwd(system.file("shiny-apps", "nyc", package = "bikeData"))
+setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 source("shiny_helper_functions.R", chdir=TRUE)
 
 options(shiny.maxRequestSize = 1000*1024^2)
@@ -8,7 +8,7 @@ options(shiny.maxRequestSize = 1000*1024^2)
 shinyServer(function(input, output, session) {
   
   getConnection()
-  print("Running Columbia Shiny app")
+  #print("Running Columbia Shiny app")
   
   process<-reactive({
     # VALIDATION: Do you have a successful database connection?
@@ -30,7 +30,7 @@ shinyServer(function(input, output, session) {
       filenames<-input$file1$name #names of files
       
       #extract characters 1-3 from the second element of each file name
-      filetypes<-substring(sapply(str_split(filenames, "_"), "[[",2),1,3)
+      filetypes<-substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
       
       # VALIDATION: Do first three letters match our rules   
       allOK<-all(filetypes%in%c("GPS", "ABP", "MAE", "MPM", "HXI"))
