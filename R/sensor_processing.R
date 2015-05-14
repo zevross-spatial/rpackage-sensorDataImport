@@ -1,36 +1,32 @@
-# -----------------------------------------------------------------------------
-# this R script has five functions, one for each of our types of files
-# each of the functions will read a file, clean it up and upload the 
-# file to PostgreSQL. The functions are broken into two "try" statements
-# one surrounding the reading/processing and one surrounding the 
-# postgresql piece.
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
-# Process GPS file
-# -----------------------------------------------------------------------------
-
+#' XXX
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 processGPS<-function(filepath, filename, fileinfo){
   #filepath<-"X:/projects/columbia_bike/bikeStats/shiny/test_input_data/BIKE0001_GPS01_S01_150306.gpx"
   #fileinfo
   writeLines("This is a GPS file, I'm processing...")
-
+  
   prePGtry<-try({
     
-  
-  data<-plotKML::readGPX(filepath)
-  data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
-  names(data)<-c("longitude", "latitude", "elevation", "datetime")
-  
-  data%<>%dplyr::select(datetime, which(!names(data)%in%"datetime"))%>%
-    dplyr::mutate(datetime = gsub("T|Z", " ", datetime))
- 
-  
-  metadata<-repeatFileInfo(fileinfo, nrow(data))
-  data<-cbind(data, metadata)
-  
+    
+    data<-plotKML::readGPX(filepath)
+    data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
+    names(data)<-c("longitude", "latitude", "elevation", "datetime")
+    
+    data%<>%dplyr::select(datetime, which(!names(data)%in%"datetime"))%>%
+      dplyr::mutate(datetime = gsub("T|Z", " ", datetime))
+    
+    
+    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    data<-cbind(data, metadata)
+    
   }, silent=TRUE)
-
+  
   if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
   
   writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
@@ -44,15 +40,18 @@ processGPS<-function(filepath, filename, fileinfo){
     return(list("Fine", "Fine"))
   }
   
-
+  
 }
 
 
-
-# -----------------------------------------------------------------------------
-# Process ABP file
-# -----------------------------------------------------------------------------
-
+#' XXX
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 processABP<-function(filepath, filename, fileinfo){
   
   writeLines("This is a ABP file, I'm processing and uploading to database...")
@@ -82,11 +81,11 @@ processABP<-function(filepath, filename, fileinfo){
     
     cntobs <- as.numeric(ID[endOfIntro,1]) # this is not always in the same place, sometimes it's row 8 and sometimes row 9
     data <- read.csv(filepath, 
-                   fileEncoding="UTF-16LE", 
-                   header=F, 
-                   skip=endOfIntro, 
-                   nrows=cntobs,
-                   blank.lines.skip = FALSE) # load BP data 
+                     fileEncoding="UTF-16LE", 
+                     header=F, 
+                     skip=endOfIntro, 
+                     nrows=cntobs,
+                     blank.lines.skip = FALSE) # load BP data 
     
     data <- data[,1:7]
     names(data) <- c("hour", "minute", "systolic_bp", "mean_arterial_p", "diastolic_bp", "heart_rate", "event_code")
@@ -102,7 +101,7 @@ processABP<-function(filepath, filename, fileinfo){
     
     names(DS) <- c( "month", "day","year", "code")
     data$studyid <- studyid
-
+    
     data <- cbind(data, DS)
     
     
@@ -118,9 +117,9 @@ processABP<-function(filepath, filename, fileinfo){
     #BP$datetime <- ymd_hm(BP$datetime), uses lubridate
     #BP$file <- basename(file)
     data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
-
+    
     metadata<-repeatFileInfo(fileinfo, nrow(data))
-   
+    
     data<-cbind(data, metadata)
     
   }, silent=TRUE)
@@ -142,9 +141,16 @@ processABP<-function(filepath, filename, fileinfo){
 }
 
 
-# -----------------------------------------------------------------------------
-# Process microPEM file
-# -----------------------------------------------------------------------------
+
+
+#' XXX
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 
 processMicroPEM<-function(filepath, filename, fileinfo){
   #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
@@ -168,7 +174,7 @@ processMicroPEM<-function(filepath, filename, fileinfo){
     startRowSensor<-grep("Sensor", nonParsed)
     ventilationRow<-grep("Ventilation", nonParsed)
     endHeader<-max(grep("Date", nonParsed))
-  
+    
     
     headinfo1<-sapply(splitHeader(nonParsed, 1,startRowSensor-1), collapseHeader)
     
@@ -191,30 +197,30 @@ processMicroPEM<-function(filepath, filename, fileinfo){
     data<-read.csv(filepath, as.is=T, skip=endHeader+numBlanks, header=FALSE)
     names(data)<-c("date", "time", "neph_rhcorrect", "temperature", "rh", "battery", "inlpressure", "oripressure", "flow",
                    "xaxis", "yaxis", "zaxis", "vectorsumcomp", "action")
-  
-
+    
+    
     #I'm seeing that they might have a line called "Errored Line"
     data %<>% dplyr::filter(!grepl("Errored Line", date))
-
+    
     # need to add the header info, each as it's own record
     invisible(mapply(function(x,i){
       data[[i]]<<-x
     }, headerinfo, names(headerinfo)))
-   
+    
     # There are two date types possible 2/2/14 or 2-Feb-14. So here I'm testing
     # if the second "piece" of the date is a number and then proceed accordingly
     isSecondAnumber<-!is.na(suppressWarnings(as.numeric(unlist(strsplit(data$date[1], "-|/"))[2])))
     
     if(isSecondAnumber){
-    data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%m/%d/%y"), time))%>%
-      dplyr::select(-time)%>%
-      dplyr::rename(datetime=date)
+      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%m/%d/%y"), time))%>%
+        dplyr::select(-time)%>%
+        dplyr::rename(datetime=date)
     }else{
       data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%d-%b-%y"), time))%>%
         dplyr::select(-time)%>%
         dplyr::rename(datetime=date)
     }
-  
+    
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
@@ -235,9 +241,14 @@ processMicroPEM<-function(filepath, filename, fileinfo){
 }
 
 
-# -----------------------------------------------------------------------------
-# Process microAeth file
-# -----------------------------------------------------------------------------
+#' XXX
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 
 processMicroAeth<-function(filepath, filename, fileinfo){
   #library(magrittr)
@@ -265,13 +276,13 @@ processMicroAeth<-function(filepath, filename, fileinfo){
     
     names(data)<-colNames
     
-   
+    
     
     
     data%<>%dplyr::mutate(time=addZero(time,8), date.yyyy.mm.dd.=paste(as.Date(date.yyyy.mm.dd.,"%m/%d/%y"), time))%>%
       dplyr::select(-time)%>%
       dplyr::rename(datetime=date.yyyy.mm.dd.)
-  
+    
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
@@ -297,6 +308,14 @@ processMicroAeth<-function(filepath, filename, fileinfo){
 # Process hexoskin file
 # -----------------------------------------------------------------------------
 
+#' XXX
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 processHexoskin<-function(filepath, filename, fileinfo){
   
   writeLines("This is a hexoskin file, I'm processing...")
