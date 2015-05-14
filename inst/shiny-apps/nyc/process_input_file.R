@@ -22,10 +22,10 @@ processGPS<-function(filepath, filename, fileinfo){
   data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
   names(data)<-c("longitude", "latitude", "elevation", "datetime")
   
-  data%<>%select(datetime, which(!names(data)%in%"datetime"))%>%
-    mutate(datetime = gsub("T|Z", " ", datetime))
+  data%<>%dplyr::select(datetime, which(!names(data)%in%"datetime"))%>%
+    dplyr::mutate(datetime = gsub("T|Z", " ", datetime))
  
-  print("half way GPS")
+  
   metadata<-repeatFileInfo(fileinfo, nrow(data))
   data<-cbind(data, metadata)
   
@@ -117,7 +117,7 @@ processABP<-function(filepath, filename, fileinfo){
     data$datetime <- paste("20", data$year, "-", data$month,"-", data$day," ", data$hour,":", data$minute,":00", sep="")
     #BP$datetime <- ymd_hm(BP$datetime), uses lubridate
     #BP$file <- basename(file)
-    data%<>% select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
+    data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
 
     metadata<-repeatFileInfo(fileinfo, nrow(data))
    
@@ -194,7 +194,7 @@ processMicroPEM<-function(filepath, filename, fileinfo){
   
 
     #I'm seeing that they might have a line called "Errored Line"
-    data %<>% filter(!grepl("Errored Line", date))
+    data %<>% dplyr::filter(!grepl("Errored Line", date))
 
     # need to add the header info, each as it's own record
     invisible(mapply(function(x,i){
@@ -206,13 +206,13 @@ processMicroPEM<-function(filepath, filename, fileinfo){
     isSecondAnumber<-!is.na(suppressWarnings(as.numeric(unlist(strsplit(data$date[1], "-|/"))[2])))
     
     if(isSecondAnumber){
-    data%<>%mutate(time=addZero(time,8), date=paste(as.Date(date,"%m/%d/%y"), time))%>%
-      select(-time)%>%
-      rename(datetime=date)
+    data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%m/%d/%y"), time))%>%
+      dplyr::select(-time)%>%
+      dplyr::rename(datetime=date)
     }else{
-      data%<>%mutate(time=addZero(time,8), date=paste(as.Date(date,"%d-%b-%y"), time))%>%
-        select(-time)%>%
-        rename(datetime=date)
+      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%d-%b-%y"), time))%>%
+        dplyr::select(-time)%>%
+        dplyr::rename(datetime=date)
     }
   
     metadata<-repeatFileInfo(fileinfo, nrow(data))
@@ -261,16 +261,16 @@ processMicroAeth<-function(filepath, filename, fileinfo){
     colNames<-tolower(colNames[1:which(colNames=="BC")])
     data<-read.csv(filepath, as.is=T, skip=9, header=FALSE)
     
-    data%<>%select(1:length(colNames)) # don't comment
+    data%<>%dplyr::select(1:length(colNames)) # don't comment
     
     names(data)<-colNames
     
    
     
     
-    data%<>%mutate(time=addZero(time,8), date.yyyy.mm.dd.=paste(as.Date(date.yyyy.mm.dd.,"%m/%d/%y"), time))%>%
-      select(-time)%>%
-      rename(datetime=date.yyyy.mm.dd.)
+    data%<>%dplyr::mutate(time=addZero(time,8), date.yyyy.mm.dd.=paste(as.Date(date.yyyy.mm.dd.,"%m/%d/%y"), time))%>%
+      dplyr::select(-time)%>%
+      dplyr::rename(datetime=date.yyyy.mm.dd.)
   
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)

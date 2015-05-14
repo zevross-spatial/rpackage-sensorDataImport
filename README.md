@@ -1,4 +1,4 @@
-# bikeApp
+# Sensor Data Import
 
 ## Including the Shiny App
 http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
