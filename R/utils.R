@@ -110,11 +110,11 @@ process_data<-function(filepath, filename, filetype){
   
   
   process_result<-switch(filetype,
-                         GPS = processGPS(filepath, filename, fileinfo),
-                         ABP = processABP(filepath, filename, fileinfo),
-                         MAE = processMicroAeth(filepath, filename, fileinfo),
-                         MPM = processMicroPEM(filepath, filename, fileinfo),
-                         HXI = processHexoskin(filepath, filename, fileinfo))
+                         GPS = process_gps(filepath, filename, fileinfo),
+                         ABP = process_abp(filepath, filename, fileinfo),
+                         MAE = process_microaeth(filepath, filename, fileinfo),
+                         MPM = process_micropem(filepath, filename, fileinfo),
+                         HXI = process_hexoskin(filepath, filename, fileinfo))
   
 
       return(process_result)
@@ -228,6 +228,7 @@ repeatFileInfo<-function(fileinfo,n){
 splitHeader<-function(dat, beg, end){
   strsplit(dat[beg:end], ",")  
 }
+
 #' xxx
 #' 
 #' @param sdf

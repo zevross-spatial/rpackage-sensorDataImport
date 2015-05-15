@@ -63,11 +63,22 @@ addTables<-function(dbname, port=5432, user="postgres"){
 #'password="spatial", port=5433, user="postgres"),silent=TRUE)
 #' @export
 
-getConnection<-function(dbname="columbiaBike", host="localhost", password="spatial",port=5432, user="postgres"){
+get_connection<-function(dbname,
+                         password,  
+                         host="localhost",
+                         port=5432, 
+                         user="postgres"){
+  
+  print("Connecting to database")
+  print(.connection)
   # note the double arrow to make global
-  .connection<<-try(dplyr::src_postgres(dbname=dbname, host=host,
-                                        password=password, port=port, user=user),
-                    silent=TRUE)
+  try({.connection<<-dplyr::src_postgres(dbname=dbname, 
+                                         host=host,
+                                         password=password, 
+                                         port=port, 
+                                         user=user)}, silent=TRUE)
+  
+  print(.connection)
 }
 
 
@@ -87,16 +98,10 @@ getConnection<-function(dbname="columbiaBike", host="localhost", password="spati
 #'password="spatial", port=5433, user="postgres"),silent=TRUE)
 #' @export
 
-upload_postgres<-function(tablename){
+upload_postgres<-function(tablename, data){
+  print("In upload postgres")
+  postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
   
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
 }
 
 

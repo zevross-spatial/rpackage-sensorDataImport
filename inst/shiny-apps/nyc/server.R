@@ -6,7 +6,13 @@ options(shiny.maxRequestSize = 1000*1024^2)
 
 shinyServer(function(input, output, session) {
   
-  getConnection()
+ get_connection(dbname="columbiaBike", 
+                     password="spatial",
+                     host="localhost", 
+                     port=5433, 
+                     user="postgres")
+ 
+
   #print("Running Columbia Shiny app")
   
   process<-reactive({
@@ -43,29 +49,67 @@ shinyServer(function(input, output, session) {
       withProgress(message = 'Processing and uploading:\n',
                    value = 0, {   
                      
+                     # loop through files
                      for(i in 1:nfiles){
                        
-                       data <- try({process_data(filepath=paths[i], 
-                                            filename=filenames[i], 
-                                            filetype=filetypes[i])}, silent=TRUE)
-  
-                       msg1 <- NULL
+                       curpath     <- paths[i]
+                       curfilename <- filenames[i]
+                       curfiletype <- filetypes[i]
+                       
+                       #*******************************************************
+                       # Data processing
+                       #*******************************************************
+                       
+                       # try and process the data
+                       data <- try({process_data(filepath=curpath, 
+                                            filename=curfilename, 
+                                            filetype=curfiletype)}, silent=TRUE)
+                       
+                       print(head(data))
+                      
+                       data_msg <- NULL
+                      
+                       # if there is an error in the data processing
                        if(is.error(data)) {
                     
-                               msg1 = error_report(currentfile_num=i, 
-                                             currentfile_name=filenames[i],
+                               data_msg = error_report(currentfile_num=i, 
+                                             currentfile_name=curfilename,
                                              completedfile_names=filenames[1:(i-1)], 
                                              stage="processing")     
                        }
                        
-                  
+                      # end session and report error in data handling
+                       validate(need(!is.error(data), data_msg))
                        
-                       validate(need(!is.error(data), msg1))
-                       
-                       
-                                              
+                      #*******************************************************
+                      # Data upload
+                      #*******************************************************
+                      print("make it past validate1")
+                      upload<-try({upload_postgres(
+                        tablename=tolower(curfiletype),
+                        data=data)}, silent=TRUE)
+                      
+                      upload_msg <- NULL
+                      
+                      # if there is an error in the upload
+                      if(is.error(upload)) {
+                        
+                        upload_msg = error_report(currentfile_num=i, 
+                                                currentfile_name=curfilename,
+                                                completedfile_names=filenames[1:(i-1)], 
+                                                stage="uploading")     
+                      }
+                      
+                      # end session and report error in data handling
+                      validate(need(!is.error(data), upload_msg))
+                      print("make it past validate2")
+                      
+                      #*******************************************************
+                      # Update progress indicator and clean up
+                      #*******************************************************               
+       
                        incProgress(1/nfiles, detail=paste("Working on file", i, "of", nfiles))
-                       
+                       rm(data)   
                      }#end for loop through files        
                      
                      

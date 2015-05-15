@@ -27,7 +27,7 @@ testdplyr<-function(){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-processGPS<-function(filepath, filename, fileinfo){
+process_gps<-function(filepath, filename, fileinfo){
 
     
     data<-plotKML::readGPX(filepath)
@@ -48,7 +48,7 @@ processGPS<-function(filepath, filename, fileinfo){
 
 
 # *****************************************************************************
-# Process GPS ---------------------------
+# Process ABP ---------------------------
 # *****************************************************************************
 
 #' XXX
@@ -59,17 +59,9 @@ processGPS<-function(filepath, filename, fileinfo){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-processABP<-function(filepath, filename, fileinfo){
+process_abp<-function(filepath, filename, fileinfo){
   
-  writeLines("This is a ABP file, I'm processing and uploading to database...")
-  
-  # process file
-  #filepath<-"X:/projects/columbia_bike/bikeStats/shiny/test_input_data/abp_spacelabs.abp"
-  
-  # darby hard-coded the last line in the header. This is probably fine but for
-  # now it seems that the last occurrence of "Unknown line" is the end of the
-  # begining of file. Be careful here since readLine could take awhile with big files
-  prePGtry<-try({
+
     rl<-readLines(file(filepath,encoding="UTF-16LE"), warn=FALSE)
     endOfIntro<-max(grep("Unknown line", rl))+1
     endOfFile<-grep("XML", rl)-1
@@ -129,26 +121,13 @@ processABP<-function(filepath, filename, fileinfo){
     
     data<-cbind(data, metadata)
     
-  }, silent=TRUE)
-  
-  if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
-  
-  # export to PostgreSQL
-  #write.csv(BP, "X:/projects/columbia_bike/data/processed_data/sample_tables/ambulatory_blood_pressure.csv", row.names=FALSE)
-  writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-#   PGtry<-try(postgresqlWriteTableAlt(.connection$con, "abp", data, append=TRUE, row.names=FALSE), silent=TRUE)
-#   
-#   if(is.error(PGtry)){
-#     return(list(PGtry, "PGerror"))
-#   }else{
-#     writeLines(paste("Processing and upload complete\n"))
-#     return(list("Fine", "Fine"))
-#   }
   
 }
 
 
-
+# *****************************************************************************
+# Process microPEM ---------------------------
+# *****************************************************************************
 
 #' XXX
 #' 
@@ -159,13 +138,8 @@ processABP<-function(filepath, filename, fileinfo){
 #' add(10, 1)
 #' @export
 
-processMicroPEM<-function(filepath, filename, fileinfo){
-  #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
-  #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
-  #fileinfo<-unlist(str_split("BIKE0003_MPM01_S99_BK0001_150306.csv", "_"))
-  writeLines("This is a microPEM file, I'm processing and uploading to database...")
-  
-  prePGtry<-try({
+process_micropem<-function(filepath, filename, fileinfo){
+
     
     # Grab the header information -- n=50 to make sure I have all lines
     # but this includes extra lines
@@ -231,22 +205,12 @@ processMicroPEM<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
-  }, silent=TRUE)
-  
-  if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
-  
-  #write.csv(data[1:1000,], "X:/projects/columbia_bike/data/processed_data/sample_tables/micropem.csv", row.names=FALSE)
-  writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, "mpm", data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Processing and upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
 }
 
+
+# *****************************************************************************
+# Process microPEM ---------------------------
+# *****************************************************************************
 
 #' XXX
 #' 
@@ -257,15 +221,8 @@ processMicroPEM<-function(filepath, filename, fileinfo){
 #' add(10, 1)
 #' @export
 
-processMicroAeth<-function(filepath, filename, fileinfo){
-  #library(magrittr)
-  #library(dplyr)
-  #filepath<-"X:/projects/columbia_bike/bikeStats/shiny/test_input_data/uAe1_PROBLEM.csv"
-  #filepath<-"X:/projects/columbia_bike/bikeStats/shiny/test_input_data/uAe1.csv"
-  #filepath<-"X:/projects/columbia_bike/data/client_data/20141001_sample_data_files/655_20140710_MicroAeth_Data.csv"
-  writeLines("This is a microAeth file, I'm processing and uploading to database...")
-  
-  prePGtry<-try({
+process_microaeth<-function(filepath, filename, fileinfo){
+
     
     headinfo<-read.csv(filepath,as.is=T, nrow=5, header=FALSE)
     manufacturer<-headinfo[1,1]
@@ -292,21 +249,8 @@ processMicroAeth<-function(filepath, filename, fileinfo){
     
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
-    
-  }, silent=TRUE)
   
-  if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
-  # export to PostgreSQL
-  #write.csv(data, "X:/projects/columbia_bike/data/processed_data/sample_tables/microaeth.csv", row.names=FALSE)
-  writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, "mae", data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Processing and upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
+
   
 }
 
@@ -315,7 +259,7 @@ processMicroAeth<-function(filepath, filename, fileinfo){
 # Process hexoskin file
 # -----------------------------------------------------------------------------
 
-#' XXX
+#' Process hexoskin
 #' 
 #' @param sdf
 #' @return user.
@@ -323,11 +267,9 @@ processMicroAeth<-function(filepath, filename, fileinfo){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-processHexoskin<-function(filepath, filename, fileinfo){
+process_hexoskin<-function(filepath, filename, fileinfo){
   
-  writeLines("This is a hexoskin file, I'm processing...")
-  
-  prePGtry<-try({
+
     #filepath<-"X:/projects/columbia_bike/data/client_data/20141001_sample_data_files/hexoskin/record-55556.csv"
     data<-read.csv(filepath,as.is=T, check.names=FALSE)
     
@@ -341,20 +283,6 @@ processHexoskin<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
-  }, silent=TRUE)
-  
-  if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
-  
-  writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, "hxi", data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Processing and upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
-  
+
   
 }

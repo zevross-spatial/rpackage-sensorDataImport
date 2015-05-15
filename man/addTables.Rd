@@ -23,7 +23,7 @@ add(10, 1)
 }
 \seealso{
 Other postgresql.functions: \code{\link{createDatabase}};
-  \code{\link{getConnection}}, \code{\link{getConnection}};
-  \code{\link{uploadPostgres}}
+  \code{\link{get_connection}};
+  \code{\link{upload_postgres}}
 }
 
