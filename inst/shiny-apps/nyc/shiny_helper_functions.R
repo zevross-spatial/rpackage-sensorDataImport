@@ -12,7 +12,7 @@
 # library(RPostgreSQL)#for dbwritetable
 # library(plotKML)# for readGPX
 
-source("process_input_file.R")
+#source("process_input_file.R")
 
 # -----------------------------------------------------------------------------
 # getConnection: connect to database

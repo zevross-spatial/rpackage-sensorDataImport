@@ -26,24 +26,18 @@
 }
 
 
-testdplyr<-function(){
 
-  select(mtcars, contains("g"))%>%
-    filter(gear==4)
-}
+
 
 #' @import dplyr
-NULL
 
-#' @importFrom magrittr %>%
-#' @name %>%
-#' @export
-#' @usage lhs \%>\% rhs
-NULL
+
 
 #' @importFrom magrittr %<>%
 #' @name %<>%
 #' @export
 #' @usage xxx
 NULL
+
+
 

@@ -1,3 +1,19 @@
+#' testdplyr
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+
+testdplyr<-function(){
+  
+  a<-select(mtcars, contains("g"))
+  
+  a%>%filter(gear==4)
+}
+
 #' XXX
 #' 
 #' @param sdf
@@ -18,8 +34,8 @@ processGPS<-function(filepath, filename, fileinfo){
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
     names(data)<-c("longitude", "latitude", "elevation", "datetime")
     
-    data%<>%dplyr::select(datetime, which(!names(data)%in%"datetime"))%>%
-      dplyr::mutate(datetime = gsub("T|Z", " ", datetime))
+    data%<>%select(datetime, which(!names(data)%in%"datetime"))%>%
+      mutate(datetime = gsub("T|Z", " ", datetime))
     
     
     metadata<-repeatFileInfo(fileinfo, nrow(data))
