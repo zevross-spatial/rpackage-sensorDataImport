@@ -44,23 +44,25 @@ shinyServer(function(input, output, session) {
                    value = 0, {   
                      
                      for(i in 1:nfiles){
-                       msg<-parseFileName(filepath=paths[i],
-                                          filename=filenames[i])
+                       
+                       data <- try({process_data(filepath=paths[i], 
+                                            filename=filenames[i], 
+                                            filetype=filetypes[i])}, silent=TRUE)
+  
+                       msg1 <- NULL
+                       if(is.error(data)) {
+                    
+                               msg1 = error_report(currentfile_num=i, 
+                                             currentfile_name=filenames[i],
+                                             completedfile_names=filenames[1:(i-1)], 
+                                             stage="processing")     
+                       }
+                       
+                  
+                       
+                       validate(need(!is.error(data), msg1))
                        
                        
-                       if(i==1) completed<-" No files uploaded successfully."
-                       if(i!=1) completed<-paste(" Files ", paste(filenames[1:(i-1)], collapse=", "), " uploaded successfully.", sep="")
-                       
-                       if(msg[[2]]=="prePGerror") whereOccurred<-" Error occurred before the database upload step."
-                       if(msg[[2]]!="prePGerror") whereOccurred<-" Error occurred during the database upload step."
-                       
-                       validate(
-                         
-                         need(!is.error(msg[[1]]), 
-                              paste("There is a problem with file ", filenames[i], ".", whereOccurred,
-                                    completed, sep="")
-                         )
-                       )
                                               
                        incProgress(1/nfiles, detail=paste("Working on file", i, "of", nfiles))
                        

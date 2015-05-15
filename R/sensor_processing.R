@@ -14,6 +14,11 @@ testdplyr<-function(){
   a%>%filter(gear==4)
 }
 
+
+# *****************************************************************************
+# Process GPS ---------------------------
+# *****************************************************************************
+
 #' XXX
 #' 
 #' @param sdf
@@ -23,12 +28,7 @@ testdplyr<-function(){
 #' add(10, 1)
 #' @export
 processGPS<-function(filepath, filename, fileinfo){
-  #filepath<-"X:/projects/columbia_bike/bikeStats/shiny/test_input_data/BIKE0001_GPS01_S01_150306.gpx"
-  #fileinfo
-  writeLines("This is a GPS file, I'm processing...")
-  
-  prePGtry<-try({
-    
+
     
     data<-plotKML::readGPX(filepath)
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
@@ -41,24 +41,15 @@ processGPS<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
-  }, silent=TRUE)
-  
-  if(is.error(prePGtry)) return(list(prePGtry, "prePGerror"))
-  
-  writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, "gps", data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Processing and upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
-  
+    return(data)
+
   
 }
 
+
+# *****************************************************************************
+# Process GPS ---------------------------
+# *****************************************************************************
 
 #' XXX
 #' 

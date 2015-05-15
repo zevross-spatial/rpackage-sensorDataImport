@@ -87,7 +87,7 @@ getConnection<-function(dbname="columbiaBike", host="localhost", password="spati
 #'password="spatial", port=5433, user="postgres"),silent=TRUE)
 #' @export
 
-uploadPostgres<-function(tablename){
+upload_postgres<-function(tablename){
   
   PGtry<-try(postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE), silent=TRUE)
   

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sensor_processing.R
 \name{testdplyr}
 \alias{testdplyr}
-\title{testdplyr}
+\title{test dplyr to make sure that dplyr functions and magrittr pipes are included}
 \usage{
 testdplyr()
 }
@@ -13,7 +13,7 @@ testdplyr()
 user.
 }
 \description{
-testdplyr
+test dplyr to make sure that dplyr functions and magrittr pipes are included
 }
 \examples{
 add(1, 1)

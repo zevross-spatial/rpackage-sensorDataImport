@@ -27,6 +27,63 @@ getConnection<-function(){
 }
 
 #getConnection()
+
+# -----------------------------------------------------------------------------
+# parseFileName
+# -----------------------------------------------------------------------------
+# #' xxx
+# #' 
+# #' @param sdf
+# #' @return user.
+# #' @examples
+# #' add(1, 1)
+# #' add(10, 1)
+# #' @export
+# identify_filetype<-function(filename){
+# 
+#   fileinfo<-unlist(stringr::str_split(filename, "_"))
+#   filetype <- substring(fileinfo[2], 1,3)
+#   return(filetype)
+#   
+# }
+
+
+# -----------------------------------------------------------------------------
+# Data processing or upload error report for Shiny
+# -----------------------------------------------------------------------------
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+error_report<-function(currentfile_num, currentfile_name, completedfile_names, stage){
+  
+  if(currentfile_num==1){
+    completed<-" No files uploaded successfully."
+  }else{
+    
+    completed<-paste(" Files ", 
+                     paste(completedfile_names, collapse=", "), 
+                     " uploaded successfully.", sep="")
+  }
+  
+  
+  
+  msg<-paste("There is a problem with file ", 
+             currentfile_name, 
+             ".", 
+             " Error occurred in the ", stage, " step.",
+             completed, sep="")
+  
+  return(msg)
+}
+
+
+
+
 # -----------------------------------------------------------------------------
 # parseFileName
 # -----------------------------------------------------------------------------
@@ -38,33 +95,29 @@ getConnection<-function(){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-parseFileName<-function(filepath, filename){
-  writeLines(paste("Begin work on", filename))
+process_data<-function(filepath, filename, filetype){
   
-  # filepath: this is the FULL filepath with filename
-  #    that the file was given by shiny/browser when it
-  #    was moved to a temporary location
-  # filename: the original filename
-  # fileinfo: information extracted from the filename
-  
-  # naturally this would be easier if the filepath was the 
-  # same as the input but browswers (for confidentiality)
-  # are not allowed to access the full path.
-  
-  #filename<-"BIKE0001_MPM01_S01_BK0001_150306"
-  
+  # this is metadata
   fileinfo<-unlist(stringr::str_split(filename, "_"))
-  filetype <- substring(fileinfo[2], 1,3)
   
-  processMsg<-switch(filetype,
-                     GPS = processGPS(filepath, filename, fileinfo),
-                     ABP = processABP(filepath, filename, fileinfo),
-                     MAE = processMicroAeth(filepath, filename, fileinfo),
-                     MPM = processMicroPEM(filepath, filename, fileinfo),
-                     HXI = processHexoskin(filepath, filename, fileinfo))
+#   process_result<-switch(filetype,
+#                      GPS = try({processGPS(filepath, filename, fileinfo)}, silent=TRUE),
+#                      ABP = try({processABP(filepath, filename, fileinfo)}, silent=TRUE),
+#                      MAE = try({processMicroAeth(filepath, filename, fileinfo)}, silent=TRUE),
+#                      MPM = try({processMicroPEM(filepath, filename, fileinfo)}, silent=TRUE),
+#                      HXI = try({processHexoskin(filepath, filename, fileinfo)}, silent=TRUE))
+ 
   
-  return(processMsg)
   
+  process_result<-switch(filetype,
+                         GPS = processGPS(filepath, filename, fileinfo),
+                         ABP = processABP(filepath, filename, fileinfo),
+                         MAE = processMicroAeth(filepath, filename, fileinfo),
+                         MPM = processMicroPEM(filepath, filename, fileinfo),
+                         HXI = processHexoskin(filepath, filename, fileinfo))
+  
+
+      return(process_result)
   
 }
 
