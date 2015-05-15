@@ -23,6 +23,6 @@ add(10, 1)
 }
 \seealso{
 Other postgresql.functions: \code{\link{addTables}};
-  \code{\link{getConnection}}
+  \code{\link{getConnection}}, \code{\link{getConnection}}
 }
 

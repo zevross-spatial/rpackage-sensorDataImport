@@ -1,27 +1,28 @@
-# -----------------------------------------------------------------------------
-# This script has a series of functions that are helpers. This includes
-# a connection function, a function that identifies the appropriate 
-# processing function to use depending on type of file (parseFileName) and
-# some other, formatting etc functions.
-# -----------------------------------------------------------------------------
+#' @import dplyr
 
 
-# library(magrittr)
-# library(dplyr)
-# library(stringr)#str_pad
-# library(RPostgreSQL)#for dbwritetable
-# library(plotKML)# for readGPX
 
-#source("process_input_file.R")
+#' @importFrom magrittr %<>%
+#' @name %<>%
+#' @export
+#' @usage xxx
+NULL
 
 # -----------------------------------------------------------------------------
 # getConnection: connect to database
 # -----------------------------------------------------------------------------
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 getConnection<-function(){
   # note the double arrow to make global
   .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
-                                 password="spatial", port=5433, user="postgres"),
+                                        password="spatial", port=5433, user="postgres"),
                     silent=TRUE)
 }
 
@@ -29,10 +30,17 @@ getConnection<-function(){
 # -----------------------------------------------------------------------------
 # parseFileName
 # -----------------------------------------------------------------------------
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 parseFileName<-function(filepath, filename){
   writeLines(paste("Begin work on", filename))
-
+  
   # filepath: this is the FULL filepath with filename
   #    that the file was given by shiny/browser when it
   #    was moved to a temporary location
@@ -49,12 +57,12 @@ parseFileName<-function(filepath, filename){
   filetype <- substring(fileinfo[2], 1,3)
   
   processMsg<-switch(filetype,
-         GPS = processGPS(filepath, filename, fileinfo),
-         ABP = processABP(filepath, filename, fileinfo),
-         MAE = processMicroAeth(filepath, filename, fileinfo),
-         MPM = processMicroPEM(filepath, filename, fileinfo),
-         HXI = processHexoskin(filepath, filename, fileinfo))
-
+                     GPS = processGPS(filepath, filename, fileinfo),
+                     ABP = processABP(filepath, filename, fileinfo),
+                     MAE = processMicroAeth(filepath, filename, fileinfo),
+                     MPM = processMicroPEM(filepath, filename, fileinfo),
+                     HXI = processHexoskin(filepath, filename, fileinfo))
+  
   return(processMsg)
   
   
@@ -72,7 +80,14 @@ parseFileName<-function(filepath, filename){
 # postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow
 
 #http://bit.ly/1E0Vsf6
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 body_lines <- deparse(body(RPostgreSQL::postgresqlWriteTable))
 new_body_lines <- sub(
   'postgresqlTableRef(name), "FROM STDIN")', 
@@ -86,7 +101,14 @@ body(postgresqlWriteTableAlt) <- parse(text = new_body_lines)
 # -----------------------------------------------------------------------------
 # parseFileName
 # -----------------------------------------------------------------------------
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 addZero<-function(dat,width=2){
   stringr::str_pad(dat, width=width, side="left", pad="0")
 }
@@ -98,6 +120,14 @@ addZero<-function(dat,width=2){
 # -----------------------------------------------------------------------------
 
 #http://adv-r.had.co.nz/Exceptions-Debugging.html
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 is.error <- function(x) inherits(x, "try-error")
 
 
@@ -108,7 +138,14 @@ is.error <- function(x) inherits(x, "try-error")
 # we are adding columns to the tables in the database with the metadata so
 # we need to metadata repeated for each record in the table
 
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 repeatFileInfo<-function(fileinfo,n){
   
   #fileinfo<-"BIKE0001_ABP01_S01_150306.abp"
@@ -127,11 +164,25 @@ repeatFileInfo<-function(fileinfo,n){
 # -----------------------------------------------------------------------------
 # splitHeader and collapseHeader -- for dealing with MicroPEM headers
 # -----------------------------------------------------------------------------
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 splitHeader<-function(dat, beg, end){
   strsplit(dat[beg:end], ",")  
 }
-
+#' xxx
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
 collapseHeader<-function(dat, width=NA){
   #dat<-strsplit(nonParsed[[14]], ",")[[1]]
   #dat<-tmp[[6]]
@@ -148,23 +199,3 @@ collapseHeader<-function(dat, width=NA){
   
   dat
 }
-
-
-
-# -----------------------------------------------------------------------------
-# NOT USED: getConnection -- in case there are issues
-# with too many connections you can use something like this
-# -----------------------------------------------------------------------------
-
-# getConnection <- function(group) {
-#   
-#   if (!exists('.connection', where=.GlobalEnv)) {
-#     .connection <<- dbConnect(PostgreSQL(), host="localhost",user= "postgres",password="spatial", dbname="columbiaBike", port="5433")
-#   } else if (class(try(dbGetQuery(.connection, "SELECT 1"))) == "try-error") {
-#     dbDisconnect(.connection)
-#     .connection <<- dbConnect(PostgreSQL(), host="localhost",user= "postgres",password="spatial",dbname="columbiaBike", port="5433")
-#   }
-#   
-#   return(.connection)
-# }
-

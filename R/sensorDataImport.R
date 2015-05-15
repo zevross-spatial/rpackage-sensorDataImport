@@ -29,15 +29,6 @@
 
 
 
-#' @import dplyr
-
-
-
-#' @importFrom magrittr %<>%
-#' @name %<>%
-#' @export
-#' @usage xxx
-NULL
 
 
 
