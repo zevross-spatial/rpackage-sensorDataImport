@@ -1,3 +1,6 @@
+
+
+
 # *****************************************************************************
 # Create PostgreSQL Database ---------------------------
 # *****************************************************************************
@@ -24,7 +27,7 @@ createDatabase<-function(dbname, port=5432, user="postgres"){
 
 
 # *****************************************************************************
-# Add tables ---------------------------
+# Add empty tables ---------------------------
 # *****************************************************************************
 
 #' This function adds tables to a postgreSQL database.
@@ -46,9 +49,8 @@ addTables<-function(dbname, port=5432, user="postgres"){
 }
 
 
-
 # *****************************************************************************
-# Add tables ---------------------------
+# Get database connection ---------------------------
 # *****************************************************************************
 
 #' This function creates the connection to a database
@@ -67,6 +69,36 @@ getConnection<-function(dbname="columbiaBike", host="localhost", password="spati
                                         password=password, port=port, user=user),
                     silent=TRUE)
 }
+
+
+
+
+# *****************************************************************************
+# Upload table ---------------------------
+# *****************************************************************************
+
+#' This function is for uploading data to a postgres table
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return .connection -- which is a global variable
+#' @examples
+#' .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
+#'password="spatial", port=5433, user="postgres"),silent=TRUE)
+#' @export
+
+uploadPostgres<-function(tablename){
+  
+  PGtry<-try(postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE), silent=TRUE)
+  
+  if(is.error(PGtry)){
+    return(list(PGtry, "PGerror"))
+  }else{
+    writeLines(paste("Upload complete\n"))
+    return(list("Fine", "Fine"))
+  }
+}
+
 
 
 

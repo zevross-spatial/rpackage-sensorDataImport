@@ -1,4 +1,4 @@
-#' testdplyr
+#' test dplyr to make sure that dplyr functions and magrittr pipes are included
 #' 
 #' @param sdf
 #' @return user.
@@ -145,14 +145,14 @@ processABP<-function(filepath, filename, fileinfo){
   # export to PostgreSQL
   #write.csv(BP, "X:/projects/columbia_bike/data/processed_data/sample_tables/ambulatory_blood_pressure.csv", row.names=FALSE)
   writeLines(paste("Processing successful now uploading", nrow(data), "rows to database"))
-  PGtry<-try(postgresqlWriteTableAlt(.connection$con, "abp", data, append=TRUE, row.names=FALSE), silent=TRUE)
-  
-  if(is.error(PGtry)){
-    return(list(PGtry, "PGerror"))
-  }else{
-    writeLines(paste("Processing and upload complete\n"))
-    return(list("Fine", "Fine"))
-  }
+#   PGtry<-try(postgresqlWriteTableAlt(.connection$con, "abp", data, append=TRUE, row.names=FALSE), silent=TRUE)
+#   
+#   if(is.error(PGtry)){
+#     return(list(PGtry, "PGerror"))
+#   }else{
+#     writeLines(paste("Processing and upload complete\n"))
+#     return(list("Fine", "Fine"))
+#   }
   
 }
 
