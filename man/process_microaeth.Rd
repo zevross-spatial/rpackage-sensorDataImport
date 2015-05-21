@@ -2,7 +2,7 @@
 % Please edit documentation in R/sensor_processing.R
 \name{process_microaeth}
 \alias{process_microaeth}
-\title{XXX}
+\title{xxy}
 \usage{
 process_microaeth(filepath, filename, fileinfo)
 }
@@ -13,7 +13,7 @@ process_microaeth(filepath, filename, fileinfo)
 user.
 }
 \description{
-XXX
+xxy
 }
 \examples{
 add(1, 1)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{repeatFileInfo}
 \alias{repeatFileInfo}
-\title{xxx}
+\title{xxt}
 \usage{
 repeatFileInfo(fileinfo, n)
 }
@@ -13,7 +13,7 @@ repeatFileInfo(fileinfo, n)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)

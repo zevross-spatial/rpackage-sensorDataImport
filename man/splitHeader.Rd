@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{splitHeader}
 \alias{splitHeader}
-\title{xxx}
+\title{xxt}
 \usage{
 splitHeader(dat, beg, end)
 }
@@ -13,7 +13,7 @@ splitHeader(dat, beg, end)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)

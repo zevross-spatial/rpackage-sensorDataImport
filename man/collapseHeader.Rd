@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{collapseHeader}
 \alias{collapseHeader}
-\title{xxx}
+\title{xxt}
 \usage{
 collapseHeader(dat, width = NA)
 }
@@ -13,7 +13,7 @@ collapseHeader(dat, width = NA)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)

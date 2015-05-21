@@ -19,9 +19,12 @@ testdplyr<-function(){
 # Process GPS ---------------------------
 # *****************************************************************************
 
-#' XXX
+#' xxy
 #' 
-#' @param sdf
+#' @param filepath is the full filepath with file name
+#' @param filename is just the filename (this can't be derived from filepathdue to browser restrictions)
+#' @param fileinfo is a vector of values that are treated as 
+#' columns and repeated through the whole file - most likely the split filename but can be anything
 #' @return user.
 #' @examples
 #' add(1, 1)
@@ -51,7 +54,7 @@ process_gps<-function(filepath, filename, fileinfo){
 # Process ABP ---------------------------
 # *****************************************************************************
 
-#' XXX
+#' xxy
 #' 
 #' @param sdf
 #' @return user.
@@ -129,7 +132,7 @@ process_abp<-function(filepath, filename, fileinfo){
 # Process microPEM ---------------------------
 # *****************************************************************************
 
-#' XXX
+#' xxy
 #' 
 #' @param sdf
 #' @return user.
@@ -212,7 +215,7 @@ process_micropem<-function(filepath, filename, fileinfo){
 # Process microPEM ---------------------------
 # *****************************************************************************
 
-#' XXX
+#' xxy
 #' 
 #' @param sdf
 #' @return user.

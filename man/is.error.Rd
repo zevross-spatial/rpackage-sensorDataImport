@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is.error}
 \alias{is.error}
-\title{xxx}
+\title{xxt}
 \usage{
 is.error(x)
 }
@@ -13,7 +13,7 @@ is.error(x)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)

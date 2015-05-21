@@ -5,15 +5,16 @@ setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 options(shiny.maxRequestSize = 1000*1024^2)
 
 shinyServer(function(input, output, session) {
+  writeLines("Begin NYC Shiny server, about to connect to DB")
+ 
   
- get_connection(dbname="columbiaBike", 
+  get_connection(dbname="columbiaBike", 
                      password="spatial",
                      host="localhost", 
                      port=5433, 
                      user="postgres")
  
-
-  #print("Running Columbia Shiny app")
+  
   
   process<-reactive({
     # VALIDATION: Do you have a successful database connection?
@@ -64,8 +65,7 @@ shinyServer(function(input, output, session) {
                        data <- try({process_data(filepath=curpath, 
                                             filename=curfilename, 
                                             filetype=curfiletype)}, silent=TRUE)
-                       
-                       print(head(data))
+                      
                       
                        data_msg <- NULL
                       
@@ -84,10 +84,11 @@ shinyServer(function(input, output, session) {
                       #*******************************************************
                       # Data upload
                       #*******************************************************
-                      print("make it past validate1")
                       upload<-try({upload_postgres(
                         tablename=tolower(curfiletype),
                         data=data)}, silent=TRUE)
+                      
+        
                       
                       upload_msg <- NULL
                       
@@ -102,7 +103,6 @@ shinyServer(function(input, output, session) {
                       
                       # end session and report error in data handling
                       validate(need(!is.error(data), upload_msg))
-                      print("make it past validate2")
                       
                       #*******************************************************
                       # Update progress indicator and clean up

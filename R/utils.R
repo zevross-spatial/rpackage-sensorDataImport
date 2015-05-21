@@ -5,53 +5,14 @@
 #' @importFrom magrittr %<>%
 #' @name %<>%
 #' @export
-#' @usage xxx
 NULL
-
-# -----------------------------------------------------------------------------
-# getConnection: connect to database
-# -----------------------------------------------------------------------------
-#' xxx
-#' 
-#' @param sdf
-#' @return user.
-#' @examples
-#' add(1, 1)
-#' add(10, 1)
-#' @export
-getConnection<-function(){
-  # note the double arrow to make global
-  .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
-                                        password="spatial", port=5433, user="postgres"),
-                    silent=TRUE)
-}
-
-#getConnection()
-
-# -----------------------------------------------------------------------------
-# parseFileName
-# -----------------------------------------------------------------------------
-# #' xxx
-# #' 
-# #' @param sdf
-# #' @return user.
-# #' @examples
-# #' add(1, 1)
-# #' add(10, 1)
-# #' @export
-# identify_filetype<-function(filename){
-# 
-#   fileinfo<-unlist(stringr::str_split(filename, "_"))
-#   filetype <- substring(fileinfo[2], 1,3)
-#   return(filetype)
-#   
-# }
 
 
 # -----------------------------------------------------------------------------
 # Data processing or upload error report for Shiny
 # -----------------------------------------------------------------------------
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -87,7 +48,8 @@ error_report<-function(currentfile_num, currentfile_name, completedfile_names, s
 # -----------------------------------------------------------------------------
 # parseFileName
 # -----------------------------------------------------------------------------
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -133,7 +95,8 @@ process_data<-function(filepath, filename, filetype){
 # postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow
 
 #http://bit.ly/1E0Vsf6
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -154,7 +117,8 @@ body(postgresqlWriteTableAlt) <- parse(text = new_body_lines)
 # -----------------------------------------------------------------------------
 # parseFileName
 # -----------------------------------------------------------------------------
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -173,7 +137,8 @@ addZero<-function(dat,width=2){
 # -----------------------------------------------------------------------------
 
 #http://adv-r.had.co.nz/Exceptions-Debugging.html
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -191,7 +156,7 @@ is.error <- function(x) inherits(x, "try-error")
 # we are adding columns to the tables in the database with the metadata so
 # we need to metadata repeated for each record in the table
 
-#' xxx
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -217,7 +182,8 @@ repeatFileInfo<-function(fileinfo,n){
 # -----------------------------------------------------------------------------
 # splitHeader and collapseHeader -- for dealing with MicroPEM headers
 # -----------------------------------------------------------------------------
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.
@@ -229,7 +195,8 @@ splitHeader<-function(dat, beg, end){
   strsplit(dat[beg:end], ",")  
 }
 
-#' xxx
+
+#' xxt
 #' 
 #' @param sdf
 #' @return user.

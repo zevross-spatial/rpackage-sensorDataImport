@@ -2,31 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{error_report}
 \alias{error_report}
-\title{#xxx
-#
-#}
+\title{xxt}
 \usage{
 error_report(currentfile_num, currentfile_name, completedfile_names, stage)
 }
 \arguments{
-\item{sdf}{#}
-
 \item{sdf}{}
 }
 \value{
 user.
-#
-
-user.
 }
 \description{
-#xxx
-#
-#
+xxt
 }
 \examples{
-#add(1, 1)
-#add(10, 1)
-#
+add(1, 1)
+add(10, 1)
 }
 

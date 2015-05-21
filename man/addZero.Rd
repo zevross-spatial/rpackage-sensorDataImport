@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{addZero}
 \alias{addZero}
-\title{xxx}
+\title{xxt}
 \usage{
 addZero(dat, width = 2)
 }
@@ -13,7 +13,7 @@ addZero(dat, width = 2)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)

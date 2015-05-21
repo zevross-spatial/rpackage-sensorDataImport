@@ -60,7 +60,7 @@ addTables<-function(dbname, port=5432, user="postgres"){
 #' @return .connection -- which is a global variable
 #' @examples
 #' .connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
-#'password="spatial", port=5433, user="postgres"),silent=TRUE)
+#' password="spatial", port=5433, user="postgres"),silent=TRUE)
 #' @export
 
 get_connection<-function(dbname,
@@ -71,13 +71,17 @@ get_connection<-function(dbname,
   
   print("Connecting to database")
   # note the double arrow to make global
-  try({.connection<<-dplyr::src_postgres(dbname=dbname, 
+  .connection<<-try({dplyr::src_postgres(dbname=dbname, 
                                          host=host,
                                          password=password, 
                                          port=port, 
                                          user=user)}, silent=TRUE)
-  print(.connection)
-
+  if(!is.error(.connection)){
+    print(paste("Connected to database: ", .connection$info$dbname))
+  }else{
+    print("There is a problem with the database connection")
+  }
+  
   
 }
 
@@ -99,7 +103,8 @@ get_connection<-function(dbname,
 #' @export
 
 upload_postgres<-function(tablename, data){
-  print("In upload postgres")
+  rows<-nrow(data)
+  print(paste("About to upload", rows, "rows to" , tablename))
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
   
 }

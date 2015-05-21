@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{process_data}
 \alias{process_data}
-\title{xxx}
+\title{xxt}
 \usage{
 process_data(filepath, filename, filetype)
 }
@@ -13,7 +13,7 @@ process_data(filepath, filename, filetype)
 user.
 }
 \description{
-xxx
+xxt
 }
 \examples{
 add(1, 1)
