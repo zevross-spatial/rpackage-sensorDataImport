@@ -124,6 +124,7 @@ process_abp<-function(filepath, filename, fileinfo){
     
     data<-cbind(data, metadata)
     
+    return(data)
   
 }
 
@@ -208,6 +209,7 @@ process_micropem<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
+    return(data)
 }
 
 
@@ -253,6 +255,7 @@ process_microaeth<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
   
+    return(data)
 
   
 }
@@ -286,6 +289,6 @@ process_hexoskin<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data))
     data<-cbind(data, metadata)
     
-
+    return(data)
   
 }

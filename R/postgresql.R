@@ -15,7 +15,7 @@
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
-createDatabase<-function(dbname, port=5432, user="postgres"){  
+create_database<-function(dbname, port=5432, user="postgres"){  
   
   #TODO, might want a test to see if DB exists
   #val<-"psql -U postgres -c \"select count(*) from pg_catalog.pg_database where datname = 'cehtp_pesticide'\""
@@ -40,9 +40,9 @@ createDatabase<-function(dbname, port=5432, user="postgres"){
 #' addTables("mytable")
 #' add(10, 1)
 
-addTables<-function(dbname, port=5432, user="postgres"){
+add_tables_db<-function(dbname, port=5432, user="postgres"){
 
-  sqlfile<-system.file("sql", "create_tables.sql", package = "bikeData")
+  sqlfile<-system.file("sql", "create_tables.sql", package = "sensorDataImport")
   runsql<-paste("psql -p", port, "-U", user,"-d", dbname,"-a -f", sqlfile)
   system(runsql)
   
@@ -106,7 +106,7 @@ upload_postgres<-function(tablename, data){
   rows<-nrow(data)
   print(paste("About to upload", rows, "rows to" , tablename))
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
-  
+  print(paste("Completed upload of", rows, "rows to" , tablename))
 }
 
 

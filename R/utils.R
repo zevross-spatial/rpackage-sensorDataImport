@@ -156,7 +156,8 @@ is.error <- function(x) inherits(x, "try-error")
 # we are adding columns to the tables in the database with the metadata so
 # we need to metadata repeated for each record in the table
 
-#' xxt
+#' A function to create a matrix of the metadata extracted from the file
+#' names for adding to a sensor table.
 #' 
 #' @param sdf
 #' @return user.
@@ -165,9 +166,6 @@ is.error <- function(x) inherits(x, "try-error")
 #' add(10, 1)
 #' @export
 repeatFileInfo<-function(fileinfo,n){
-  
-  #fileinfo<-"BIKE0001_ABP01_S01_150306.abp"
-  #n<-30
   
   varnames<-c("subjectID", "instrumentID", "sessionID", "filterID")
   l<-length(fileinfo)-1

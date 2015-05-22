@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
       # VALIDATION: Do first three letters match our rules   
       allOK<-all(filetypes%in%c("GPS", "ABP", "MAE", "MPM", "HXI"))
       validate(
-        need(allOK, "One of your datasets is not the right format")
+        need(allOK, "One of your datasets is not a GPS, ABP, MAE, MPM or HXI file")
       )
       
       
