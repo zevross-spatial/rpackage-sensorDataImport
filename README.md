@@ -42,7 +42,7 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 * Explicit disconnect from DB
 * The `create_database` and `add_tables_db` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL.
 * Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.
-* Better warning messages about DB upload problems.
+* Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.
 
 ### If you're getting errors
 

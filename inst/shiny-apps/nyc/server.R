@@ -8,16 +8,18 @@ shinyServer(function(input, output, session) {
   writeLines("Begin NYC Shiny server, about to connect to DB")
  
   
-  get_connection(dbname="columbiaBike", 
-                     password="spatial",
-                     host="localhost", 
-                     port=5433, 
-                     user="postgres")
+
  
   
   
   process<-reactive({
     # VALIDATION: Do you have a successful database connection?
+    #print(input$)
+    get_connection(dbname=input$dbname, 
+                   host=input$host, 
+                   port=input$port,
+                   password=input$password,
+                   user="postgres")
     validate(
       need(!is.error(.connection), "There is a problem with your database connection")
     )
