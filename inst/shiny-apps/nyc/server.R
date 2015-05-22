@@ -6,24 +6,24 @@ options(shiny.maxRequestSize = 1000*1024^2)
 
 shinyServer(function(input, output, session) {
   writeLines("Begin NYC Shiny server, about to connect to DB")
- 
-  
 
- 
-  
-  
-  process<-reactive({
-    # VALIDATION: Do you have a successful database connection?
-    #print(input$)
+  connectdb<-reactive({
     get_connection(dbname=input$dbname, 
                    host=input$host, 
                    port=input$port,
                    password=input$password,
                    user="postgres")
-    validate(
-      need(!is.error(.connection), "There is a problem with your database connection")
-    )
-    
+    if(is.error(.connection)){
+      return("<span class='alert'>There is a problem with</br>your database connection</span>")
+    }else{
+      return("<span class='allgood'>Connected to DB</span>")
+    }
+  })
+
+  
+  process<-reactive({
+
+
     
     # if there is no infile, return NULL, this is not validation exactly
     if (is.null(input$file1)){
@@ -65,8 +65,7 @@ shinyServer(function(input, output, session) {
                        
                        # try and process the data
                        data <- try({process_data(filepath=curpath, 
-                                            filename=curfilename, 
-                                            filetype=curfiletype)}, silent=TRUE)
+                                            filename=curfilename)}, silent=TRUE)
                       
                       
                        data_msg <- NULL
@@ -122,10 +121,13 @@ shinyServer(function(input, output, session) {
     return(filenames)
   }) # end reactive
   
-  
+
+  output$dbconnectinfo<-renderUI({
+    HTML(paste(connectdb(), collapse = '<br/>'))
+    
+  })
   
   output$contents<-renderUI({
-             
     HTML(paste(process(), collapse = '<br/>'))
     
   })

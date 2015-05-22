@@ -32,7 +32,7 @@ testdplyr<-function(){
 #' @export
 process_gps<-function(filepath, filename, fileinfo){
 
-    
+    print("In GPS processing function")
     data<-plotKML::readGPX(filepath)
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
     names(data)<-c("longitude", "latitude", "elevation", "datetime")
@@ -44,6 +44,7 @@ process_gps<-function(filepath, filename, fileinfo){
     metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
+    print("Finished with GPS processing")
     return(data)
 
   

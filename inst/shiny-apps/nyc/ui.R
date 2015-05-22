@@ -26,7 +26,8 @@ shinyUI(fluidPage(
                 value = "localhost"),
       textInput("password", label = h3("password"), 
                 value = "spatial"),
-      br()
+      br(),
+      htmlOutput('dbconnectinfo')
       )
       ),# end main panel
         column(8,

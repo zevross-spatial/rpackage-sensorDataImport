@@ -58,7 +58,7 @@ Short-term tasks
 
 1. Need to review what happens with time zones and daylight savings time
 
-2. Add file name to all the tables in the database
+2. ~~Add file name to all the tables in the database~~
 
 3. Double check how the line in the microPEM (30-30 or a string) is being processed
 
