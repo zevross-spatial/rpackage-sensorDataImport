@@ -120,7 +120,7 @@ process_abp<-function(filepath, filename, fileinfo){
     #BP$file <- basename(file)
     data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     
     data<-cbind(data, metadata)
     
@@ -186,6 +186,11 @@ process_micropem<-function(filepath, filename, fileinfo){
     
     #I'm seeing that they might have a line called "Errored Line"
     data %<>% dplyr::filter(!grepl("Errored Line", date))
+
+    # from Ashlinn's code -- if the RH is negative we should not have
+    # a valid value for nephelometer. File BIKE0002_MPM02_S99_BK0001_150306
+    # has examples for testing
+    data$neph_rhcorrect[data$rh < 0 & !is.na(data$rh)]<-NA
     
     # need to add the header info, each as it's own record
     invisible(mapply(function(x,i){
@@ -206,7 +211,7 @@ process_micropem<-function(filepath, filename, fileinfo){
         dplyr::rename(datetime=date)
     }
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
     return(data)
@@ -214,7 +219,7 @@ process_micropem<-function(filepath, filename, fileinfo){
 
 
 # *****************************************************************************
-# Process microPEM ---------------------------
+# Process microAeth ---------------------------
 # *****************************************************************************
 
 #' xxy
@@ -252,7 +257,7 @@ process_microaeth<-function(filepath, filename, fileinfo){
       dplyr::select(-time)%>%
       dplyr::rename(datetime=date.yyyy.mm.dd.)
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
   
     return(data)
@@ -286,7 +291,7 @@ process_hexoskin<-function(filepath, filename, fileinfo){
     data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
     names(data)[names(data)=="timestamp"]<-"datetime"
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
     return(data)
