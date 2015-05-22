@@ -9,8 +9,9 @@ create table gps(
 	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(5),
+  filename varchar(100),
 	uniquekey serial not null PRIMARY KEY,
-    dateadded timestamp default current_timestamp
+  dateadded timestamp default current_timestamp
 
 );
 
@@ -26,11 +27,12 @@ create table abp(
 	event_code varchar(10),
 	studyid varchar(10),
 	code numeric(2,0),
-		subjectID character(8),
+	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(5),
+ filename varchar(100),
 	uniquekey serial not null PRIMARY KEY,
-    dateadded timestamp default current_timestamp
+  dateadded timestamp default current_timestamp
 
 );
 
@@ -50,6 +52,7 @@ create table mae(
 	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(5),
+ filename varchar(100),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 );
@@ -96,6 +99,7 @@ create table mpm(
 	instrumentID character(6),
 	sessionID character(5),
 	filterID character(8),
+ filename varchar(100),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 	
@@ -113,6 +117,7 @@ create table hxi(
 	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(5),
+ filename varchar(100),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 		

@@ -13,8 +13,8 @@
 #' @param port. You likely don't need to change this.
 #' @return user.
 #' @examples
-#' add(1, 1)
-#' add(10, 1)
+#' create_database("columbiaBike", port=5432)
+#' 
 create_database<-function(dbname, port=5432, user="postgres"){  
   
   #TODO, might want a test to see if DB exists
@@ -37,8 +37,8 @@ create_database<-function(dbname, port=5432, user="postgres"){
 #' @param y A number.
 #' @return The sum of \code{x} and \code{y}.
 #' @examples
-#' addTables("mytable")
-#' add(10, 1)
+#' add_tables_db("columbiaBike", port=5432)
+#' 
 
 add_tables_db<-function(dbname, port=5432, user="postgres"){
 

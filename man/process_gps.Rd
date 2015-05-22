@@ -7,7 +7,12 @@
 process_gps(filepath, filename, fileinfo)
 }
 \arguments{
-\item{sdf}{}
+\item{filepath}{is the full filepath with file name}
+
+\item{filename}{is just the filename (this can't be derived from filepathdue to browser restrictions)}
+
+\item{fileinfo}{is a vector of values that are treated as
+columns and repeated through the whole file - most likely the split filename but can be anything}
 }
 \value{
 user.

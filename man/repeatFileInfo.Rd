@@ -2,9 +2,10 @@
 % Please edit documentation in R/utils.R
 \name{repeatFileInfo}
 \alias{repeatFileInfo}
-\title{xxt}
+\title{A function to create a matrix of the metadata extracted from the file
+names for adding to a sensor table.}
 \usage{
-repeatFileInfo(fileinfo, n)
+repeatFileInfo(fileinfo, n, filename)
 }
 \arguments{
 \item{sdf}{}
@@ -13,7 +14,8 @@ repeatFileInfo(fileinfo, n)
 user.
 }
 \description{
-xxt
+A function to create a matrix of the metadata extracted from the file
+names for adding to a sensor table.
 }
 \examples{
 add(1, 1)

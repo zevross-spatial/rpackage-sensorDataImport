@@ -41,7 +41,7 @@ process_gps<-function(filepath, filename, fileinfo){
       mutate(datetime = gsub("T|Z", " ", datetime))
     
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data))
+    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
     return(data)

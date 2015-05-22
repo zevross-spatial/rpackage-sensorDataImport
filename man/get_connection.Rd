@@ -23,8 +23,8 @@ This function creates the connection to a database
 password="spatial", port=5433, user="postgres"),silent=TRUE)
 }
 \seealso{
-Other postgresql.functions: \code{\link{addTables}};
-  \code{\link{createDatabase}};
+Other postgresql.functions: \code{\link{add_tables_db}};
+  \code{\link{create_database}};
   \code{\link{upload_postgres}}
 }
 

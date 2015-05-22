@@ -48,3 +48,42 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 
 * Sometimes deleting NAMESPACE and re-running document(), load_all() helped
 * The rows might be getting uploaded to PostgreSQL but pgAdmin may not be updating so you may need to run `count` rather than `refresh`
+* How should we handle time zone -- do we need to have the user input?
+
+
+
+# From previous notes
+
+Short-term tasks
+
+1. Need to review what happens with time zones and daylight savings time
+
+2. Add file name to all the tables in the database
+
+3. Double check how the line in the microPEM (30-30 or a string) is being processed
+
+4. Double check memory usage, particularly when processing many files.
+
+5. Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.
+
+6. Add a check to see if the data has already been uploaded by checking file name or file name information
+
+Longer-term tasks
+
+1. We will need to develop and approach to assigning "session" to all the files. This could potentially be in the SQL database or maybe when the data is pulled.
+
+2. Make the app an R package for more easy distribution
+
+3. Need to consider how the database will get backed up
+
+4. Rather than create new tables with session etc potentially use PostgreSQL "views"
+
+5. Create a delete data function. We discussed adding this to Shiny but this may not be worth the effort, an R function may be enough.
+
+6. We need some kind of "events" field or check. For example, if humidity data is bad, but other data is good for a line how do we handle.
+
+8. We need to add data quality checks on file upload.
+
+9. In some data files there may be missing dates or times (microPEM has "Errored lines"). This may not be an issue in the database itself, but it will be an issue in the aggregation/summarization
+
+

@@ -165,13 +165,14 @@ is.error <- function(x) inherits(x, "try-error")
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-repeatFileInfo<-function(fileinfo,n){
+repeatFileInfo<-function(fileinfo,n, filename){
   
   varnames<-c("subjectID", "instrumentID", "sessionID", "filterID")
   l<-length(fileinfo)-1
   fin<-data.frame(matrix(fileinfo[1:l], nrow=n, ncol=l, byrow=TRUE))
   
   names(fin)<-tolower(varnames[1:l])
+  fin$filename<-filename
   return(fin)
   
 }
