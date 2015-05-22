@@ -57,10 +57,11 @@ error_report<-function(currentfile_num, currentfile_name, completedfile_names, s
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-process_data<-function(filepath, filename, filetype){
+process_data<-function(filepath, filename){
   
   # this is metadata
   fileinfo<-unlist(stringr::str_split(filename, "_"))
+  filetype<-substring(fileinfo[2],1,3)
   
 #   process_result<-switch(filetype,
 #                      GPS = try({processGPS(filepath, filename, fileinfo)}, silent=TRUE),
