@@ -200,14 +200,22 @@ process_micropem<-function(filepath, filename, fileinfo){
     
     # There are two date types possible 2/2/14 or 2-Feb-14. So here I'm testing
     # if the second "piece" of the date is a number and then proceed accordingly
-    isSecondAnumber<-!is.na(suppressWarnings(as.numeric(unlist(strsplit(data$date[1], "-|/"))[2])))
+    # Note 5/28/2015 turns out there are sometimes 2/2/14 and sometimes 2/2/2014
+    # need to deal with this.
+    
+    splitdate<-unlist(strsplit(data$date[1], "-|/"))
+    isSecondAnumber<-!is.na(suppressWarnings(as.numeric(splitdate[2])))
+    isYear2digits<-nchar(splitdate)[3]==2
     
     if(isSecondAnumber){
-      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%m/%d/%y"), time))%>%
+      
+      ifelse(isYear2digits, dateform<-"%m/%d/%y", dateform<-"%m/%d/%Y")
+      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,dateform), time))%>%
         dplyr::select(-time)%>%
         dplyr::rename(datetime=date)
     }else{
-      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,"%d-%b-%y"), time))%>%
+      ifelse(isYear2digits, dateform<-"%d-%b-%y", dateform<-"%d-%b-%Y")
+      data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,dateform), time))%>%
         dplyr::select(-time)%>%
         dplyr::rename(datetime=date)
     }

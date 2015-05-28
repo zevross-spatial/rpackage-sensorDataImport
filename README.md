@@ -15,7 +15,7 @@ Package with functions for processing environmental sensor data, create and load
 * Add tables with the `add_tables_db()` function (refers to an existing SQL file right now)
 * runShiny("nyc") will launch the Shiny app (inst/shiny-apps/nyc)
 * The server.R file sets the working directory to the shiny apps working directory
-* The server.R file tries to connect to the DB using the function `get_connection()`. It reports an error if there was a problem with connection.
+* The server.R file tries to connect to the DB using the function `get_connection()`. It reports an error if there was a problem with connection. This has been updated so that the Shiny app has parameters related to the connection that are used by default in the get_connection() and the error is reported directly in the shiny app.
 * The server then waits for upload.
 * On upload the server tests for names that match a specific pattern. In this instance it looks for the first three letters to be ABP, GPS etc. If not it reports an error.
 * The server then uses the function `process_data()` to try and process. This function is part of utils.R and it actually doesn't process the data it determines which of the processing scripts to use and then runs that script. The processing scripts are in the `sensor_processing.R` script and they each return a processed datafile.
@@ -29,7 +29,9 @@ Package with functions for processing environmental sensor data, create and load
 http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 
 * devtools::load_all()
+* devtools::document()
 * runShiny("nyc")
+* devtools::test()
 
 
 
@@ -43,6 +45,24 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 * The `create_database` and `add_tables_db` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL.
 * Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.
 * Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.
+* ~~Make sure you have appropriately addressed the different micropem date formats:~~
+
+  # Format: 1/1/15
+  
+  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
+  filename<-"BIKE0003_MPM01_S99_BK0001_150306.csv"
+  
+  # Format: 08-Sep-14
+  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
+  filename<-"BIKE0002_MPM02_S99_BK0001_150306.csv"
+  
+  
+  #Format: 1/26/2015
+  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MPM01_S99_BK0001_150306.csv"
+  filename<-"BIKE0001_MPM01_S99_BK0001_150306"
+
+* There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
+
 
 ### If you're getting errors
 
@@ -60,7 +80,7 @@ Short-term tasks
 
 2. ~~Add file name to all the tables in the database~~
 
-3. Double check how the line in the microPEM (30-30 or a string) is being processed
+3. ~~Double check how the line in the microPEM (30-30 or a string) is being processed~~ if 30,30 is replaced by a string this is fine, the string is added in place of 30|30
 
 4. Double check memory usage, particularly when processing many files.
 
@@ -85,5 +105,8 @@ Longer-term tasks
 8. We need to add data quality checks on file upload.
 
 9. In some data files there may be missing dates or times (microPEM has "Errored lines"). This may not be an issue in the database itself, but it will be an issue in the aggregation/summarization
+
+
+# Where was I?
 
 
