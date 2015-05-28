@@ -58,7 +58,22 @@ shinyServer(function(input, output, session) {
                        curpath     <- paths[i]
                        curfilename <- filenames[i]
                        curfiletype <- filetypes[i]
+                       #*******************************************************
+                       # Has file already been uploaded?
+                       #*******************************************************
+                       already<-try({already_uploaded(tablename = tolower(curfiletype),
+                                        filename  = curfilename )}, silent=TRUE)
                        
+                       already_msg<-NULL
+                       
+                       if(is.error(already)) {
+                         
+                         already_msg = error_report(currentfile_num=i, 
+                                                 filenames=filenames,
+                                                 stage="filename screening")     
+                       }
+                       
+                       validate(need(!is.error(already), already_msg))
                        #*******************************************************
                        # Data processing
                        #*******************************************************
@@ -74,8 +89,7 @@ shinyServer(function(input, output, session) {
                        if(is.error(data)) {
                     
                                data_msg = error_report(currentfile_num=i, 
-                                             currentfile_name=curfilename,
-                                             completedfile_names=filenames[1:(i-1)], 
+                                            filenames=filenames,
                                              stage="processing")     
                        }
                        
@@ -97,8 +111,7 @@ shinyServer(function(input, output, session) {
                       if(is.error(upload)) {
                         
                         upload_msg = error_report(currentfile_num=i, 
-                                                currentfile_name=curfilename,
-                                                completedfile_names=filenames[1:(i-1)], 
+                                                filenames=filenames, 
                                                 stage="uploading")     
                       }
                       

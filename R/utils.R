@@ -20,24 +20,38 @@ NULL
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-error_report<-function(currentfile_num, currentfile_name, completedfile_names, stage){
+error_report<-function(currentfile_num, filenames, stage){
+  i<-currentfile_num
+  cur<-filenames[i]
   
   if(currentfile_num==1){
     completed<-" No files uploaded successfully."
-  }else{
+    notcompleted<-""
     
+  }else{
+
+    complete<-filenames[1:(i-1)]
+    notcomplete<-filenames[i:length(filenames)]
     completed<-paste(" Files ", 
-                     paste(completedfile_names, collapse=", "), 
+                     paste(complete, collapse=", "), 
                      " uploaded successfully.", sep="")
+    
+    notcompleted<-paste(" Files ", 
+                        paste(notcomplete, collapse=", "), 
+                        " NOT UPLOADED.", sep="")
+
   }
   
   
-  
   msg<-paste("There is a problem with file ", 
-             currentfile_name, 
+             cur, 
              ".", 
              " Error occurred in the ", stage, " step.",
-             completed, sep="")
+             completed,
+             notcompleted, sep="")
+
+  
+  if(stage=="filename screening") msg<-paste(msg, "The file", cur, "seems to have been uploaded previously.")
   
   return(msg)
 }

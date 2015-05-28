@@ -49,17 +49,19 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 
   # Format: 1/1/15
   
-  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
-  filename<-"BIKE0003_MPM01_S99_BK0001_150306.csv"
-  
-  # Format: 08-Sep-14
-  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
-  filename<-"BIKE0002_MPM02_S99_BK0001_150306.csv"
-  
-  
-  #Format: 1/26/2015
-  filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MPM01_S99_BK0001_150306.csv"
-  filename<-"BIKE0001_MPM01_S99_BK0001_150306"
+```r
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
+filename<-"BIKE0003_MPM01_S99_BK0001_150306.csv"
+
+# Format: 08-Sep-14
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
+filename<-"BIKE0002_MPM02_S99_BK0001_150306.csv"
+
+
+#Format: 1/26/2015
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MPM01_S99_BK0001_150306.csv"
+filename<-"BIKE0001_MPM01_S99_BK0001_150306"
+```
 
 * There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
 
@@ -84,7 +86,7 @@ Short-term tasks
 
 4. Double check memory usage, particularly when processing many files.
 
-5. Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.
+5. ~~Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.~~ It processes until there is an error and then stops so that files in the queue after an error are not processed. I changed the error warning to give a list of properly uploaded files and those that were not processed.
 
 6. Add a check to see if the data has already been uploaded by checking file name or file name information
 

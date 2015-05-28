@@ -111,6 +111,39 @@ upload_postgres<-function(tablename, data){
 
 
 
+# *****************************************************************************
+# Test for previous file upload ---------------------------
+# *****************************************************************************
+
+#' This function is for uploading data to a postgres table
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return .connection -- which is a global variable
+#' @examples
+#' try(already_uploaded("gps", "BIKE0001_GPS01_S01_150306.gpx"), silent=TRUE)
+#' @export
+
+already_uploaded<-function(tablename, filename){
+  
+  # tablename<-"gps"
+  # filename<-"BIKE0001_GPS01_S01_150306.gpx"
+  #thetable <- dplyr::tbl(.connection, tablename)
+  #res<-nrow(dplyr::filter(thetable, filename==filename))==0
+  q<-paste0("SELECT exists (SELECT 1 FROM ", tablename, " WHERE filename = '", filename, "' LIMIT 1);")
+  res<-RPostgreSQL::dbGetQuery(.connection$con, q)
+  
+  if(res==FALSE){
+    return()
+  }else{
+    stop()
+  }
+
+}
+
+
+
+
 
 # *****************************************************************************
 # Load data ---------------------------
