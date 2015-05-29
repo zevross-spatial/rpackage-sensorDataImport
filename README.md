@@ -24,18 +24,7 @@ Package with functions for processing environmental sensor data, create and load
 
 
 
-
-### Including the Shiny App
-http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
-
-* devtools::load_all()
-* devtools::document()
-* runShiny("nyc")
-* devtools::test()
-
-
-
-### To Do
+### To Do (including tasks we assembled from in-person meeting)
 
 *  We will need to develop and approach to assigning "session" to all the files. This could potentially be in the SQL database or maybe when the data is pulled.
 
@@ -44,40 +33,23 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 * We need to add data quality checks on file upload.
 
 * Test PostgreSQL functions on a Mac.
+
 * Make changes to backup function so that it will work on a Mac.
 
-* The `create_database` and `add_tables_db` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL.
+* There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
 
-* Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.
+* Need to address time zones and review what happens with daylight savings.
+
+* The `create_database()` and `add_tables_db()` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL. May not be a priority to deal with this.
+
+* ~~Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.~~ There is a function to test prefixes -- right now it defaults to seeing if the prefix is one of "GPS", "ABP", "MAE", "MPM", "HXI"
 
 * ~~May need to rethink the database connection and allow the user to set the ports etc. This would probably mean taking the `get_connection()` out of the Shiny app and put it either in `runShiny()` or in it's own function.~~ I put the connection parameters in Shiny.
 * ~~Explicit disconnect from DB~~ I think this is not necessary.
 
-
-* Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.
+* ~~Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.~~ I added tests for the connection (`valid_connection()`), I added a test to see if a table exists (`table_exists()`), a function to list tables (`list_tables()`) and a test if a filename was already uploaded (`already_uploaded()`).
 * ~~Make sure you have appropriately addressed the different micropem date formats:~~
 
-  # Format: 1/1/15
-  
-```r
-filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
-filename<-"BIKE0003_MPM01_S99_BK0001_150306.csv"
-
-# Format: 08-Sep-14
-filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
-filename<-"BIKE0002_MPM02_S99_BK0001_150306.csv"
-
-
-#Format: 1/26/2015
-filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MPM01_S99_BK0001_150306.csv"
-filename<-"BIKE0001_MPM01_S99_BK0001_150306"
-```
-
-* There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
-
-
-
-* Need to review what happens with time zones and daylight savings time
 
 *  ~~Add file name to all the tables in the database~~
 
@@ -88,7 +60,6 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 *  ~~Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.~~ It processes until there is an error and then stops so that files in the queue after an error are not processed. I changed the error warning to give a list of properly uploaded files and those that were not processed.
 
 * ~~Add a check to see if the data has already been uploaded by checking file name or file name information~~ It now checks the database before uploading and reports an error if the file has been uploaded.
-
 
 * ~~Add a backup function~~
 
@@ -108,13 +79,32 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 * roxygen2::document() a problem with files on network drive. Issue with `file.access()` within the `digest` package. Right now I'm using a local drive.
 
 
+### Additional notes
+
+The microPEM has several different date formats that the app should be dealing with correctly but if you need specific files with specific formats see below.
+
+```r
+# Format: 1/1/15
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0003_MPM01_S99_BK0001_150306.csv"
+filename<-"BIKE0003_MPM01_S99_BK0001_150306.csv"
+
+# Format: 08-Sep-14
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM02_S99_BK0001_150306.csv"
+filename<-"BIKE0002_MPM02_S99_BK0001_150306.csv"
 
 
-Longer-term tasks
+#Format: 1/26/2015
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MPM01_S99_BK0001_150306.csv"
+filename<-"BIKE0001_MPM01_S99_BK0001_150306"
+```
 
 
 
+**Package development steps**
 
-# Where was I?
+* devtools::load_all()
+* devtools::document()
+* devtools::test()
+* runShiny("nyc")
 
 
