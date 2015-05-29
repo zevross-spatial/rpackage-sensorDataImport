@@ -50,6 +50,72 @@ add_tables_db<-function(dbname, port=5432, user="postgres"){
 
 
 # *****************************************************************************
+# Backup database ---------------------------
+# *****************************************************************************
+
+#' Backup database with pg_dump
+#' 
+#' \code{createDatabase} will create a new postgresql database.
+#' @family postgresql functions
+#' @param outpath is the FOLDER you want the backup saved in
+#' @param outnameprefix is the filename without the file type suffix (suffix is generated
+#' automatically)
+#' @param con is the name of the database connection
+#' @param custom_compress is whether or not you want to use a custom-pre-compressed dump
+#' format. If FALSE a standard SQL file is generated.
+#' @return user.
+#' @examples
+#' create_database("columbiaBike", port=5432)
+ 
+backup_database<-function(outpath, outnameprefix, con=".connection", custom_compress=TRUE){  
+  
+  
+  #fix trailing slash which is not handled in Windows  
+  last<-substring(outpath,nchar(outpath), nchar(outpath))
+  if(last=="/") outpath<-substring(outpath,1, nchar(outpath)-1)
+  
+  
+  if(!valid_connection(con)){
+    stop(paste(con, "is NOT valid database connection"))
+  }
+  
+  if(!file.exists(outpath)){
+    stop("No path by that name exists")
+  }
+  
+  
+  ifelse(custom_compress, {custom_compress<-"-Fc"
+                           suffix<-".dump"
+                           }, 
+                          {custom_compress<-""
+                           suffix<-".sql"
+                           })
+  
+  con_info<-eval(as.name(con))$info
+
+  
+  bash<-paste0("pg_dump --username=", 
+               con_info$user,
+               " ", 
+               custom_compress,
+               " --port=", 
+               con_info$port, 
+               " ",  
+               con_info$dbname, 
+               " > ",
+               outpath,
+               "/",
+               outnameprefix,
+               suffix)
+  
+  cat(bash, file=paste0(outpath, "/tmp.bat"))
+  system(paste0(outpath, "/tmp.bat"))
+  file.remove(paste0(outpath, "/tmp.bat"))
+   
+}
+
+
+# *****************************************************************************
 # Get database connection ---------------------------
 # *****************************************************************************
 
@@ -210,7 +276,7 @@ upload_postgres<-function(tablename, data){
 #' #"BIKE0001_GPS01_S01_150306.gpx"
 #' @export
 
-delete_postgres_data<-function(tablename, filename, con=".connection"){
+delete_data<-function(tablename, filename, con=".connection"){
   
   valcon<-valid_connection(con)
   tableexists<-table_exists(tablename)

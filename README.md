@@ -86,7 +86,7 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 
 * ~~Rather than create new tables with session etc potentially use PostgreSQL "views"~~ don't think this is necessary.
 
-* Create a delete data function. We discussed adding this to Shiny but this may not be worth the effort, an R function may be enough.
+* ~~Create a delete data function. We discussed adding this to Shiny but this may not be worth the effort, an R function may be enough.~~ We now have a delete function (`delete_data()`). This can be added to Shiny if desired but right now is just a function.
 
 * We need some kind of "events" field or check. For example, if humidity data is bad, but other data is good for a line how do we handle.
 
