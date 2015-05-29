@@ -3,6 +3,12 @@
 Package with functions for processing environmental sensor data, create and load a PostgreSQL database and run Shiny apps specific to the project needs.
 
 
+**Soon you can import with the following:**
+devtools::install_github("zross/sensorDataImport")
+
+This may work now but it has not been tested in Macs or other operating systems.
+
+
 ### General structure
 
 * Functions related to creating or manipulating the PostgreSQL database are in `postgresql.R`
