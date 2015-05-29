@@ -23,7 +23,11 @@ create_database("columbiaBike", port=5432)
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
   \code{\link{already_uploaded}};
+  \code{\link{backup_database}}; \code{\link{delete_data}};
   \code{\link{get_connection}};
-  \code{\link{upload_postgres}}
+  \code{\link{get_row_count}}; \code{\link{list_tables}};
+  \code{\link{table_exists}};
+  \code{\link{upload_postgres}};
+  \code{\link{valid_connection}}
 }
 

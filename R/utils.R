@@ -3,7 +3,6 @@
 
 
 #' @importFrom magrittr %<>%
-#' @name %<>%
 #' @export
 NULL
 
@@ -21,6 +20,7 @@ NULL
 #' "pre-screening" right now.)
 #' @return user.
 #' @examples
+#' prefixes_ok(c("GPS", "AB"))
 
 prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
   #prefixes<-c("GPS", "BB")
@@ -29,16 +29,6 @@ prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
   
   
 }
-
-
-
-
-
-
-
-
-
-
 
 
 # -----------------------------------------------------------------------------
@@ -55,6 +45,7 @@ prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
 #' "pre-screening" right now.)
 #' @return user.
 #' @examples
+#' error_report(1, c("file1_abc", "file2_abc"), stage="uploading")
 
 error_report<-function(currentfile_num, filenames, stage){
   i<-currentfile_num

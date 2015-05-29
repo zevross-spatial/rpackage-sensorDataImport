@@ -249,8 +249,8 @@ list_tables<-function(con = ".connection"){
 #' @family postgresql functions
 #' @param tablename the table name.
 #' @param data the data to upload
-#' @return 
-#' @examples
+#' @return user
+#' @examples test
 #' 
 #' @export
 
@@ -271,7 +271,7 @@ upload_postgres<-function(tablename, data){
 #' @family postgresql functions
 #' @param tablename
 #' @param filename
-#' @return 
+#' @return user
 #' @examples
 #' #"BIKE0001_GPS01_S01_150306.gpx"
 #' @export
@@ -328,7 +328,7 @@ delete_data<-function(tablename, filename, con=".connection"){
 #' @family postgresql functions
 #' @param tablename
 #' @param filename
-#' @return 
+#' @return user
 #' @examples
 #' #"BIKE0001_GPS01_S01_150306.gpx"
 #' @export

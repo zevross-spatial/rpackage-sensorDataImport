@@ -19,13 +19,17 @@ get_connection(dbname, password, host = "localhost", port = 5432,
 This function creates the connection to a database
 }
 \examples{
-.connection<<-try(dplyr::src_postgres(dbname="columbiaBike", host="localhost",
-password="spatial", port=5433, user="postgres"),silent=TRUE)
+get_connection(dbname="columbiaBike", host="localhost",
+password="spatial", port=5433, user="postgres")
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
   \code{\link{already_uploaded}};
-  \code{\link{create_database}};
-  \code{\link{upload_postgres}}
+  \code{\link{backup_database}};
+  \code{\link{create_database}}; \code{\link{delete_data}};
+  \code{\link{get_row_count}}; \code{\link{list_tables}};
+  \code{\link{table_exists}};
+  \code{\link{upload_postgres}};
+  \code{\link{valid_connection}}
 }
 

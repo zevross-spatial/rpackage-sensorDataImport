@@ -4,7 +4,7 @@
 \alias{already_uploaded}
 \title{Tests if data has already been uploaded}
 \usage{
-already_uploaded(tablename, filename)
+already_uploaded(tablename, filename, con = ".connection")
 }
 \arguments{
 \item{dbname}{the database.}
@@ -24,8 +24,12 @@ try(already_uploaded("gps", "BIKE0001_GPS01_S01_150306.gpx"), silent=TRUE)
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
-  \code{\link{create_database}};
+  \code{\link{backup_database}};
+  \code{\link{create_database}}; \code{\link{delete_data}};
   \code{\link{get_connection}};
-  \code{\link{upload_postgres}}
+  \code{\link{get_row_count}}; \code{\link{list_tables}};
+  \code{\link{table_exists}};
+  \code{\link{upload_postgres}};
+  \code{\link{valid_connection}}
 }
 
