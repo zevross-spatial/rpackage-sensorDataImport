@@ -4,6 +4,7 @@ Package with functions for processing environmental sensor data, create and load
 
 
 **Soon you can import with the following:**
+
 devtools::install_github("zross/sensorDataImport")
 
 This may work now but it has not been tested in Macs or other operating systems.
