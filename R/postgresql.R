@@ -210,25 +210,80 @@ upload_postgres<-function(tablename, data){
 #' #"BIKE0001_GPS01_S01_150306.gpx"
 #' @export
 
-delete_postgres_data<-function(tablename, filename){
-    
+delete_postgres_data<-function(tablename, filename, con=".connection"){
   
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  #if not a valid connection of table does not exist
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  
+  #else a valid connection and table exist
+  }else{
+    
+    # require the user to type in the file name -- this might be a pain and might not work
+    # if the user wants to delete multiple files.
     test_filename<-readline("Please re-type the filename to\nconfirm deletion of all data with this filename:")
     
-    if(identical(test_filename, filename)){
-      q<-paste0("DELETE FROM ", tablename, " WHERE filename = '", filename, "'")
-      message(paste0("Proceeding with delete using the query:\n", q))
-      
-      res<-RPostgreSQL::dbGetQuery(.connection$con, q)
-      
-      
-    }else{
+    # if the name typed and provided in the function are not the same
+    if(!identical(test_filename, filename)){
       warning(paste0("The file names you provided are not the same.\nThe file name given was ", filename, 
                      " and the file name typed was ", test_filename))
+     
+      
+    # if the name typed and provided are the same
+    }else{
+      
+      # if the filename is not in the database
+      if(!already_uploaded(tablename, filename)){
+        warning("This filename does not exist in the database - no rows deleted.")
+      }
+      
+      nrow_before<-get_row_count(tablename)
+      q<-paste0("DELETE FROM ", tablename, " WHERE filename = '", filename, "'")
+      message(paste0("Proceeding with delete using the query:\n", q))
+      res<-RPostgreSQL::dbGetQuery(.connection$con, q)
+      
+      nrow_after<-get_row_count(tablename)
+      message(paste("Success: Table before had", nrow_before, "rows. Table now has", nrow_after, "rows"))
+     
     }
+  }
   
 }
 
+# *****************************************************************************
+# Get row count ---------------------------
+# *****************************************************************************
+
+#' Get a row count from a table
+#' 
+#' @family postgresql functions
+#' @param tablename
+#' @param filename
+#' @return 
+#' @examples
+#' #"BIKE0001_GPS01_S01_150306.gpx"
+#' @export
+
+get_row_count<-function(tablename, con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  }else{
+    
+    q<-paste("SELECT COUNT(*) FROM", tablename)
+    cnt<-RPostgreSQL::dbGetQuery(.connection$con, q)
+    return(cnt)
+    
+    
+  }
+  
+}
 
 
 
@@ -250,19 +305,20 @@ delete_postgres_data<-function(tablename, filename){
 #' try(already_uploaded("gps", "BIKE0001_GPS01_S01_150306.gpx"), silent=TRUE)
 #' @export
 
-already_uploaded<-function(tablename, filename){
+already_uploaded<-function(tablename, filename, con=".connection"){
   
-  # tablename<-"gps"
-  # filename<-"BIKE0001_GPS01_S01_150306.gpx"
-  #thetable <- dplyr::tbl(.connection, tablename)
-  #res<-nrow(dplyr::filter(thetable, filename==filename))==0
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  }else{
+    
   q<-paste0("SELECT exists (SELECT 1 FROM ", tablename, " WHERE filename = '", filename, "' LIMIT 1);")
   res<-RPostgreSQL::dbGetQuery(.connection$con, q)
   
-  if(res==FALSE){
-    return()
-  }else{
-    stop()
+  return(res)
+  
   }
 
 }
