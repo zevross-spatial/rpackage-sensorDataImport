@@ -4,7 +4,7 @@
 \alias{error_report}
 \title{xxt}
 \usage{
-error_report(currentfile_num, currentfile_name, completedfile_names, stage)
+error_report(currentfile_num, filenames, stage)
 }
 \arguments{
 \item{sdf}{}

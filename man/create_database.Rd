@@ -18,11 +18,11 @@ user.
 \code{createDatabase} will create a new postgresql database.
 }
 \examples{
-add(1, 1)
-add(10, 1)
+create_database("columbiaBike", port=5432)
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
+  \code{\link{already_uploaded}};
   \code{\link{get_connection}};
   \code{\link{upload_postgres}}
 }

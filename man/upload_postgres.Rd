@@ -23,6 +23,7 @@ password="spatial", port=5433, user="postgres"),silent=TRUE)
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
+  \code{\link{already_uploaded}};
   \code{\link{create_database}};
   \code{\link{get_connection}}
 }

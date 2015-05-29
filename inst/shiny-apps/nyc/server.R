@@ -6,24 +6,25 @@ options(shiny.maxRequestSize = 1000*1024^2)
 
 shinyServer(function(input, output, session) {
   writeLines("Begin NYC Shiny server, about to connect to DB")
-
+  
   connectdb<-reactive({
+    
     get_connection(dbname=input$dbname, 
                    host=input$host, 
                    port=input$port,
                    password=input$password,
                    user="postgres")
-    if(is.error(.connection)){
+    if(!valid_connection()){
       return("<span class='alert'>There is a problem with</br>your database connection</span>")
     }else{
       return("<span class='allgood'>Connected to DB</span>")
     }
   })
-
+  
   
   process<-reactive({
-
-
+    
+    
     
     # if there is no infile, return NULL, this is not validation exactly
     if (is.null(input$file1)){
@@ -32,7 +33,7 @@ shinyServer(function(input, output, session) {
       # if there IS an infile
     }else{
       
-  
+      
       nfiles <- length(input$file1$datapath) #how many files chosen
       paths<-input$file1$datapath #temporary paths for the files
       filenames<-input$file1$name #names of files
@@ -62,15 +63,15 @@ shinyServer(function(input, output, session) {
                        # Has file already been uploaded?
                        #*******************************************************
                        already<-try({already_uploaded(tablename = tolower(curfiletype),
-                                        filename  = curfilename )}, silent=TRUE)
+                                                      filename  = curfilename )}, silent=TRUE)
                        
                        already_msg<-NULL
                        
                        if(is.error(already)) {
                          
                          already_msg = error_report(currentfile_num=i, 
-                                                 filenames=filenames,
-                                                 stage="filename screening")     
+                                                    filenames=filenames,
+                                                    stage="filename screening")     
                        }
                        
                        validate(need(!is.error(already), already_msg))
@@ -80,48 +81,48 @@ shinyServer(function(input, output, session) {
                        
                        # try and process the data
                        data <- try({process_data(filepath=curpath, 
-                                            filename=curfilename)}, silent=TRUE)
-                      
-                      
+                                                 filename=curfilename)}, silent=TRUE)
+                       
+                       
                        data_msg <- NULL
-                      
+                       
                        # if there is an error in the data processing
                        if(is.error(data)) {
-                    
-                               data_msg = error_report(currentfile_num=i, 
-                                            filenames=filenames,
-                                             stage="processing")     
+                         
+                         data_msg = error_report(currentfile_num=i, 
+                                                 filenames=filenames,
+                                                 stage="processing")     
                        }
                        
-                      # end session and report error in data handling
+                       # end session and report error in data handling
                        validate(need(!is.error(data), data_msg))
                        
-                      #*******************************************************
-                      # Data upload
-                      #*******************************************************
-                      upload<-try({upload_postgres(
-                        tablename=tolower(curfiletype),
-                        data=data)}, silent=TRUE)
-                      
-        
-                      
-                      upload_msg <- NULL
-                      
-                      # if there is an error in the upload
-                      if(is.error(upload)) {
-                        
-                        upload_msg = error_report(currentfile_num=i, 
-                                                filenames=filenames, 
-                                                stage="uploading")     
-                      }
-                      
-                      # end session and report error in data handling
-                      validate(need(!is.error(data), upload_msg))
-                      
-                      #*******************************************************
-                      # Update progress indicator and clean up
-                      #*******************************************************               
-       
+                       #*******************************************************
+                       # Data upload
+                       #*******************************************************
+                       upload<-try({upload_postgres(
+                         tablename=tolower(curfiletype),
+                         data=data)}, silent=TRUE)
+                       
+                       
+                       
+                       upload_msg <- NULL
+                       
+                       # if there is an error in the upload
+                       if(is.error(upload)) {
+                         
+                         upload_msg = error_report(currentfile_num=i, 
+                                                   filenames=filenames, 
+                                                   stage="uploading")     
+                       }
+                       
+                       # end session and report error in data handling
+                       validate(need(!is.error(data), upload_msg))
+                       
+                       #*******************************************************
+                       # Update progress indicator and clean up
+                       #*******************************************************               
+                       
                        incProgress(1/nfiles, detail=paste("Working on file", i, "of", nfiles))
                        rm(data)   
                      }#end for loop through files        
@@ -134,7 +135,7 @@ shinyServer(function(input, output, session) {
     return(filenames)
   }) # end reactive
   
-
+  
   output$dbconnectinfo<-renderUI({
     HTML(paste(connectdb(), collapse = '<br/>'))
     
@@ -144,9 +145,9 @@ shinyServer(function(input, output, session) {
     HTML(paste(process(), collapse = '<br/>'))
     
   })
- 
+  
   
   
   
 })
-  
+

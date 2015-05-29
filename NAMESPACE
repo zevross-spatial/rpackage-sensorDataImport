@@ -3,6 +3,7 @@
 export("%<>%")
 export(addZero)
 export(add_tables_db)
+export(already_uploaded)
 export(body_lines)
 export(collapseHeader)
 export(error_report)

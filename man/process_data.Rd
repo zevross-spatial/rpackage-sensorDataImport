@@ -4,7 +4,7 @@
 \alias{process_data}
 \title{xxt}
 \usage{
-process_data(filepath, filename, filetype)
+process_data(filepath, filename)
 }
 \arguments{
 \item{sdf}{}

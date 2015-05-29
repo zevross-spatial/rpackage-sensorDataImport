@@ -18,11 +18,11 @@ The sum of \code{x} and \code{y}.
 This function adds tables to a postgreSQL database.
 }
 \examples{
-addTables("mytable")
-add(10, 1)
+add_tables_db("columbiaBike", port=5432)
 }
 \seealso{
-Other postgresql.functions: \code{\link{create_database}};
+Other postgresql.functions: \code{\link{already_uploaded}};
+  \code{\link{create_database}};
   \code{\link{get_connection}};
   \code{\link{upload_postgres}}
 }
