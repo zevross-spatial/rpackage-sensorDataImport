@@ -41,10 +41,11 @@ shinyServer(function(input, output, session) {
       #extract characters 1-3 from the second element of each file name
       filetypes<-substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
       
-      # VALIDATION: Do first three letters match our rules   
-      allOK<-all(filetypes%in%c("GPS", "ABP", "MAE", "MPM", "HXI"))
+      allOK<-prefixes_ok(filetypes)
+      
+      # VALIDATION: Do first three letters match our rules?
       validate(
-        need(allOK, "One of your datasets is not a GPS, ABP, MAE, MPM or HXI file")
+        need(allOK, "One of your datasets does not have the right prefix")
       )
       
       

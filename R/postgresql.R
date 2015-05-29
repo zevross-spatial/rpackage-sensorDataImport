@@ -65,7 +65,7 @@ add_tables_db<-function(dbname, port=5432, user="postgres"){
 #' format. If FALSE a standard SQL file is generated.
 #' @return user.
 #' @examples
-#' create_database("columbiaBike", port=5432)
+#' backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
  
 backup_database<-function(outpath, outnameprefix, con=".connection", custom_compress=TRUE){  
   

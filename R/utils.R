@@ -8,18 +8,54 @@
 NULL
 
 
+
+# -----------------------------------------------------------------------------
+# Test file prefix -----
+# -----------------------------------------------------------------------------
+
+#' Make sure all the user-selected files have the right prefix.
+#' 
+#' @param prefixes are the prefixes of files
+#' @param filenames the full list of filenames the user uploaded
+#' @param stage is the stage of processing ("processing", "uploading",
+#' "pre-screening" right now.)
+#' @return user.
+#' @examples
+
+prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
+  #prefixes<-c("GPS", "BB")
+  tst<-prefixes%in%allowed
+  return(all(tst))
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
 # -----------------------------------------------------------------------------
 # Data processing or upload error report for Shiny
 # -----------------------------------------------------------------------------
 
-#' xxt
+#' Report assemble the error report about which files were processed, uploaded
+#' or screened
 #' 
-#' @param sdf
+#' @param currentfile_num is the number in sequence of the file where
+#' an error occurred
+#' @param filenames the full list of filenames the user uploaded
+#' @param stage is the stage of processing ("processing", "uploading",
+#' "pre-screening" right now.)
 #' @return user.
 #' @examples
-#' add(1, 1)
-#' add(10, 1)
-#' @export
+
 error_report<-function(currentfile_num, filenames, stage){
   i<-currentfile_num
   cur<-filenames[i]
@@ -71,19 +107,13 @@ error_report<-function(currentfile_num, filenames, stage){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
+#' 
 process_data<-function(filepath, filename){
   
   # this is metadata
   fileinfo<-unlist(stringr::str_split(filename, "_"))
   filetype<-substring(fileinfo[2],1,3)
   
-#   process_result<-switch(filetype,
-#                      GPS = try({processGPS(filepath, filename, fileinfo)}, silent=TRUE),
-#                      ABP = try({processABP(filepath, filename, fileinfo)}, silent=TRUE),
-#                      MAE = try({processMicroAeth(filepath, filename, fileinfo)}, silent=TRUE),
-#                      MPM = try({processMicroPEM(filepath, filename, fileinfo)}, silent=TRUE),
-#                      HXI = try({processHexoskin(filepath, filename, fileinfo)}, silent=TRUE))
- 
   
   
   process_result<-switch(filetype,

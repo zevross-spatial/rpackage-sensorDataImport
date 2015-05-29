@@ -37,13 +37,23 @@ http://www.r-bloggers.com/supplementing-your-r-package-with-a-shiny-app-2/
 
 ### To Do
 
-* PostgreSQL functions on a Mac?
-* roxygen2::document() a problem with files on network drive. Issue with `file.access()` within the `digest` package.
-* ~~When "objects listed as exports, but not present in namespace" delete NAMESPACE.md~~ I was getting this error I believe because I had a commented out function with roxygen comments. I deleted and the error went away
-* May need to rethink the database connection and allow the user to set the ports etc. This would probably mean taking the `get_connection()` out of the Shiny app and put it either in `runShiny()` or in it's own function.
-* Explicit disconnect from DB
+*  We will need to develop and approach to assigning "session" to all the files. This could potentially be in the SQL database or maybe when the data is pulled.
+
+* We need some kind of "events" field or check. For example, if humidity data is bad, but other data is good for a line how do we handle.
+
+* We need to add data quality checks on file upload.
+
+* Test PostgreSQL functions on a Mac.
+* Make changes to backup function so that it will work on a Mac.
+
 * The `create_database` and `add_tables_db` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL.
+
 * Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.
+
+* ~~May need to rethink the database connection and allow the user to set the ports etc. This would probably mean taking the `get_connection()` out of the Shiny app and put it either in `runShiny()` or in it's own function.~~ I put the connection parameters in Shiny.
+* ~~Explicit disconnect from DB~~ I think this is not necessary.
+
+
 * Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.
 * ~~Make sure you have appropriately addressed the different micropem date formats:~~
 
@@ -73,24 +83,19 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 
 * ~~Double check how the line in the microPEM (30-30 or a string) is being processed~~ if 30,30 is replaced by a string this is fine, the string is added in place of 30|30
 
-* Double check memory usage, particularly when processing many files.
+* ~~Double check memory usage, particularly when processing many files.~~ I'm not too worried about this so I'll leave for now.
 
 *  ~~Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.~~ It processes until there is an error and then stops so that files in the queue after an error are not processed. I changed the error warning to give a list of properly uploaded files and those that were not processed.
 
 * ~~Add a check to see if the data has already been uploaded by checking file name or file name information~~ It now checks the database before uploading and reports an error if the file has been uploaded.
 
 
-*  We will need to develop and approach to assigning "session" to all the files. This could potentially be in the SQL database or maybe when the data is pulled.
-
-* Add a backup function
+* ~~Add a backup function~~
 
 * ~~Rather than create new tables with session etc potentially use PostgreSQL "views"~~ don't think this is necessary.
 
 * ~~Create a delete data function. We discussed adding this to Shiny but this may not be worth the effort, an R function may be enough.~~ We now have a delete function (`delete_data()`). This can be added to Shiny if desired but right now is just a function.
 
-* We need some kind of "events" field or check. For example, if humidity data is bad, but other data is good for a line how do we handle.
-
-* We need to add data quality checks on file upload.
 
 * ~~In some data files there may be missing dates or times (microPEM has "Errored lines"). This may not be an issue in the database itself, but it will be an issue in the aggregation/summarization~~ we now delete errored lines.
 
@@ -100,7 +105,7 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 * Sometimes deleting NAMESPACE and re-running document(), load_all() helped
 * The rows might be getting uploaded to PostgreSQL but pgAdmin may not be updating so you may need to run `count` rather than `refresh`
 * How should we handle time zone -- do we need to have the user input?
-
+* roxygen2::document() a problem with files on network drive. Issue with `file.access()` within the `digest` package. Right now I'm using a local drive.
 
 
 
