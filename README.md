@@ -45,7 +45,7 @@ This may work now but it has not been tested in Macs or other operating systems.
 
 * There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
 
-* Need to address time zones and review what happens with daylight savings.
+* Need to address time zones and review what happens with daylight savings. Do we need to add time zone to the PostgreSQL tables?
 
 * The `create_database()` and `add_tables_db()` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL. May not be a priority to deal with this.
 
