@@ -114,4 +114,8 @@ filename<-"BIKE0001_MPM01_S99_BK0001_150306"
 * devtools::test()
 * runShiny("nyc")
 
-
+library(devtools)
+library(dplyr)
+load_all()
+get_connection("columbiaBike","spatial",  host="localhost",
+    port=5433, user="postgres")

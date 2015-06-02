@@ -240,6 +240,127 @@ list_tables<-function(con = ".connection"){
 }
 
 
+
+
+
+
+
+
+
+# *****************************************************************************
+# List column names ---------------------------
+# *****************************************************************************
+
+#' Get the column names from a PostgreSQL table.
+#' 
+#' 
+#' @family postgresql functions
+#' @param tablename the postgresql table
+#' @param con the postgresql connection
+#' @return a vector of column names
+#' @examples
+#' create_database("columbiaBike", port=5432)
+#' 
+get_column_names<-function(tablename, con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  }else{
+    
+    q<-paste0("SELECT column_name, data_type FROM information_schema.columns 
+              WHERE table_schema = 'public' AND table_name   = '", tablename, "'")
+    
+    cols<-RPostgreSQL::dbGetQuery(.connection$con, q)
+    return(cols)
+    
+    
+  }
+  
+}
+
+
+
+# *****************************************************************************
+# Column exists ---------------------------
+# *****************************************************************************
+
+#' Does a column exist in the specified table.
+#' 
+#' 
+#' @family postgresql functions
+#' @param tablename the postgresql table
+#' @param con the postgresql connection
+#' @return a vector of column names
+#' @examples
+#' create_database("columbiaBike", port=5432)
+#' 
+column_exists<-function(tablename, column_names, con=".connection"){
+
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  }else{
+    
+    res<-column_names%in%get_column_names(tablename)$column_name
+    names(res)<-column_names
+    
+    return(res)
+    
+    
+  }
+  
+}
+
+
+# *****************************************************************************
+# column types ---------------------------
+# *****************************************************************************
+
+#' What type is the column
+#' 
+#' 
+#' @family postgresql functions
+#' @param tablename the postgresql table
+#' @param con the postgresql connection
+#' @return a vector of column names
+#' @examples
+#' create_database("columbiaBike", port=5432)
+#' 
+column_types<-function(tablename, column_names, con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+  }else{
+    
+    res <- get_column_names(tablename)
+    
+    if(!all(column_names%in%res$column_name)){stop("One of the fields doesn't exist.")}
+    
+    mtch <- match(column_names, res$column_name)
+    mtch <- mtch[!is.na(mtch)]
+    
+    res <- res[mtch,"data_type"]
+    names(res)<-column_names
+    
+    
+    return(res)
+    
+    
+  }
+  
+}
+
+
+
+
 # *****************************************************************************
 # Upload table ---------------------------
 # *****************************************************************************
