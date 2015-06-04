@@ -39,6 +39,8 @@ This may work now but it has not been tested in Macs or other operating systems.
 
 * We need to add data quality checks on file upload.
 
+* Create active minute average function for the micropem following Ashlinn's code.
+
 * Test PostgreSQL functions on a Mac.
 
 * Make changes to backup function so that it will work on a Mac.
@@ -46,6 +48,12 @@ This may work now but it has not been tested in Macs or other operating systems.
 * There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
 
 * Need to address time zones and review what happens with daylight savings. Do we need to add time zone to the PostgreSQL tables?
+
+* Ashlinn uses a blank2na function -- how are NAs being handled now?
+
+* Ashlinn uses the function `floor_date` from `lubridate` which might be better than what I'm using now, double check. Probably I can't use it since aggregation is being done in DB.
+
+* Should 1-hour and 24-hour averages involve computing the smaller time period average? So to get daily average we would compute minute and then hour averages first?
 
 * The `create_database()` and `add_tables_db()` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL. May not be a priority to deal with this.
 

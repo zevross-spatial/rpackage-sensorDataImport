@@ -29,8 +29,11 @@ backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
+  \code{\link{aggregate_vars}};
   \code{\link{already_uploaded}};
+  \code{\link{column_exists}}; \code{\link{column_types}};
   \code{\link{create_database}}; \code{\link{delete_data}};
+  \code{\link{get_column_names}};
   \code{\link{get_connection}};
   \code{\link{get_row_count}}; \code{\link{list_tables}};
   \code{\link{table_exists}};

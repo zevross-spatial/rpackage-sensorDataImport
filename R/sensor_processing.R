@@ -192,6 +192,7 @@ process_micropem<-function(filepath, filename, fileinfo){
     # a valid value for nephelometer. File BIKE0002_MPM02_S99_BK0001_150306
     # has examples for testing
     data$neph_rhcorrect[data$rh < 0 & !is.na(data$rh)]<-NA
+    data$rh[data$rh<0]<-NA
     
     # need to add the header info, each as it's own record
     invisible(mapply(function(x,i){
