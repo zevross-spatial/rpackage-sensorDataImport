@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
   
   process<-reactive({
     
-    
+    projectid <- input$projectid
     
     # if there is no infile, return NULL, this is not validation exactly
     if (is.null(input$file1)){
@@ -34,13 +34,13 @@ shinyServer(function(input, output, session) {
     }else{
       
       
-      nfiles <- length(input$file1$datapath) #how many files chosen
-      paths<-input$file1$datapath #temporary paths for the files
-      filenames<-input$file1$name #names of files
+      nfiles    <- length(input$file1$datapath) #how many files chosen
+      paths     <- input$file1$datapath #temporary paths for the files
+      filenames <- input$file1$name #names of files
+
       
-      #extract characters 1-3 from the second element of each file name
+        #extract characters 1-3 from the second element of each file name
       filetypes<-substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
-      
       allOK<-prefixes_ok(filetypes)
       
       # VALIDATION: Do first three letters match our rules?
@@ -60,6 +60,7 @@ shinyServer(function(input, output, session) {
                        curpath     <- paths[i]
                        curfilename <- filenames[i]
                        curfiletype <- filetypes[i]
+
                        #*******************************************************
                        # Has file already been uploaded?
                        #*******************************************************
@@ -81,9 +82,10 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        
                        # try and process the data
-                       data <- try({process_data(filepath=curpath, 
-                                                 filename=curfilename)}, silent=TRUE)
-                       
+                       data <- try({initiate_processing(filepath  = curpath, 
+                                                 filename  = curfilename,
+                                                 projectid = projectid)}, silent=TRUE)
+                      
                        
                        data_msg <- NULL
                        
@@ -106,6 +108,7 @@ shinyServer(function(input, output, session) {
                          data=data)}, silent=TRUE)
                        
                        
+                       print(upload)
                        
                        upload_msg <- NULL
                        
@@ -118,7 +121,7 @@ shinyServer(function(input, output, session) {
                        }
                        
                        # end session and report error in data handling
-                       validate(need(!is.error(data), upload_msg))
+                       validate(need(!is.error(upload), upload_msg))
                        
                        #*******************************************************
                        # Update progress indicator and clean up

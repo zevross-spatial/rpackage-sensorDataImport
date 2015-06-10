@@ -1,19 +1,3 @@
-#' test dplyr to make sure that dplyr functions and magrittr pipes are included
-#' 
-#' @param sdf
-#' @return user.
-#' @examples
-#' add(1, 1)
-#' add(10, 1)
-#' @export
-
-testdplyr<-function(){
-  
-  a<-select(mtcars, contains("g"))
-  
-  a%>%filter(gear==4)
-}
-
 
 # *****************************************************************************
 # Process GPS ---------------------------
@@ -33,6 +17,7 @@ testdplyr<-function(){
 process_gps<-function(filepath, filename, fileinfo){
 
     print("In GPS processing function")
+    
     data<-plotKML::readGPX(filepath)
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
     names(data)<-c("longitude", "latitude", "elevation", "datetime")
@@ -41,10 +26,12 @@ process_gps<-function(filepath, filename, fileinfo){
       mutate(datetime = gsub("T|Z", " ", datetime))
     
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+
+    
+    #metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
-    print("Finished with GPS processing")
     return(data)
 
   
@@ -121,7 +108,7 @@ process_abp<-function(filepath, filename, fileinfo){
     #BP$file <- basename(file)
     data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename)
     
     data<-cbind(data, metadata)
     
@@ -221,7 +208,7 @@ process_micropem<-function(filepath, filename, fileinfo){
         dplyr::rename(datetime=date)
     }
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
     return(data)
@@ -267,7 +254,7 @@ process_microaeth<-function(filepath, filename, fileinfo){
       dplyr::select(-time)%>%
       dplyr::rename(datetime=date.yyyy.mm.dd.)
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
   
     return(data)
@@ -301,9 +288,47 @@ process_hexoskin<-function(filepath, filename, fileinfo){
     data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
     names(data)[names(data)=="timestamp"]<-"datetime"
     
-    metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+
+    
+    metadata<-generate_metadata(fileinfo, nrow(data), filename)
     data<-cbind(data, metadata)
     
     return(data)
   
 }
+
+# *****************************************************************************
+# Process GPS ---------------------------
+# *****************************************************************************
+
+#' xxy
+#' 
+#' @param filepath is the full filepath with file name
+#' @param filename is just the filename (this can't be derived from filepathdue to browser restrictions)
+#' @param fileinfo is a vector of values that are treated as 
+#' columns and repeated through the whole file - most likely the split filename but can be anything
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+process_pdr<-function(filepath, filename, fileinfo){
+  
+#   print("In GPS processing function")
+#   data<-plotKML::readGPX(filepath)
+#   data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
+#   names(data)<-c("longitude", "latitude", "elevation", "datetime")
+#   
+#   data%<>%select(datetime, which(!names(data)%in%"datetime"))%>%
+#     mutate(datetime = gsub("T|Z", " ", datetime))
+#   
+#   
+#   metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
+#   data<-cbind(data, metadata)
+#   
+#   print("Finished with GPS processing")
+#   return(data)
+  
+  
+}
+

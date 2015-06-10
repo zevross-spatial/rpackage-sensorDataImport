@@ -15,9 +15,10 @@ shinyUI(fluidPage(
     column(4,
            wellPanel(
       h4("Project and Database Settings"),
-      selectInput("select", label = h4("Select project"), 
-                  choices = list("Biking" = 1, "Second hand smoke" = 2,
-                                 "Ghana" = 3), selected = 1),
+      selectInput("projectid", label = h4("Select project"), 
+                  choices = list("Biking" = "columbiaBike", 
+                                 "Second hand smoke" = "secondhandsmoke",
+                                 "Ghana" = "ghana"), selected = "columbiaBike"),
       textInput("dbname", label = h3("Database name"), 
                 value = "columbiaBike"),
       textInput("port", label = h3("Port"), 
@@ -35,11 +36,14 @@ shinyUI(fluidPage(
           p("Choose the files to be imported. They can be GPX, ABP, microPEM, 
             microAeth or Hexoskin. The upload app will recognize the type and 
             upload appropriately."),
+          hr(),
+          
           br(),
           fileInput(inputId = 'file1', 
                     label = 'Choose text file(s)...', 
                     multiple = TRUE # can user select multiple files,
           ),
+          checkboxInput("checkbox", label = "Metadata is in the file name (NOT USED RIGHT NOW)", value = TRUE),
           h6("Max file size is 1 GB"),
           
 #                     accept=c('text/csv', 

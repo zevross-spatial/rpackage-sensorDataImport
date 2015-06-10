@@ -10,6 +10,7 @@ create table gps(
 	instrumentID character(6),
 	sessionID character(5),
   filename varchar(100),
+  projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
   dateadded timestamp default current_timestamp
 
@@ -30,7 +31,8 @@ create table abp(
 	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(5),
- filename varchar(100),
+  filename varchar(100),
+  projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
   dateadded timestamp default current_timestamp
 
@@ -53,6 +55,7 @@ create table mae(
 	instrumentID character(6),
 	sessionID character(5),
  filename varchar(100),
+projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 );
@@ -100,6 +103,7 @@ create table mpm(
 	sessionID character(5),
 	filterID character(8),
  filename varchar(100),
+projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 	
@@ -118,6 +122,7 @@ create table hxi(
 	instrumentID character(6),
 	sessionID character(5),
  filename varchar(100),
+projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 		

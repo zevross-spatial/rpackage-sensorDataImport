@@ -8,9 +8,9 @@ NULL
 
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # Test file prefix -----
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #' Make sure all the user-selected files have the right prefix.
 #' 
@@ -31,9 +31,9 @@ prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
 }
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # Data processing or upload error report for Shiny
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #' Report assemble the error report about which files were processed, uploaded
 #' or screened
@@ -86,9 +86,9 @@ error_report<-function(currentfile_num, filenames, stage){
 
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # parseFileName
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #' xxt
 #' 
@@ -99,12 +99,18 @@ error_report<-function(currentfile_num, filenames, stage){
 #' add(10, 1)
 #' @export
 #' 
-process_data<-function(filepath, filename){
+initiate_processing<-function(filepath, filename, projectid){
   
-  # this is metadata
-  fileinfo<-unlist(stringr::str_split(filename, "_"))
+  # this is metadata and each element of fileinfo will become a column
+  # where each row has the same value.
+  
+  if(projectid=="columbiaBike") fileinfo<-unlist(stringr::str_split(filename, "_"))
+  if(projectid!="columbiaBike") fileinfo<-c("abc", "def", "ghi", "jkl")
+  fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
+  fileinfo<-c(fileinfo, projectid)
+  
   filetype<-substring(fileinfo[2],1,3)
-  
+
   
   
   process_result<-switch(filetype,
@@ -120,9 +126,9 @@ process_data<-function(filepath, filename){
 }
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # Allow autoincrement field and date added
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 # in order to write the tables to the postgresql database the dbWriteTable works
 # fine but when I want an autoincrement serial field and a auto date/time field
@@ -150,9 +156,9 @@ new_body_lines <- sub(
 postgresqlWriteTableAlt <- RPostgreSQL::postgresqlWriteTable
 body(postgresqlWriteTableAlt) <- parse(text = new_body_lines)
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # parseFileName
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #' xxt
 #' 
@@ -168,9 +174,9 @@ addZero<-function(dat,width=2){
 
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # is error
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #http://adv-r.had.co.nz/Exceptions-Debugging.html
 
@@ -185,9 +191,9 @@ addZero<-function(dat,width=2){
 is.error <- function(x) inherits(x, "try-error")
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # repeatFileInfo
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 # we are adding columns to the tables in the database with the metadata so
 # we need to metadata repeated for each record in the table
@@ -201,22 +207,29 @@ is.error <- function(x) inherits(x, "try-error")
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-repeatFileInfo<-function(fileinfo,n, filename){
+generate_metadata<-function(fileinfo, n, filename){
   
-  varnames<-c("subjectID", "instrumentID", "sessionID", "filterID")
-  l<-length(fileinfo)-1
-  fin<-data.frame(matrix(fileinfo[1:l], nrow=n, ncol=l, byrow=TRUE))
+  #fileinfo<-c("BIKE0001" ,    "GPS01"  ,      "S01"  ,        "150306.gpx"  , "columbiaBike")
+  #n<-5
+  filetype<-substring(fileinfo[2],1,3)
   
-  names(fin)<-tolower(varnames[1:l])
+  l<-length(fileinfo)
+  fin<-data.frame(matrix(fileinfo, nrow=n, ncol=l, byrow=TRUE))
+  print(head(fin))
+  if(l==4) names(fin)<-c("subjectid", "instrumentid", "sessionid", "projectid")
+  if(l==5) names(fin)<-c("subjectid", "instrumentid", "sessionid", "filterid", "projectid")
+  
   fin$filename<-filename
+  
+  
   return(fin)
   
 }
 
 
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 # splitHeader and collapseHeader -- for dealing with MicroPEM headers
-# -----------------------------------------------------------------------------
+# *****************************************************************************
 
 #' xxt
 #' 
@@ -255,3 +268,7 @@ collapseHeader<-function(dat, width=NA){
   
   dat
 }
+
+
+
+
