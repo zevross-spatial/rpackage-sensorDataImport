@@ -34,11 +34,12 @@ This may work now but it has not been tested in Macs or other operating systems.
 ### To Do (including tasks we assembled from in-person meeting)
 
 
-* Filter ID is not being included in the tables right now. This is a tiny bit challenging in that GPS, for example, will not have a filter ID.
+* Need to come up with a strategy for adding the metadata to the files. Originally for the biking project this was easy because we were using a consistent file naming strategy but the second hand smoke project does not have this same advantage.
+
+* ~~Filter ID is not being included in the tables right now. This is a tiny bit challenging in that GPS, for example, will not have a filter ID.~~
 
 * Create processing script for PDR data
 
-* Right now the app depends on a specific file format. But the second hand smoke project does not adhere to that naming convention so this needs to be dealt with. Perhaps best to have a button on the Shiny server for "consistent file name" or something
 
 * Important !!! I made the interface more flexible to allow multiple projects BUT!!! what happens if the user is not paying attention and uploads a file to the wrong DB? We either need the interface NOT to be flexible or potentially have a warning or pop-up asking the user to make sure they're using the right DB. Perhaps they need to type in the name of the project (kind of like a password).
 
