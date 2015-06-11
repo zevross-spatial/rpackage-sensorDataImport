@@ -14,7 +14,7 @@
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-process_gps<-function(filepath, filename, fileinfo){
+process_gps<-function(filepath, filename, fileinfo,metainfilename){
 
     print("In GPS processing function")
     
@@ -26,7 +26,7 @@ process_gps<-function(filepath, filename, fileinfo){
       mutate(datetime = gsub("T|Z", " ", datetime))
     
     
-    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
 
     
     #metadata<-repeatFileInfo(fileinfo, nrow(data), filename)
@@ -50,9 +50,9 @@ process_gps<-function(filepath, filename, fileinfo){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-process_abp<-function(filepath, filename, fileinfo){
+process_abp<-function(filepath, filename, fileinfo, metainfilename){
   
-
+    #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_ABP01_S01_150306.abp"
     rl<-readLines(file(filepath,encoding="UTF-16LE"), warn=FALSE)
     endOfIntro<-max(grep("Unknown line", rl))+1
     endOfFile<-grep("XML", rl)-1
@@ -108,7 +108,7 @@ process_abp<-function(filepath, filename, fileinfo){
     #BP$file <- basename(file)
     data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
     
-    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
     
     data<-cbind(data, metadata)
     
@@ -130,7 +130,7 @@ process_abp<-function(filepath, filename, fileinfo){
 #' add(10, 1)
 #' @export
 
-process_micropem<-function(filepath, filename, fileinfo){
+process_micropem<-function(filepath, filename, fileinfo,metainfilename){
 
     #filepath<-"X:/projects/columbia_bike/data/client_data/20150205_microPem/UGF320417N_KHC0226.csv"
     # Grab the header information -- n=50 to make sure I have all lines
@@ -214,7 +214,7 @@ process_micropem<-function(filepath, filename, fileinfo){
         dplyr::rename(datetime=date)
     }
     
-    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
     data<-cbind(data, metadata)
     
     return(data)
@@ -234,7 +234,7 @@ process_micropem<-function(filepath, filename, fileinfo){
 #' add(10, 1)
 #' @export
 
-process_microaeth<-function(filepath, filename, fileinfo){
+process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
 
     
     headinfo<-read.csv(filepath,as.is=T, nrow=5, header=FALSE)
@@ -260,7 +260,7 @@ process_microaeth<-function(filepath, filename, fileinfo){
       dplyr::select(-time)%>%
       dplyr::rename(datetime=date.yyyy.mm.dd.)
     
-    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
     data<-cbind(data, metadata)
   
     return(data)
@@ -281,7 +281,7 @@ process_microaeth<-function(filepath, filename, fileinfo){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-process_hexoskin<-function(filepath, filename, fileinfo){
+process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
   
 
     #filepath<-"X:/projects/columbia_bike/data/client_data/20141001_sample_data_files/hexoskin/record-55556.csv"
@@ -296,7 +296,7 @@ process_hexoskin<-function(filepath, filename, fileinfo){
     
 
     
-    metadata<-generate_metadata(fileinfo, nrow(data), filename)
+    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
     data<-cbind(data, metadata)
     
     return(data)
@@ -319,7 +319,7 @@ process_hexoskin<-function(filepath, filename, fileinfo){
 #' add(10, 1)
 #' @export
 #' 
-process_pdr<-function(filepath, filename, fileinfo){
+process_pdr<-function(filepath, filename, fileinfo,metainfilename){
   
   #filepath<-"X:/projects/columbia_bike/data/client_data/20150610_pdr_data/1192_P6.CSV"
   
@@ -353,7 +353,7 @@ process_pdr<-function(filepath, filename, fileinfo){
   
   data <- cbind(data, h)
   
-  #metadata<-generate_metadata(fileinfo, nrow(data), filename)
+  #metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
   #data<-cbind(data, metadata)
   
   

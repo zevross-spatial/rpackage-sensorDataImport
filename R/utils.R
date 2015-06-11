@@ -99,7 +99,7 @@ error_report<-function(currentfile_num, filenames, stage){
 #' add(10, 1)
 #' @export
 #' 
-initiate_processing<-function(filepath, filename, projectid){
+initiate_processing<-function(filepath, filename, projectid, metainfilename){
   
   # this is metadata and each element of fileinfo will become a column
   # where each row has the same value.
@@ -114,11 +114,11 @@ initiate_processing<-function(filepath, filename, projectid){
   
   
   process_result<-switch(filetype,
-                         GPS = process_gps(filepath, filename, fileinfo),
-                         ABP = process_abp(filepath, filename, fileinfo),
-                         MAE = process_microaeth(filepath, filename, fileinfo),
-                         MPM = process_micropem(filepath, filename, fileinfo),
-                         HXI = process_hexoskin(filepath, filename, fileinfo))
+                         GPS = process_gps(filepath, filename, fileinfo, metainfilename),
+                         ABP = process_abp(filepath, filename, fileinfo, metainfilename),
+                         MAE = process_microaeth(filepath, filename, fileinfo, metainfilename),
+                         MPM = process_micropem(filepath, filename, fileinfo, metainfilename),
+                         HXI = process_hexoskin(filepath, filename, fileinfo, metainfilename))
   
 
       return(process_result)
@@ -207,10 +207,9 @@ is.error <- function(x) inherits(x, "try-error")
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-generate_metadata<-function(fileinfo, n, filename){
+generate_metadata<-function(fileinfo, n, filename, metainfilename){
   
-  #fileinfo<-c("BIKE0001" ,    "GPS01"  ,      "S01"  ,        "150306.gpx"  , "columbiaBike")
-  #n<-5
+  writeLines(paste("Metadata in filename: ", metainfilename))
   filetype<-substring(fileinfo[2],1,3)
   
   l<-length(fileinfo)

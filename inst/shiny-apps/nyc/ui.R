@@ -43,7 +43,7 @@ shinyUI(fluidPage(
                     label = 'Choose text file(s)...', 
                     multiple = TRUE # can user select multiple files,
           ),
-          checkboxInput("checkbox", label = "Metadata is in the file name (NOT USED RIGHT NOW)", value = TRUE),
+          checkboxInput("metadatainfilename", label = "Metadata is in the file name (NOT USED RIGHT NOW)", value = TRUE),
           h6("Max file size is 1 GB"),
           
 #                     accept=c('text/csv', 

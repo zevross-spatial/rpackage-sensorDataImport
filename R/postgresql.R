@@ -362,7 +362,7 @@ column_types<-function(tablename, column_names, con=".connection"){
 
 
 # *****************************************************************************
-# Upload table ---------------------------
+# Upload table 
 # *****************************************************************************
 
 #' This function is for uploading data to a postgres table
@@ -377,9 +377,14 @@ column_types<-function(tablename, column_names, con=".connection"){
 
 upload_postgres<-function(tablename, data){
   rows<-nrow(data)
-  print(paste("About to upload", rows, "rows to" , tablename))
+  
+  writeLines(paste("About to upload", rows, "rows to" , tablename))
+  
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
-  print(paste("Completed upload of", rows, "rows to" , tablename))
+  
+  msg<-paste("Completed upload of", rows, "rows to" , tablename)
+  writeLines(msg)
+
 }
 
 

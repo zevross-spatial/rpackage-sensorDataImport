@@ -22,6 +22,14 @@ shinyServer(function(input, output, session) {
   })
   
   
+#   metainfo<-reactive({
+#     return(input$metadatainfilename)
+#   })
+  
+  #metainfilename<-input$metadatainfilename
+  
+  
+  
   process<-reactive({
     
     projectid <- input$projectid
@@ -37,6 +45,9 @@ shinyServer(function(input, output, session) {
       nfiles    <- length(input$file1$datapath) #how many files chosen
       paths     <- input$file1$datapath #temporary paths for the files
       filenames <- input$file1$name #names of files
+      
+      metainfilename<-isolate(input$metadatainfilename)
+
 
       
         #extract characters 1-3 from the second element of each file name
@@ -84,7 +95,8 @@ shinyServer(function(input, output, session) {
                        # try and process the data
                        data <- try({initiate_processing(filepath  = curpath, 
                                                  filename  = curfilename,
-                                                 projectid = projectid)}, silent=TRUE)
+                                                 projectid = projectid,
+                                                 metainfilename = metainfilename)}, silent=TRUE)
                       
                        
                        data_msg <- NULL

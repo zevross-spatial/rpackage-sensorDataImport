@@ -38,6 +38,8 @@ This may work now but it has not been tested in Macs or other operating systems.
 
 * ~~Filter ID is not being included in the tables right now. This is a tiny bit challenging in that GPS, for example, will not have a filter ID.~~
 
+* ~~"Completed upload of..." message is being printed twice.~~
+
 * Create processing script for PDR data
 
 * Find out about year in the PDR data (it doesn't seem to exist).
