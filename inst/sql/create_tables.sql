@@ -112,19 +112,49 @@ projectID varchar(30),
 -- heart rate variability, breathing rate/volume
 DROP TABLE IF EXISTS hxi;
 create table hxi(
-	datetime timestamp,
-	breathing_rate numeric(6,2),
-	heart_rate numeric(3,0),
-	minute_ventilation numeric(12, 2),
-	cadence numeric(10,4),
-	activity numeric(14,10),
-	subjectID character(8),
-	instrumentID character(6),
-	sessionID character(5),
- filename varchar(100),
-projectID varchar(30),
-	uniquekey serial not null PRIMARY KEY,
-    dateadded timestamp default current_timestamp
+  datetime timestamp,
+  breathing_rate numeric(6,2),
+  heart_rate numeric(3,0),
+  minute_ventilation numeric(12, 2),
+  cadence numeric(10,4),
+  activity numeric(14,10),
+  subjectID character(8),
+  instrumentID character(6),
+  sessionID character(5),
+  filename varchar(100),
+  projectID varchar(30),
+  uniquekey serial not null PRIMARY KEY,
+  dateadded timestamp default current_timestamp
+		
+) ;
+
+
+-- PDR
+DROP TABLE IF EXISTS pdr;
+  create table pdr(
+  datetime timestamp,
+  point integer,
+  avg_mg3 numeric(8,4),
+  hdr_serial varchar(40),
+  hdr_userid varchar(40),
+  hdr_tagnum varchar(40),
+  hdr_numlogged varchar(40),
+  hdr_start varchar(40),
+  hdr_elapsed varchar(40),
+  hdr_logperiod varchar(40),
+  hdr_calibration varchar(40),
+  hdr_maxdispconc varchar(40),
+  hdr_timemax varchar(40),
+  hdr_maxstelconc varchar(40),
+  hdr_timemaxstel varchar(40),
+  hdr_avgconc varchar(40),
+  subjectID character(8),
+  instrumentID character(6),
+  sessionID character(5),
+  filename varchar(100),
+  projectID varchar(30),
+  uniquekey serial not null PRIMARY KEY,
+  dateadded timestamp default current_timestamp
 		
 ) ;
 

@@ -307,7 +307,7 @@ process_hexoskin<-function(filepath, filename, fileinfo){
 # Process GPS ---------------------------
 # *****************************************************************************
 
-#' xxy
+#' Script for processing the PDR data
 #' 
 #' @param filepath is the full filepath with file name
 #' @param filename is just the filename (this can't be derived from filepathdue to browser restrictions)
@@ -318,6 +318,7 @@ process_hexoskin<-function(filepath, filename, fileinfo){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
+#' 
 process_pdr<-function(filepath, filename, fileinfo){
   
   #filepath<-"X:/projects/columbia_bike/data/client_data/20150610_pdr_data/1192_P6.CSV"
@@ -326,16 +327,34 @@ process_pdr<-function(filepath, filename, fileinfo){
   endHeader <- grep("Logged Data:", nonParsed)
   begData   <- grep("Point", nonParsed)
   
-  headinfo  <- nonParsed[1:(endHeader-1)]
-  headinfo  <- matrix(unlist(strsplit(headinfo, ": ")), ncol=2, byrow=T) # note colon and space not just colon
+  headerinfo  <- nonParsed[1:(endHeader-1)]
+  headerinfo  <- matrix(unlist(strsplit(headerinfo, ": ")), ncol=2, byrow=T) # note colon and space not just colon
   
-  headers<-c("hdr_serial", "hdr_userid", "hdr_numlogged", "hdr_start", 
+  headers<-c("hdr_serial", "hdr_userid","hdr_tagnum",
+             "hdr_numlogged", "hdr_start", 
              "hdr_elapsed", "hdr_logperiod", "hdr_calibration",
              "hdr_maxdispconc", "hdr_timemax", "hdr_maxstelconc",
              "hdr_timemaxstel", "hdr_avgconc")
   
+  headerinfo<-gsub("^\\s+|\\s+$", "", headerinfo[,2])
+  names(headerinfo)<-headers
   
-
+  data<-read.csv(filepath, skip=begData, header=FALSE)
+  names(data) <- c("point", "date", "time", "avg_mg3" )
+  
+  # need to figure out year since it's not included
+  #head(strptime(paste(data$date, "2001", data$time), "%e %b %Y %T"))
+  
+  
+  
+  
+  h<-data.frame(matrix(headerinfo, nrow=nrow(data), ncol=length(headerinfo), byrow=TRUE))
+  names(h)<-headers
+  
+  data <- cbind(data, h)
+  
+  #metadata<-generate_metadata(fileinfo, nrow(data), filename)
+  #data<-cbind(data, metadata)
   
   
 }

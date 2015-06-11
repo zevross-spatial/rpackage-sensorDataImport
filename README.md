@@ -40,6 +40,10 @@ This may work now but it has not been tested in Macs or other operating systems.
 
 * Create processing script for PDR data
 
+* Find out about year in the PDR data (it doesn't seem to exist).
+
+* ~~Create PDR table in SQL database~~
+
 * Add argument to function that adds tables to SQL database to select tables to upload?
 
 * Important !!! I made the interface more flexible to allow multiple projects BUT!!! what happens if the user is not paying attention and uploads a file to the wrong DB? We either need the interface NOT to be flexible or potentially have a warning or pop-up asking the user to make sure they're using the right DB. Perhaps they need to type in the name of the project (kind of like a password).
