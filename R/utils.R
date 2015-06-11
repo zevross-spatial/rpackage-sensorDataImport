@@ -244,8 +244,9 @@ splitHeader<-function(dat, beg, end){
 }
 
 
-#' xxt
-#' 
+#' Collapses header info into one string separated by pipes (|)
+#' this is done because we don't want each piece of the header
+#' to be its own variable.
 #' @param sdf
 #' @return user.
 #' @examples
