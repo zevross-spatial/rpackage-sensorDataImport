@@ -2,9 +2,9 @@
 % Please edit documentation in R/sensor_processing.R
 \name{process_pdr}
 \alias{process_pdr}
-\title{xxy}
+\title{Script for processing the PDR data}
 \usage{
-process_pdr(filepath, filename, fileinfo)
+process_pdr(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{filepath}{is the full filepath with file name}
@@ -18,7 +18,7 @@ columns and repeated through the whole file - most likely the split filename but
 user.
 }
 \description{
-xxy
+Script for processing the PDR data
 }
 \examples{
 add(1, 1)

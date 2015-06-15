@@ -5,7 +5,7 @@
 \title{A function to create a matrix of the metadata extracted from the file
 names for adding to a sensor table.}
 \usage{
-generate_metadata(fileinfo, n, filename)
+generate_metadata(fileinfo, n, filename, metainfilename)
 }
 \arguments{
 \item{sdf}{}

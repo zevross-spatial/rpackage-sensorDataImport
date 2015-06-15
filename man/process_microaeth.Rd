@@ -4,7 +4,7 @@
 \alias{process_microaeth}
 \title{xxy}
 \usage{
-process_microaeth(filepath, filename, fileinfo)
+process_microaeth(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{sdf}{}

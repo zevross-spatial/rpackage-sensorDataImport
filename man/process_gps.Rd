@@ -4,7 +4,7 @@
 \alias{process_gps}
 \title{xxy}
 \usage{
-process_gps(filepath, filename, fileinfo)
+process_gps(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{filepath}{is the full filepath with file name}

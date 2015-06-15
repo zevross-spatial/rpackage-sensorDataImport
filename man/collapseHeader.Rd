@@ -2,7 +2,9 @@
 % Please edit documentation in R/utils.R
 \name{collapseHeader}
 \alias{collapseHeader}
-\title{xxt}
+\title{Collapses header info into one string separated by pipes (|)
+this is done because we don't want each piece of the header
+to be its own variable.}
 \usage{
 collapseHeader(dat, width = NA)
 }
@@ -13,7 +15,9 @@ collapseHeader(dat, width = NA)
 user.
 }
 \description{
-xxt
+Collapses header info into one string separated by pipes (|)
+this is done because we don't want each piece of the header
+to be its own variable.
 }
 \examples{
 add(1, 1)

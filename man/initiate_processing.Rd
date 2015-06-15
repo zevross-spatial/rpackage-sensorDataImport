@@ -4,7 +4,7 @@
 \alias{initiate_processing}
 \title{xxt}
 \usage{
-initiate_processing(filepath, filename, projectid)
+initiate_processing(filepath, filename, projectid, metainfilename)
 }
 \arguments{
 \item{sdf}{}

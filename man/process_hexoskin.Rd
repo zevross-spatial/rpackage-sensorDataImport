@@ -4,7 +4,7 @@
 \alias{process_hexoskin}
 \title{Process hexoskin}
 \usage{
-process_hexoskin(filepath, filename, fileinfo)
+process_hexoskin(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{sdf}{}

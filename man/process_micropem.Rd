@@ -4,7 +4,7 @@
 \alias{process_micropem}
 \title{xxy}
 \usage{
-process_micropem(filepath, filename, fileinfo)
+process_micropem(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{sdf}{}

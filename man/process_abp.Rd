@@ -4,7 +4,7 @@
 \alias{process_abp}
 \title{xxy}
 \usage{
-process_abp(filepath, filename, fileinfo)
+process_abp(filepath, filename, fileinfo, metainfilename)
 }
 \arguments{
 \item{sdf}{}
