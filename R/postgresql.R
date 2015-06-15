@@ -41,9 +41,11 @@ create_database<-function(dbname, port=5432, user="postgres"){
 #' 
 
 add_tables_db<-function(dbname, port=5432, user="postgres"){
-
+  
+  #dbname<-"columbiaBike"
+  #port<-5433
   sqlfile<-system.file("sql", "create_tables.sql", package = "sensorDataImport")
-  runsql<-paste('psql -p', port, '-U', user,'-d', dbname,'-a -f "', sqlfile, '"')
+  runsql<-paste0('psql -p ', port, ' -U ', user,' -d ', dbname,' -a -f "', sqlfile, '"')
   system(runsql)
   
 }
