@@ -22,6 +22,7 @@ NULL
 #' @return user.
 #' @examples
 #' prefixes_ok(c("GPS", "AB"))
+#' @export
 
 prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
   #prefixes<-c("GPS", "BB")
@@ -47,6 +48,7 @@ prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
 #' @return user.
 #' @examples
 #' error_report(1, c("file1_abc", "file2_abc"), stage="uploading")
+#' @export
 
 error_report<-function(currentfile_num, filenames, stage){
   i<-currentfile_num
