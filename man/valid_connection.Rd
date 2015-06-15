@@ -2,23 +2,24 @@
 % Please edit documentation in R/postgresql.R
 \name{valid_connection}
 \alias{valid_connection}
-\title{Test if there is a valid connection.}
+\title{This function creates the connection to a database}
 \usage{
 valid_connection(con = ".connection")
 }
 \arguments{
-\item{dbname}{Give the database a name.}
+\item{dbname}{the database.}
 
-\item{port.}{You likely don't need to change this.}
+\item{host}{database host, usually 'localhost'}
 }
 \value{
-user.
+.connection -- which is a global variable
 }
 \description{
-\code{createDatabase} will create a new postgresql database.
+This function creates the connection to a database
 }
 \examples{
-create_database("columbiaBike", port=5432)
+get_connection(dbname="columbiaBike", host="localhost",
+password="spatial", port=5433, user="postgres")
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};

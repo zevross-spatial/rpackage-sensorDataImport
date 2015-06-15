@@ -150,26 +150,23 @@ get_connection<-function(dbname,
 # Test connection ---------------------------
 # *****************************************************************************
 
-#' Test if there is a valid connection.
-#' 
-#' 
-#' @family xxx
-#' @param xxx
-#' @param xxx.
-#' @return user.
+#' This function creates the connection to a database
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return .connection -- which is a global variable
 #' @examples
-#' create_database("columbiaBike", port=5432)
+#' get_connection(dbname="columbiaBike", host="localhost",
+#' password="spatial", port=5433, user="postgres")
 #' @export
-#' 
+
 valid_connection<-function(con = ".connection"){  
   
   if(!exists(con) || is.error(eval(as.name(con)))){
-    #message(paste(con, "is NOT valid database connection"))
     return(FALSE)
   }
   
   if(exists(con) & !is.error(eval(as.name(con)))){
-    #message(paste(con, "is a valid database connection"))
     return(TRUE)
   }
   
@@ -189,7 +186,7 @@ valid_connection<-function(con = ".connection"){
 #' @param xxx
 #' @param xxx
 #' @return xxx
-#' @examples
+#' @examples xxx
 #' @export
 #' 
 table_exists<-function(tablename, con = ".connection"){  
@@ -375,7 +372,6 @@ column_types<-function(tablename, column_names, con=".connection"){
 #' @param data the data to upload
 #' @return user
 #' @examples test
-#' 
 #' @export
 
 upload_postgres<-function(tablename, data){

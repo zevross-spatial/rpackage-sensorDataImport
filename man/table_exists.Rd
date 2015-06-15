@@ -7,18 +7,18 @@
 table_exists(tablename, con = ".connection")
 }
 \arguments{
-\item{dbname}{Give the database a name.}
+\item{xxx}{}
 
-\item{port.}{You likely don't need to change this.}
+\item{xxx}{}
 }
 \value{
-user.
+xxx
 }
 \description{
-\code{createDatabase} will create a new postgresql database.
+Test if table exists in DB.
 }
 \examples{
-create_database("columbiaBike", port=5432)
+xxx
 }
 \seealso{
 Other postgresql.functions: \code{\link{add_tables_db}};
