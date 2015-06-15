@@ -153,10 +153,9 @@ get_connection<-function(dbname,
 #' Test if there is a valid connection.
 #' 
 #' 
-#' \code{createDatabase} will create a new postgresql database.
-#' @family postgresql functions
-#' @param dbname Give the database a name.
-#' @param port. You likely don't need to change this.
+#' @family xxx
+#' @param xxx
+#' @param xxx.
 #' @return user.
 #' @examples
 #' create_database("columbiaBike", port=5432)
@@ -184,13 +183,13 @@ valid_connection<-function(con = ".connection"){
 #' Test if table exists in DB.
 #' 
 #' 
-#' \code{createDatabase} will create a new postgresql database.
+
 #' @family postgresql functions
-#' @param dbname Give the database a name.
-#' @param port. You likely don't need to change this.
-#' @return user.
+#' @param xxx
+#' @param xxx
+#' @return xxx
 #' @examples
-#' create_database("columbiaBike", port=5432)
+#' xxx
 #' 
 table_exists<-function(tablename, con = ".connection"){  
 
