@@ -7,9 +7,14 @@ options(shiny.maxRequestSize = 1000*1024^2)
 shinyServer(function(input, output, session) {
   writeLines("Begin NYC Shiny server, about to connect to DB")
   
+  projectid<-reactive({
+    return(input$projectid)
+    })
+  
   connectdb<-reactive({
     
-    get_connection(dbname=input$dbname, 
+    print(projectid())
+    get_connection(dbname=projectid(), 
                    host=input$host, 
                    port=input$port,
                    password=input$password,
@@ -159,6 +164,12 @@ shinyServer(function(input, output, session) {
   
   output$contents<-renderUI({
     HTML(paste(process(), collapse = '<br/>'))
+    
+  })
+
+  output$renderdbname<-renderUI({
+    textInput("dbname", label = h3("Database name"), 
+              value = projectid())
     
   })
   

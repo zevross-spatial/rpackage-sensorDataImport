@@ -33,74 +33,7 @@ This may work now but it has not been tested in Macs or other operating systems.
 
 ### To Do (including tasks we assembled from in-person meeting)
 
-
-* Need to come up with a strategy for adding the metadata to the files. Originally for the biking project this was easy because we were using a consistent file naming strategy but the second hand smoke project does not have this same advantage.
-
-* ~~Filter ID is not being included in the tables right now. This is a tiny bit challenging in that GPS, for example, will not have a filter ID.~~
-
-* ~~"Completed upload of..." message is being printed twice.~~
-
-* Create processing script for PDR data
-
-* Find out about year in the PDR data (it doesn't seem to exist).
-
-* ~~Create PDR table in SQL database~~
-
-* Add argument to function that adds tables to SQL database to select tables to upload?
-
-* Important !!! I made the interface more flexible to allow multiple projects BUT!!! what happens if the user is not paying attention and uploads a file to the wrong DB? We either need the interface NOT to be flexible or potentially have a warning or pop-up asking the user to make sure they're using the right DB. Perhaps they need to type in the name of the project (kind of like a password).
-
-*  We will need to develop and approach to assigning "session" to all the files. This could potentially be in the SQL database or maybe when the data is pulled.
-
-* We need some kind of "events" field or check. For example, if humidity data is bad, but other data is good for a line how do we handle.
-
-* We need to add data quality checks on file upload.
-
-* Create active minute average function for the micropem following Ashlinn's code.
-
-* Test PostgreSQL functions on a Mac.
-
-* Make changes to backup function so that it will work on a Mac.
-
-* There are few items in Ashlin's Shiny app that we need to make sure to decide about including Study ID, TimeZone, HEPA, minutes for rolling mean.
-
-* Need to address time zones and review what happens with daylight savings. Do we need to add time zone to the PostgreSQL tables?
-
-* Ashlinn uses a blank2na function -- how are NAs being handled now?
-
-* Ashlinn uses the function `floor_date` from `lubridate` which might be better than what I'm using now, double check. Probably I can't use it since aggregation is being done in DB.
-
-* Should 1-hour and 24-hour averages involve computing the smaller time period average? So to get daily average we would compute minute and then hour averages first?
-
-* The `create_database()` and `add_tables_db()` functions are not flexible and only create the bike project DB and add tables based on the bike project SQL. May not be a priority to deal with this.
-
-* ~~Create a file name test function. Right now we test for whether the file name includes ABP, GPS etc right in the server and it's not flexible. Probably we want a function with test_filenames that will allow us to add rules.~~ There is a function to test prefixes -- right now it defaults to seeing if the prefix is one of "GPS", "ABP", "MAE", "MPM", "HXI"
-
-* ~~May need to rethink the database connection and allow the user to set the ports etc. This would probably mean taking the `get_connection()` out of the Shiny app and put it either in `runShiny()` or in it's own function.~~ I put the connection parameters in Shiny.
-* ~~Explicit disconnect from DB~~ I think this is not necessary.
-
-* ~~Better warning messages about DB upload problems. Use `RPostgreSQL::dbListTables(.connection$con)` to get list of tables and test.~~ I added tests for the connection (`valid_connection()`), I added a test to see if a table exists (`table_exists()`), a function to list tables (`list_tables()`) and a test if a filename was already uploaded (`already_uploaded()`).
-* ~~Make sure you have appropriately addressed the different micropem date formats:~~
-
-
-*  ~~Add file name to all the tables in the database~~
-
-* ~~Double check how the line in the microPEM (30-30 or a string) is being processed~~ if 30,30 is replaced by a string this is fine, the string is added in place of 30|30
-
-* ~~Double check memory usage, particularly when processing many files.~~ I'm not too worried about this so I'll leave for now.
-
-*  ~~Double check how the errors are being handled. Specifically are other files being processed after an error or does it stop there.~~ It processes until there is an error and then stops so that files in the queue after an error are not processed. I changed the error warning to give a list of properly uploaded files and those that were not processed.
-
-* ~~Add a check to see if the data has already been uploaded by checking file name or file name information~~ It now checks the database before uploading and reports an error if the file has been uploaded.
-
-* ~~Add a backup function~~
-
-* ~~Rather than create new tables with session etc potentially use PostgreSQL "views"~~ don't think this is necessary.
-
-* ~~Create a delete data function. We discussed adding this to Shiny but this may not be worth the effort, an R function may be enough.~~ We now have a delete function (`delete_data()`). This can be added to Shiny if desired but right now is just a function.
-
-
-* ~~In some data files there may be missing dates or times (microPEM has "Errored lines"). This may not be an issue in the database itself, but it will be an issue in the aggregation/summarization~~ we now delete errored lines.
+The to-do list is no set up as GitHub issues.
 
 
 ### If you're getting errors
