@@ -1,8 +1,10 @@
 
-setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
-#source("shiny_helper_functions.R", chdir=TRUE)
 library(sensorDataImport)
 library(shiny)
+
+setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
+#source("shiny_helper_functions.R", chdir=TRUE)
+
 
 options(shiny.maxRequestSize = 1000*1024^2)
 

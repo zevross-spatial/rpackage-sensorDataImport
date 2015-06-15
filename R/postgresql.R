@@ -14,7 +14,7 @@
 #' @return user.
 #' @examples
 #' create_database("columbiaBike", port=5432)
-#' 
+#' @export
 create_database<-function(dbname, port=5432, user="postgres"){  
   
   #TODO, might want a test to see if DB exists
@@ -66,7 +66,7 @@ add_tables_db<-function(dbname, port=5432, user="postgres"){
 #' @return user.
 #' @examples
 #' backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
- 
+#' @export
 backup_database<-function(outpath, outnameprefix, con=".connection", custom_compress=TRUE){  
   
   
@@ -159,6 +159,7 @@ get_connection<-function(dbname,
 #' @return user.
 #' @examples
 #' create_database("columbiaBike", port=5432)
+#' @export
 #' 
 valid_connection<-function(con = ".connection"){  
   
@@ -189,7 +190,7 @@ valid_connection<-function(con = ".connection"){
 #' @param xxx
 #' @return xxx
 #' @examples
-#' xxx
+#' @export
 #' 
 table_exists<-function(tablename, con = ".connection"){  
 
@@ -220,6 +221,7 @@ table_exists<-function(tablename, con = ".connection"){
 #' @return user.
 #' @examples
 #' create_database("columbiaBike", port=5432)
+#' @export
 #' 
 list_tables<-function(con = ".connection"){  
   
@@ -260,6 +262,7 @@ list_tables<-function(con = ".connection"){
 #' @examples
 #' create_database("columbiaBike", port=5432)
 #' 
+#' @export
 get_column_names<-function(tablename, con=".connection"){
   
   valcon<-valid_connection(con)
@@ -296,6 +299,7 @@ get_column_names<-function(tablename, con=".connection"){
 #' @examples
 #' create_database("columbiaBike", port=5432)
 #' 
+#' @export
 column_exists<-function(tablename, column_names, con=".connection"){
 
   valcon<-valid_connection(con)
@@ -329,7 +333,7 @@ column_exists<-function(tablename, column_names, con=".connection"){
 #' @return a vector of column names
 #' @examples
 #' create_database("columbiaBike", port=5432)
-#' 
+#' @export
 column_types<-function(tablename, column_names, con=".connection"){
   
   valcon<-valid_connection(con)
