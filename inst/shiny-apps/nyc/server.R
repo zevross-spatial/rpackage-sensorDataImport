@@ -3,7 +3,6 @@ library(sensorDataImport)
 library(shiny)
 
 setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
-#source("shiny_helper_functions.R", chdir=TRUE)
 
 
 options(shiny.maxRequestSize = 1000*1024^2)
@@ -16,6 +15,7 @@ shinyServer(function(input, output, session) {
     })
   
   connectdb<-reactive({
+    writeLines(as.character(prefixes_ok("GPS")))
     
     print(projectid())
     get_connection(dbname=projectid(), 
@@ -31,14 +31,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-#   metainfo<-reactive({
-#     return(input$metadatainfilename)
-#   })
-  
-  #metainfilename<-input$metadatainfilename
-  
-  
-  
+
   process<-reactive({
     
     projectid <- input$projectid
