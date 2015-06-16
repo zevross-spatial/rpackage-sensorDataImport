@@ -18,7 +18,7 @@ process_gps<-function(filepath, filename, fileinfo,metainfilename){
 
     print("In GPS processing function")
     
-    data<-plotKML::readGPX(filepath)
+    data<-readGPX(filepath)
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
     names(data)<-c("longitude", "latitude", "elevation", "datetime")
     

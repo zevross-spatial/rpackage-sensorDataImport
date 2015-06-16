@@ -19,7 +19,7 @@ Imports:
   shiny,
   stringr,
   RPostgreSQL,
-  plotKML,
+  XML,
   stringr
 VignetteBuilder: knitr
 

@@ -25,7 +25,7 @@ shinyUI(fluidPage(
 #                 value = "columbiaBike"),
       uiOutput('renderdbname'),
       textInput("port", label = h3("Port"), 
-                value = "5433"),
+                value = "5432"),
       textInput("host", label = h3("Host"), 
                 value = "localhost"),
       textInput("password", label = h3("password"), 

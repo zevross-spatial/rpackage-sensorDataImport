@@ -137,7 +137,7 @@ get_connection<-function(dbname,
                          port=5432, 
                          user="postgres"){
   
-  #print("Connecting to database")
+
   # note the double arrow to make global
   .connection<<-try({dplyr::src_postgres(dbname=dbname, 
                                          host=host,

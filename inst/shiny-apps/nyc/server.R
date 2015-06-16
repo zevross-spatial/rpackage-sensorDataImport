@@ -15,9 +15,8 @@ shinyServer(function(input, output, session) {
     })
   
   connectdb<-reactive({
-    writeLines(as.character(prefixes_ok("GPS")))
+ 
     
-    print(projectid())
     get_connection(dbname=projectid(), 
                    host=input$host, 
                    port=input$port,
@@ -121,8 +120,6 @@ shinyServer(function(input, output, session) {
                          tablename=tolower(curfiletype),
                          data=data)}, silent=TRUE)
                        
-                       
-                       print(upload)
                        
                        upload_msg <- NULL
                        

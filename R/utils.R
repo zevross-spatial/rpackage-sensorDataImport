@@ -1,7 +1,5 @@
 #' @import dplyr
-#' @import plotKML
-
-
+#' @import XML
 
 #' @importFrom magrittr %<>%
 #' @export
@@ -217,7 +215,6 @@ generate_metadata<-function(fileinfo, n, filename, metainfilename){
   
   l<-length(fileinfo)
   fin<-data.frame(matrix(fileinfo, nrow=n, ncol=l, byrow=TRUE))
-  print(head(fin))
   if(l==4) names(fin)<-c("subjectid", "instrumentid", "sessionid", "projectid")
   if(l==5) names(fin)<-c("subjectid", "instrumentid", "sessionid", "filterid", "projectid")
   
@@ -272,6 +269,171 @@ collapseHeader<-function(dat, width=NA){
   dat
 }
 
+
+
+# *****************************************************************************
+# GPS
+# *****************************************************************************
+
+#' Read GPX files [http://www.topografix.com/gpx.asp] and convert the data to tables;
+#' this function was created by Tomislav Hengl with contributions from Dylan Beaudette
+#' and Pierre Roudier
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+
+
+readGPX <- function (gpx.file, metadata = TRUE, bounds = TRUE, waypoints = TRUE, 
+          tracks = TRUE, routes = TRUE) 
+{
+  options(warn = -1)
+  if (metadata == TRUE) {
+    metadata <- readGPXelement(gpx.file, "name")
+  }
+  if (bounds == TRUE) {
+    bounds <- readGPXelement(gpx.file, "bounds")
+  }
+  if (waypoints == TRUE) {
+    waypoints <- readGPXelement(gpx.file, "wpt")
+  }
+  if (tracks == TRUE) {
+    tracks <- readGPXelement(gpx.file, "trk")
+  }
+  if (routes == TRUE) {
+    routes <- readGPXelement(gpx.file, "rte")
+  }
+  gpx <- list(metadata = metadata, bounds = bounds, waypoints = waypoints, 
+              tracks = tracks, routes = routes)
+  return(gpx)
+}
+
+
+
+
+# *****************************************************************************
+# GPS
+# *****************************************************************************
+
+#' Read GPX files [http://www.topografix.com/gpx.asp] and convert the data to tables;
+#' this function was created by Tomislav Hengl with contributions from Dylan Beaudette
+#' and Pierre Roudier
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+
+
+
+readGPXelement<-function (gpx.file, element) 
+{
+  ret <- xmlTreeParse(gpx.file, useInternalNodes = TRUE)
+  top <- xmlRoot(ret)
+  if (any(grep(element, names(top)))) {
+    if (element == "trk") {
+      ret <- NULL
+      nu <- which(names(top) %in% element)
+      for (c in seq_along(nu)) {
+        lst <- which(names(top[[nu[c]]]) %in% "trkseg")
+        nm <- names(top[[nu[c]]][[lst[1]]][[1]])
+        ret[[c]] <- list(NULL)
+        for (i in seq_along(lst)) {
+          trkpt <- top[[nu[c]]][[lst[i]]]
+          ret[[c]][[i]] <- data.frame(NULL)
+          lon <- as.numeric(xmlSApply(trkpt, xmlGetAttr, 
+                                      "lon"))
+          lat <- as.numeric(xmlSApply(trkpt, xmlGetAttr, 
+                                      "lat"))
+          ret[[c]][[i]][1:length(lon), "lon"] <- lon
+          ret[[c]][[i]][1:length(lat), "lat"] <- lat
+          if (!nm[[1]] == "NULL") {
+            for (j in 1:length(nm)) {
+              xm <- as.character(sapply(sapply(xmlChildren(trkpt), 
+                                               function(x) x[[nm[[j]]]]), xmlValue))
+              ret[[c]][[i]][1:length(xm), nm[[j]]] <- xm
+            }
+          }
+        }
+        names(ret[[c]]) <- xmlValue(top[[nu[c]]][["name"]])
+      }
+    }
+    if (element == "wpt") {
+      ret <- data.frame(NULL)
+      nu <- which(names(top) %in% element)
+      nm <- names(top[[nu[1]]])
+      for (i in seq_along(nu)) {
+        ret[i, "lon"] <- as.numeric(xmlGetAttr(top[[nu[i]]], 
+                                               "lon"))
+        ret[i, "lat"] <- as.numeric(xmlGetAttr(top[[nu[i]]], 
+                                               "lat"))
+        if (!nm[[1]] == "NULL") {
+          for (j in 1:length(nm)) {
+            ret[i, nm[[j]]] <- xmlValue(xmlChildren(top[[nu[i]]])[[nm[[j]]]])
+          }
+        }
+      }
+    }
+    if (element == "rte") {
+      ret <- NULL
+      nu <- which(names(top) %in% element)
+      for (c in seq_along(nu)) {
+        ret[[c]] <- data.frame(NULL)
+        lst <- which(names(top[[nu[c]]]) %in% "rtept")
+        nm <- names(top[[nu[c]]][[lst[1]]])
+        for (i in seq_along(lst)) {
+          rtept <- top[[nu[c]]][[lst[i]]]
+          ret[[c]][i, "lon"] <- as.numeric(xmlGetAttr(rtept, 
+                                                      "lon"))
+          ret[[c]][i, "lat"] <- as.numeric(xmlGetAttr(rtept, 
+                                                      "lat"))
+          if (!nm[[1]] == "NULL") {
+            for (j in c("name", "cmt", "desc", "sym", 
+                        "type")) {
+              try(ret[[c]][i, j] <- xmlValue(rtept[[j]]), 
+                  silent = TRUE)
+            }
+          }
+        }
+        names(ret)[c] <- xmlValue(top[[nu[c]]][["name"]])
+      }
+    }
+    if (element == "bounds") {
+      nu <- which(names(top) %in% element)
+      ret <- matrix(rep(NA, 4), nrow = 2, dimnames = list(c("lat", 
+                                                            "lon"), c("min", "max")))
+      ret[1, 1] <- as.numeric(xmlGetAttr(top[[nu[1]]], 
+                                         "minlon"))
+      ret[1, 2] <- as.numeric(xmlGetAttr(top[[nu[1]]], 
+                                         "maxlon"))
+      ret[2, 1] <- as.numeric(xmlGetAttr(top[[nu[1]]], 
+                                         "minlat"))
+      ret[2, 2] <- as.numeric(xmlGetAttr(top[[nu[1]]], 
+                                         "maxlat"))
+    }
+    if (element == "name") {
+      lst <- c("name", "desc", "author", "email", "url", 
+               "urlname", "time")
+      nu <- which(names(top) %in% lst)
+      if (!nu[[1]] == "NULL") {
+        ret <- data.frame(NULL)
+        for (i in seq_along(lst)) {
+          try(ret[1, lst[i]] <- xmlValue(top[[nu[[i]]]]), 
+              silent = TRUE)
+        }
+      }
+    }
+  }
+  else {
+    ret <- NULL
+  }
+  return(ret)
+}
 
 
 

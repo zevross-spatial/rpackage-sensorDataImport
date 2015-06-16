@@ -9,6 +9,8 @@ devtools::install_github("zross/sensorDataImport")
 
 This may work now but it has not been tested in Macs or other operating systems.
 
+There are a few sample files in the package path extdata. To find where the package is installed use `.libPaths()` and browse to the first path.
+
 
 ### General structure
 
