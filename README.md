@@ -31,6 +31,10 @@ There are a few sample files in the package path extdata. To find where the pack
 * Note that each of the processing scripts makes use of a function called `repeatFileInfo()`. What this function does is takes the split file name ("fileinfo") as input and simply repeats this over and over. So if you have a file called GPS_123 then it creates a column where "GPS" is repeated over and over and 123 is repeated over and over. This way the table has the metadata extracted from the file name.
 * The server then tries to upload the data with the function `upload_postgres()` which is a very simple script with one function for uploading. Note that this APPENDS data -- the table needs to exist.
 
+### Filename rules
+
+Elements are separated by underscores. Needs to have GPS, ABP, MAE, MPM, HXI as the first three digits of the second element. Beyond this file name is split on underscores and must have 4 or 5 elements (subject, instrument, session, project) OR (subject, instrument, session, filter, project). With the exception of the requirement that you have a the three letter instrument the others can be anything.
+
 
 
 ### To Do (including tasks we assembled from in-person meeting)
@@ -79,3 +83,9 @@ library(dplyr)
 load_all()
 get_connection("columbiaBike","spatial",  host="localhost",
     port=5433, user="postgres")
+    
+I include testing code in JUNK.R
+    
+    
+    
+    
