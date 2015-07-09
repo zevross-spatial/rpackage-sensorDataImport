@@ -1,5 +1,6 @@
 #' @import dplyr
 #' @import XML
+#' @import data.table
 
 #' @importFrom magrittr %<>%
 #' @export
