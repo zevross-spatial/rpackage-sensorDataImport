@@ -13,7 +13,7 @@
 cleaning_vars<-function(tablename){
   
 switch(tablename,
-  "abp" = c("abc", "def"),
+  "abp" = c(),
   "gps" = c(),
   "hxi" = c("instrumentid"),
   "mae" = c(),

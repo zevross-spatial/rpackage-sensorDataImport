@@ -1,12 +1,23 @@
 #' @import dplyr
 #' @import XML
-#' @import data.table
 
 #' @importFrom magrittr %<>%
 #' @export
 NULL
 
+#' @importFrom data.table foverlaps
+#' @export
+NULL
 
+
+#' @importFrom data.table setDT
+#' @export
+NULL
+
+
+#' @importFrom data.table :=
+#' @export
+NULL
 
 # *****************************************************************************
 # Test file prefix -----

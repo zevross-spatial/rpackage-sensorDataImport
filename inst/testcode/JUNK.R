@@ -42,3 +42,65 @@ process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
   
   
 }
+
+
+
+##############################################
+
+x<-aggregate_data(dat, 
+                  aggregation_unit="2 hours",
+                  grouping_vars = c("subjectid", "sessionid"),
+                  summarize_vars=c("cadence", "breathing_rate"))
+
+
+get_sensor_data <- 
+
+do_aggregate = FALSE,
+clean_first = TRUE,
+aggregation_unit="15 min",
+vars = "datetime",
+summarize_vars = NULL, 
+grouping_vars = c("subjectid", "sessionid")
+                            
+                            
+                            
+res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="all") 
+res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))  
+
+res<-get_sensor_data("gps")
+res<-get_sensor_data("hxi", 
+                   do_aggregate=TRUE, 
+                   xtravars= NULL,
+                   aggregation_unit="10 min",
+                   grouping_vars = c( "subjectid", "sessionid"),
+                   summarize_vars=c("cadence", "breathing_rate"))
+
+
+res<-get_sensor_data("gps",
+                     do_aggregate=TRUE, 
+                     xtravars= NULL,
+                     aggregation_unit="complete",
+                     grouping_vars = c( "subjectid", "sessionid"),
+                     summarize_vars=c("latitude", "longitude"))
+
+
+
+
+# gives error, check xtravars
+res<-get_sensor_data("hxi", xtravars=c("datetime", "asdfjasf")) #gives error
+
+# gives error check grouping vars
+res<-get_sensor_data("hxi", 
+                     do_aggregate=TRUE, 
+                     xtravars= NULL,
+                     aggregation_unit="2 hours",
+                     grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
+                     summarize_vars=c("cadence", "breathing_rate"))
+
+
+
+
+
+
+
+                            

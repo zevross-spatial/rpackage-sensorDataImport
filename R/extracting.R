@@ -24,7 +24,7 @@ agg_unit_ok <- function(aggregation_unit){
   
   if(tolower(aggregation_unit) == "complete") return(TRUE)
   
-  #aggregation_unit<-"5  min"
+  #aggregation_unit<-"2 hours"
   vals <- strsplit(aggregation_unit, "\\W+")[[1]]
   
   #if there is a trailing s remove it so we have consistency
@@ -55,59 +55,114 @@ agg_unit_ok <- function(aggregation_unit){
 #' \code{createDatabase} will create a new postgresql database.
 #' @family postgresql functions
 #' @param dbname Give the database a name.
-#' @param port. You likely don't need to change this.
+#' @param vars. list variables for output or "all" for all variables. See details
 #' @return user.
 #' @examples
-#' get_sensor_data(tablename="hxi", 
-#'                aggregate = TRUE,
-#'                clean_first = TRUE,
-#'                vars = NULL,
-#'                aggregation_unit="hour",
-#'                grouping_vars = c("subjectid", "sessionid"),
-#'                summarize_vars=c("cadence", "breathing_rate"))
+#' res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="datetime") 
+#' res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))  
 #' 
+#' res<-get_sensor_data("gps")
+#' res<-get_sensor_data(tablename= "hxi", 
+#'                      do_aggregate=TRUE, 
+#'                      xtravars= NULL,
+#'                       aggregation_unit="2 hours",
+#'                      grouping_vars = c(subjectid", "sessionid"),
+#'                      summarize_vars=c("cadence", "breathing_rate"))
 #' 
+#' # this will give you average lat, long (centroid) of each subject/session
+#' res<-get_sensor_data("gps",
+#'                      do_aggregate=TRUE, 
+#'                      xtravars= NULL,
+#'                      aggregation_unit="complete",
+#'                      grouping_vars = c( "subjectid", "sessionid"),
+#'                      summarize_vars=c("latitude", "longitude"))
 
+#' # gives error, check xtravars
+#' res<-get_sensor_data("hxi", xtravars=c("datetime", "asdfjasf")) #gives error
+#' 
+#' # gives error check grouping vars
+#' res<-get_sensor_data("hxi", 
+#'                      do_aggregate=TRUE, 
+#'                      xtravars= NULL,
+#'                      aggregation_unit="2 hours",
+#'                      grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
+#'                      summarize_vars=c("cadence", "breathing_rate"))
 get_sensor_data <- function(tablename, 
                             do_aggregate = FALSE,
                             clean_first = TRUE,
                             aggregation_unit="15 min",
-                            vars = "datetime",
+                            xtravars = "all",
                             summarize_vars = NULL, 
-                            grouping_vars = c("subjectid", "sessionid")
+                            grouping_vars = c("datetime", "subjectid", "sessionid")
                             ){
   
-  
+  vars_to_get<-NULL
+  clean_vars<-NULL
   valcon<-valid_connection()
   tableexists<-table_exists(tablename)
   con<-.connection$con
+  possiblevars<-get_column_names(tablename)$column_name
   
-  if(!valcon || !tableexists) stop(paste("Either you don't have a valid database connection or the table does not exist"))
-
+  if(!valcon || !tableexists) stop(paste("Either you don't have a valid database connection or the table does not exist"), call.=FALSE)
+  #if(do_aggregate && !"datetime"%in%grouping_vars) stop("You need the datetime field to aggregate")
+  if(!agg_unit_ok(aggregation_unit)) stop("Your aggregation unit is invalid", call.=FALSE)
+  if(!is.null(xtravars) & do_aggregate) stop("It looks like you want to aggregate. You should have xtravars=NULL", call.=FALSE)
+  if(!is.null(xtravars) && all(tolower(xtravars)!="all") && !all(xtravars%in%possiblevars)){
+    stop(paste("One of your extra variables is not in the table. Possible vars are", 
+               paste(possiblevars, collapse=",")))
+  }
+  
+  if(do_aggregate && (is.null(grouping_vars) | !all(grouping_vars%in%possiblevars))){
+    stop(paste("You have a problem with your grouping variables. Possible vars are", 
+               paste(possiblevars, collapse=",")), call.=FALSE)
+  }
+  
+  if(do_aggregate && (is.null(summarize_vars) | !all(summarize_vars%in%possiblevars))){
+    stop(paste("You have a problem with your summarize variables. Possible vars are", 
+               paste(possiblevars, collapse=",")), call.=FALSE)
+  }
   
   
-  if(do_aggregate && !"datetime"%in%names(dat)) stop("You need the datetime field to aggregate")
-  if(!agg_unit_ok(aggregation_unit)) stop("Your aggregation unit is invalid")
-
   
   
   thetable<-tbl(.connection, tablename)
   
-  # variables we need
-  vars_to_get <- unique(c(vars, grouping_vars, summarize_vars))
+  # if user has "all" for vars and is not aggregating get all
+  # variables
   
-  # if you're going to clean you'll probably need some extra variables
-  if(clean_first){
-    vars_to_get <- unique(c(vars_to_get, cleaning_vars(tablename)))
+  if(!do_aggregate && tolower(xtravars) == "all" ){
+    dat<-collect(thetable)
+    
+    # otherwise start with the user selected variables
+    # if they're aggregating then include the grouping and summarizing vars
+    # if they're cleaning then add the vars needed for clearning
+  }else{
+    vars_to_get <- xtravars
+    if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
+    
+    if(clean_first){
+      clean_vars <- cleaning_vars(tablename)
+      vars_to_get <- unique(c(vars_to_get, clean_vars))
+    }
+    
+    
+    dat <- collect(select_(thetable, .dots=vars_to_get))
   }
   
-  dat <- collect(select_(thetable, .dots=vars_to_get))
   
+  # if we need to clean, we will clean and then drop the variables
+  # that are required for cleaning
   
-  # do the cleaning if desired
   if(clean_first){
     
     dat <- clean_data(tablename, dat)
+    
+    # remove the fields used for cleaning
+    if(length(clean_vars)>0){
+      vars_to_get <- vars_to_get[!vars_to_get%in%clean_vars]
+      dat <- select_(dat, .dots = vars_to_get)
+    }
+
   }
  
   
@@ -119,7 +174,7 @@ get_sensor_data <- function(tablename,
                    grouping_vars = grouping_vars)
   }
   
-  
+  dat
   
    
 }
@@ -135,12 +190,8 @@ get_sensor_data <- function(tablename,
 #' @param dbname Give the database a name.
 #' @param aggregation unit. examples include "5 min", "2 hour", 
 #' @return user.
-#' @examples
-#' aggregate_data(tablename="hxi", 
-#'                aggregation_unit="1 hour",
-#'                grouping_vars = c("subjectid", "sessionid"),
-#'                summarize_vars=c("cadence", "breathing_rate"))
-#' 
+#' @examples xxx
+
 
 
 
@@ -159,7 +210,7 @@ aggregate_data <- function(dat,
     reform<-sapply(seq_along(vartypes), 
                    function(x) paste(names(vartypes)[x], vartypes[x], sep=":"))
     
-    stop("Not all the variables are numeric - ", paste(reform, collapse=" | "))  
+    stop("Not all the variables are numeric - ", paste(reform, collapse=" | "),  call.=FALSE)  
     
   }
   
@@ -180,12 +231,12 @@ aggregate_data <- function(dat,
     grp<-paste0("group_by(dat, ", grpvars, ")")
     
     # this will be output format
-    template<-"XX_avg = mean(XX), XX_sd = sd(XX)"
+    template<-"XX_avg = mean(XX), XX_sd = sd(XX), XX_cnt = sum(!is.na(XX))"
     
     # here we're assembling the summarize statement for dplyr
     summarizevars<-sapply(summarize_vars, function(x) gsub("XX", x, template))
     summarizevars<-paste(summarizevars, collapse=", ")
-    summarizevars<-paste0("summarize(", summarizevars, ", ", "interval_cnt = n())")
+    summarizevars<-paste0("summarize(", summarizevars, ", tot_cnt = n())")
     
     # combine the dplyr group and summarize code
     for_dplyr<-paste(grp, summarizevars, sep="%>%")
@@ -228,7 +279,7 @@ add_intervals<-function(dat, aggregation_unit){
   setDT(dat)
   
   
-  beg <- as.POSIXct("2013-01-01 00:00:00")
+  beg <- as.POSIXct("2007-01-01 00:00:00")
   end <- as.POSIXct(Sys.time())
   
   # allow for more than one space in agg unit

@@ -20,7 +20,8 @@ Imports:
   stringr,
   RPostgreSQL,
   XML,
-  stringr
+  stringr,
+  data.table
 VignetteBuilder: knitr
 
 
