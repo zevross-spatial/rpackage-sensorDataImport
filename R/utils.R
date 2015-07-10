@@ -411,6 +411,61 @@ readGPX <- function (gpx.file, metadata = TRUE, bounds = TRUE, waypoints = TRUE,
 
 
 
+
+
+# *****************************************************************************
+# GPS
+# *****************************************************************************
+
+#' Read GPX files [http://www.topografix.com/gpx.asp] and convert the data to tables;
+#' this function was created by Tomislav Hengl with contributions from Dylan Beaudette
+#' and Pierre Roudier
+#' 
+#' @param sdf
+#' @return user.
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
+#' @export
+
+
+find_gaps_assign_session <- function (datetime) {
+  #datetime<-data$datetime
+  datetime<-as.POSIXct(datetime)
+  diff<-datetime[-length(datetime)]-datetime[-1]
+  
+  # which are long gaps (more than 12 hours)
+  to<-c(which(as.numeric(diff)<(-12*60*60)), length(datetime))
+  from<- c(1, to[-length(to)]+1)
+  #to<-c(to, nrow(data))
+  
+  dat<-data.frame(from=from, to=to)
+  dat$length<-(dat$to-dat$from)+1
+  dat$session_time<-datetime[dat$to]-datetime[dat$from]
+  
+  dat$tooshort <- dat$session_time < 10*60
+  
+  dat$session_id <- "Non session"
+  
+  
+  dat$session_id[!dat$tooshort]<-1:sum(!dat$tooshort)
+  
+  session<-rep(dat$session_id, times=dat$length)
+  
+  if(length(session)!=length(datetime)) stop("There is a problem with the gap/assign session")
+  
+  return(session)
+  
+}
+
+
+
+
+
+
+
+
+
 # *****************************************************************************
 # GPS
 # *****************************************************************************

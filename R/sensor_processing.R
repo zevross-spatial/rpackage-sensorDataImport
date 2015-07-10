@@ -51,7 +51,7 @@ process_gps<-function(filepath, filename, fileinfo,metainfilename){
 #' add(10, 1)
 #' @export
 process_abp<-function(filepath, filename, fileinfo, metainfilename){
-  
+  #filepath<-X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/ABPM data/BIKE0001_ABP01_S01_150627.abp"
     #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_ABP01_S01_150306.abp"
     rl<-readLines(file(filepath,encoding="UTF-16LE"), warn=FALSE)
     endOfIntro<-max(grep("Unknown line", rl))+1
@@ -304,7 +304,7 @@ process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
 }
 
 # *****************************************************************************
-# Process GPS ---------------------------
+# Process pdr ---------------------------
 # *****************************************************************************
 
 #' Script for processing the PDR data
