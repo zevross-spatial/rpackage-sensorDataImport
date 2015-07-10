@@ -51,7 +51,8 @@ shinyServer(function(input, output, session) {
 
 
       
-        #extract characters 1-3 from the second element of each file name
+      # extract characters 1-3 from the second element of each file name
+      # TODO: this will need to get moved to project specific functions
       filetypes <- substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
       
       isfilename_ok <- filename_ok(filenames, projectid)

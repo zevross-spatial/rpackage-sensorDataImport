@@ -198,6 +198,7 @@ initiate_processing<-function(filepath, filename, projectid, metainfilename){
   # this is metadata and each element of fileinfo will become a column
   # where each row has the same value.
   
+  
   if(projectid=="columbiaBike") fileinfo<-unlist(stringr::str_split(filename, "_"))
   if(projectid!="columbiaBike") fileinfo<-c("abc", "def", "ghi", "jkl")
   fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
@@ -305,6 +306,9 @@ generate_metadata<-function(fileinfo, n, filename, metainfilename){
   
   writeLines(paste("Metadata in filename: ", metainfilename))
   filetype<-substring(fileinfo[2],1,3)
+  
+  # the sessionid should not include the "S"
+  fileinfo[3]<-gsub("S", "", fileinfo[3])
   
   l<-length(fileinfo)
   fin<-data.frame(matrix(fileinfo, nrow=n, ncol=l, byrow=TRUE))
