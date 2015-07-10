@@ -20,13 +20,34 @@ user.
 \code{createDatabase} will create a new postgresql database.
 }
 \examples{
-get_sensor_data(tablename="hxi",
-               do_aggregate = TRUE,
-               clean_first = TRUE,
-               xtravars = NULL,
-               aggregation_unit="1 hour",
-               grouping_vars = c("datetime", "subjectid", "sessionid"),
-               summarize_vars=c("cadence", "breathing_rate"))
+res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="datetime")
+res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))
+
+res<-get_sensor_data("gps")
+res<-get_sensor_data(tablename= "hxi",
+                     do_aggregate=TRUE,
+                     xtravars= NULL,
+                      aggregation_unit="2 hours",
+                     grouping_vars = c(subjectid", "sessionid"),
+                     summarize_vars=c("cadence", "breathing_rate"))
+
+# this will give you average lat, long (centroid) of each subject/session
+res<-get_sensor_data("gps",
+                     do_aggregate=TRUE,
+                     xtravars= NULL,
+                     aggregation_unit="complete",
+                     grouping_vars = c( "subjectid", "sessionid"),
+                     summarize_vars=c("latitude", "longitude"))
+# gives error, check xtravars
+res<-get_sensor_data("hxi", xtravars=c("datetime", "asdfjasf")) #gives error
+
+# gives error check grouping vars
+res<-get_sensor_data("hxi",
+                     do_aggregate=TRUE,
+                     xtravars= NULL,
+                     aggregation_unit="2 hours",
+                     grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
+                     summarize_vars=c("cadence", "breathing_rate"))
 }
 \seealso{
 Other postgresql functions: \code{\link{add_tables_db}};

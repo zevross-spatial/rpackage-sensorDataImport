@@ -47,17 +47,21 @@ shinyServer(function(input, output, session) {
       paths     <- input$file1$datapath #temporary paths for the files
       filenames <- input$file1$name #names of files
       
-      metainfilename<-isolate(input$metadatainfilename)
+      metainfilename<-isolate(input$metadatainfilename) # not used now
 
 
       
         #extract characters 1-3 from the second element of each file name
-      filetypes<-substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
-      allOK<-prefixes_ok(filetypes)
+      filetypes <- substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
+      
+      isfilename_ok <- filename_ok(filenames, projectid)
+
       
       # VALIDATION: Do first three letters match our rules?
       validate(
-        need(allOK, "One of your datasets does not have the right prefix")
+        need(isfilename_ok[[1]], paste0("These filenames have problems: ", 
+                                       paste(isfilename_ok[[2]], collapse=", "), 
+                                       ". Nothing uploaded."))
       )
       
       

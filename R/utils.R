@@ -19,6 +19,84 @@ NULL
 #' @export
 NULL
 
+
+# *****************************************************************************
+# Test file prefix -----
+# *****************************************************************************
+
+#' Make sure all the user-selected files have the right prefix.
+#' 
+#' @param prefixes are the prefixes of files
+#' @param filenames the full list of filenames the user uploaded
+#' @param stage is the stage of processing ("processing", "uploading",
+#' "pre-screening" right now.)
+#' @return user.
+#' @examples
+#' prefixes_ok(c("GPS", "AB"))
+#' @export
+
+filename_ok<-function(filenames, projectid){
+
+
+  
+  bad_filenames <- switch(projectid,
+         "columbiaBike" = filename_ok_biking(filenames))
+  
+  # return T/F for if there is a problem, then list of problem
+  # filenames
+  return(list(is.null(bad_filenames), bad_filenames))
+  
+}
+
+
+
+# *****************************************************************************
+# Test file prefix -----
+# *****************************************************************************
+
+#' Make sure all the user-selected files have the right prefix.
+#' 
+#' @param prefixes are the prefixes of files
+#' @param filenames the full list of filenames the user uploaded
+#' @param stage is the stage of processing ("processing", "uploading",
+#' "pre-screening" right now.)
+#' @return user.
+#' @examples
+#' prefixes_ok(c("GPS", "AB"))
+#' @export
+
+filename_ok_biking<-function(filenames){
+  
+  #filenames<-c("BIKE0001_GPS01_S01_150306.gpx", "BIKE0001_ABP01_sdf_150306.gpx", "BIKE0001_ABP01_S01_150306.gpx")
+  
+  req_length <- 4
+  req_prefix <- c("GPS", "ABP", "MAE", "MPM", "HXI")
+  
+  filenames_split<-strsplit(filenames, "_")
+  
+  # test consistent file name length
+  l <- sapply(filenames_split, length)
+  bad_length <- which(l!=req_length)
+  
+  
+  # test prefix
+  prefix<-substring(sapply(filenames_split, "[[",2),1,3)
+  bad_prefix <- which(!prefix%in%req_prefix)
+
+
+  bad_tot <- unique(c(bad_length, bad_prefix))
+  if(length(bad_tot)==0) return(NULL)
+  
+
+  return(filenames[bad_tot])
+  
+  
+}
+
+
+
+
+
 # *****************************************************************************
 # Test file prefix -----
 # *****************************************************************************
@@ -35,9 +113,12 @@ NULL
 #' @export
 
 prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
-  #prefixes<-c("GPS", "BB")
+
+  
   tst<-prefixes%in%allowed
-  return(all(tst))
+  return(tst)
+  
+  
   
   
 }

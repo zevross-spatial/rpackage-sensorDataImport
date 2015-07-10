@@ -100,7 +100,27 @@ res<-get_sensor_data("hxi",
 
 
 
+## filenaming
+
+filenames<-c("BIKE0001_GPS01_S01_150306.gpx", "BIKE0001_ABP01_S01_150306.gpx")
+substring(sapply(stringr::str_split(filenames, "_"), "[[",2),1,3)
+
+filenames_split<-strsplit(filenames, "_")
+
+l<-sapply(filenames_split, length)
+prefix<-substring(sapply(filenames_split, "[[",2),1,3)
 
 
+#
+curpath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_GPS01_S01_150306.gpx"
+curfilename<- "BIKE0001_GPS01_S01_150306.gpx"
+projectid<-"columbiaBike"
+metainfilename<-FALSE
+
+
+initiate_processing(filepath  = curpath, 
+                    filename  = curfilename,
+                    projectid = projectid,
+                    metainfilename = metainfilename)
 
                             

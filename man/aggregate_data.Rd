@@ -19,10 +19,7 @@ user.
 \code{createDatabase} will create a new postgresql database.
 }
 \examples{
-aggregate_data(tablename="hxi",
-               aggregation_unit="1 hour",
-               grouping_vars = c("subjectid", "sessionid"),
-               summarize_vars=c("cadence", "breathing_rate"))
+xxx
 }
 \seealso{
 Other postgresql functions: \code{\link{add_tables_db}};
