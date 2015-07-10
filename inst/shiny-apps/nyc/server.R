@@ -12,7 +12,7 @@ shinyServer(function(input, output, session) {
   
   projectid<-reactive({
     return(input$projectid)
-    })
+    }) #end reactive projectid
   
   connectdb<-reactive({
  
@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
     }else{
       return("<span class='allgood'>Connected to DB</span>")
     }
-  })
+  }) # end reactive connectdb
   
   
 
@@ -148,7 +148,7 @@ shinyServer(function(input, output, session) {
       
     }#end else re: infile
     return(filenames)
-  }) # end reactive
+  }) # end reactive process file
   
   
   output$dbconnectinfo<-renderUI({

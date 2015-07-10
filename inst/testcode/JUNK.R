@@ -75,7 +75,7 @@ res<-get_sensor_data("hxi",
                    grouping_vars = c( "subjectid", "sessionid"),
                    summarize_vars=c("cadence", "breathing_rate"))
 
-
+# this will give you average lat, long (centroid) of each subject/session
 res<-get_sensor_data("gps",
                      do_aggregate=TRUE, 
                      xtravars= NULL,
