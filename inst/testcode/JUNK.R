@@ -68,7 +68,7 @@ res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="all")
 res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))  
 
 res<-get_sensor_data("gps")
-res<-get_sensor_data("hxi", 
+res<-get_sensor_data(tablename="hxi", 
                    do_aggregate=TRUE, 
                    xtravars= NULL,
                    aggregation_unit="10 min",
@@ -94,9 +94,101 @@ res<-get_sensor_data("hxi",
                      do_aggregate=TRUE, 
                      xtravars= NULL,
                      aggregation_unit="2 hours",
-                     grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
+                     grouping_vars = c("datetime", "subjectid"),
                      summarize_vars=c("cadence", "breathing_rate"))
 
+
+
+
+
+get_sensor_data <- function(tablename, 
+                            do_aggregate = FALSE,
+                            clean_first = TRUE,
+                            aggregation_unit="15 min",
+                            xtravars = "all",
+                            summarize_vars = NULL, 
+                            grouping_vars = c("datetime", "subjectid", "sessionid")
+){
+  
+  vars_to_get<-NULL
+  clean_vars<-NULL
+  valcon<-valid_connection()
+  tableexists<-table_exists(tablename)
+  con<-.connection$con
+  possiblevars<-get_column_names(tablename)$column_name
+  
+  if(!valcon || !tableexists) stop(paste("Either you don't have a valid database connection or the table does not exist"), call.=FALSE)
+  #if(do_aggregate && !"datetime"%in%grouping_vars) stop("You need the datetime field to aggregate")
+  if(!agg_unit_ok(aggregation_unit)) stop("Your aggregation unit is invalid", call.=FALSE)
+  if(!is.null(xtravars) & do_aggregate) stop("It looks like you want to aggregate. You should have xtravars=NULL", call.=FALSE)
+  if(!is.null(xtravars) && all(tolower(xtravars)!="all") && !all(xtravars%in%possiblevars)){
+    stop(paste("One of your extra variables is not in the table. Possible vars are", paste(possiblevars, collapse=",")))
+  }
+  
+  if(do_aggregate && (is.null(grouping_vars) | !all(grouping_vars%in%possiblevars))){
+    stop(paste("You have a problem with your grouping variables. Possible vars are", paste(possiblevars, collapse=",")), call.=FALSE)
+  }
+  
+  if(do_aggregate && (is.null(summarize_vars) | !all(summarize_vars%in%possiblevars))){
+    stop(paste("You have a problem with your summarize variables. Possible vars are", paste(possiblevars, collapse=",")), call.=FALSE)
+  }
+  
+  
+  
+  
+  thetable<-tbl(.connection, tablename)
+  
+  # if user has "all" for vars and is not aggregating get all
+  # variables
+  
+  if(!do_aggregate && tolower(xtravars) == "all" ){
+    dat<-collect(thetable)
+    
+    # otherwise start with the user selected variables
+    # if they're aggregating then include the grouping and summarizing vars
+    # if they're cleaning then add the vars needed for clearning
+  }else{
+    vars_to_get <- xtravars
+    if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
+    
+    if(clean_first){
+      clean_vars <- cleaning_vars(tablename)
+      vars_to_get <- unique(c(vars_to_get, clean_vars))
+    }
+    
+    
+    dat <- collect(select_(thetable, .dots=vars_to_get))
+  }
+  
+  
+  # if we need to clean, we will clean and then drop the variables
+  # that are required for cleaning
+  
+  if(clean_first){
+    
+    dat <- clean_data(tablename, dat)
+    
+    # remove the fields used for cleaning
+    if(length(clean_vars)>0){
+      vars_to_get <- vars_to_get[!vars_to_get%in%clean_vars]
+      dat <- select_(dat, .dots = vars_to_get)
+    }
+    
+  }
+  
+  
+  if(do_aggregate){
+    
+    dat <- aggregate_data(dat,
+                          aggregation_unit = aggregation_unit,
+                          summarize_vars = summarize_vars,
+                          grouping_vars = grouping_vars)
+  }
+  
+  dat
+  
+  
+}
 
 
 
@@ -479,3 +571,21 @@ upload_postgres<-function(tablename, data){
   writeLines(msg)
   
 }
+
+
+# *****************************************************************************
+#  GPS
+# *****************************************************************************
+filepath<-"X:/projects/columbia_bike/notes/issues_w_app/PrePilot_01/Hexoskin data/BIKE0001_HXI94_S01_150617.csv"
+filename<-"BIKE0001_HXI94_S01_150617.csv"
+
+
+fileinfo<-unlist(stringr::str_split(filename, "_"))
+fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
+fileinfo<-c(fileinfo, "columbiaBike")
+metainfilename<-TRUE
+
+
+
+dat<-process_hexoskin(filepath, filename, fileinfo, metainfilename)
+upload_postgres("hxi", dat)

@@ -2,22 +2,32 @@
 % Please edit documentation in R/extracting.R
 \name{get_sensor_data}
 \alias{get_sensor_data}
-\title{This function creates a new postgreSQL database .}
+\title{This function extracts data from the database.}
 \usage{
 get_sensor_data(tablename, do_aggregate = FALSE, clean_first = TRUE,
   aggregation_unit = "15 min", xtravars = "all", summarize_vars = NULL,
   grouping_vars = c("datetime", "subjectid", "sessionid"))
 }
 \arguments{
-\item{dbname}{Give the database a name.}
+\item{tablename}{What is the name of the table (as a string).}
 
-\item{vars.}{list variables for output or "all" for all variables. See details}
+\item{do_aggregate}{should the data be aggregated (TRUE/FALSE).}
+
+\item{clean_first}{should the data go through the table-specific cleaning procedure first.}
+
+\item{aggregation_unit}{what time unit should be used for aggregation. This should be a string with a number followed by min, hour, day. Plural is OK (e.g., 'days')}
+
+\item{xtravars}{what extra variables should be extracted when grabbing raw data. Should be NULL if aggregating! Note that this should be a vector of variable names or the word "all" to get all variables.}
+
+\item{summarize_vars}{What variables will be summarized. This should be a vector of variable names -- variables should be numeric.}
+
+\item{grouping_vars}{What variables will be used for aggregation (these are the keys)}
 }
 \value{
 user.
 }
 \description{
-\code{createDatabase} will create a new postgresql database.
+This function extracts data from the database.
 }
 \examples{
 res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="datetime")
@@ -28,7 +38,7 @@ res<-get_sensor_data(tablename= "hxi",
                      do_aggregate=TRUE,
                      xtravars= NULL,
                       aggregation_unit="2 hours",
-                     grouping_vars = c(subjectid", "sessionid"),
+                     grouping_vars = c("subjectid", "sessionid"),
                      summarize_vars=c("cadence", "breathing_rate"))
 
 # this will give you average lat, long (centroid) of each subject/session

@@ -18,6 +18,9 @@ process_gps<-function(filepath, filename, fileinfo,metainfilename){
 
     print("In GPS processing function")
     
+    #x<-data$tracks[[1]]
+    #names(x) # "Morning Ride"
+  
     data<-readGPX(filepath)
     data <- as.data.frame(data$tracks)  #  extract the relevant info from the list
     names(data)<-c("longitude", "latitude", "elevation", "datetime")

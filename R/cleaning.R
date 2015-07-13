@@ -41,6 +41,10 @@ switch(tablename,
 
 clean_data<-function(tablename, dat){
   
+  dat$sessionid <- trim(dat$sessionid)
+  dat <- filter(dat, sessionid != "Non session")
+
+  
   switch(tablename,
          "abp" = clean_abp(tablename, dat),
          "gps" = clean_gps(tablename, dat),
@@ -143,6 +147,33 @@ clean_mae<-function(tablename, dat){
   
   
   print("I'm cleaning MAE data")
+  
+  return(dat)
+  
+}
+
+
+
+# *****************************************************************************
+# Clean mae data---------------------------
+# *****************************************************************************
+
+#' A function that cleans MPM data
+#' @family xxx
+#' @param tablename the table to be cleaned
+#' @param data to be cleaned
+#' @return cleaned data
+#' @examples
+#' cleaning_mae("mae", dat)
+#' @export
+
+clean_mpm<-function(tablename, dat){
+  
+  
+  print("I'm cleaning MPM data")
+  
+  
+  
   
   return(dat)
   
