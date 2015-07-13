@@ -84,16 +84,17 @@ shinyServer(function(input, output, session) {
                        already<-try({already_uploaded(tablename = tolower(curfiletype),
                                                       filename  = curfilename )}, silent=TRUE)
                        
+                       print(already)
                        already_msg<-NULL
                        
-                       if(is.error(already)) {
+                       if(already) {
                          
                          already_msg = error_report(currentfile_num=i, 
                                                     filenames=filenames,
                                                     stage="filename screening")     
                        }
                        
-                       validate(need(!is.error(already), already_msg))
+                       validate(need(!already, already_msg))
                        #*******************************************************
                        # Data processing
                        #*******************************************************

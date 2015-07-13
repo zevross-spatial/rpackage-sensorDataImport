@@ -251,33 +251,95 @@ process_micropem<-function(filepath, filename, fileinfo,metainfilename){
 #' @export
 
 process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
-
+  
+  
+  headinfo<-read.csv(filepath,as.is=T, nrow=30, header=FALSE)
+  
+  # this is the old format
+  if(headinfo$V1[1] == "AethLabs"){
     
-    headinfo<-read.csv(filepath,as.is=T, nrow=5, header=FALSE)
     manufacturer<-headinfo[1,1]
-    deviceid<-headinfo[2,1]
-    softwareV<-headinfo[3,1]
-    flowrate<-headinfo[4,1]
-    freq<-headinfo[5,1]
     
-    colNames<-names(read.csv(filepath, as.is=T, nrow=1, skip=7))
-    #BC should be last column
-    colNames<-tolower(colNames[1:which(colNames=="BC")])
-    data<-read.csv(filepath, as.is=T, skip=9, header=FALSE)
+    vals<-sapply(trim(strsplit(headinfo[2:5,1], "=")), "[[", 2)
     
-    data%<>%dplyr::select(1:length(colNames)) # don't comment
+    deviceid<-vals[1]
+    softwareV<-vals[2]
+    flowrate<-vals[3]
+    freq<-vals[4]
+    startdate    <- NA
+    starttime    <- NA
+    origdtform   <- NA
+    origtmform   <- NA
+    flowunit     <- NA
+    pcbtempunit  <- NA
+    batteryunit  <- NA
+    bcunit       <- NA
     
-    names(data)<-colNames
+    dateformat<- "%m/%d/%y"
+    toskip <- 7
+  }
+  
+  if(headinfo$V1[1] == "Sep = "){
+    
+    manufacturer <- headinfo[3,1]
+    
+    vals<-sapply(trim(strsplit(headinfo[4:15,1], "=")), "[[", 2)
+    
+    deviceid     <- vals[1]
+    softwareV    <- vals[2]
+    flowrate     <- vals[3]
+    freq         <- vals[4]
+    startdate    <- vals[5]
+    starttime    <- vals[6]
+    origdtform   <- vals[7]
+    origtmform   <- vals[8]
+    flowunit     <- vals[9]
+    pcbtempunit  <- vals[10]
+    batteryunit  <- vals[11]
+    bcunit       <- vals[12]
     
     
+    dateformat<-"%Y/%m/%d"
+    toskip <- 16
     
-    
-    data%<>%dplyr::mutate(time=addZero(time,8), date.yyyy.mm.dd.=paste(as.Date(date.yyyy.mm.dd.,"%m/%d/%y"), time))%>%
-      dplyr::select(-time)%>%
-      dplyr::rename(datetime=date.yyyy.mm.dd.)
-    
-    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
-    data<-cbind(data, metadata)
+  }
+  
+  
+  
+  colNames<-names(read.csv(filepath, as.is=T, nrow=1, skip=toskip))
+  #BC should be last column
+  colNames<-tolower(colNames[1:which(colNames=="BC")])
+  data<-read.csv(filepath, as.is=T, skip=toskip+2, header=FALSE)
+  
+  data%<>%dplyr::select(1:length(colNames)) # don't comment
+  
+  names(data)<-colNames
+  
+  names(data)[grep("date.yyyy.mm.dd.", names(data))]<-"date"
+  names(data)[names(data)=="temp"]<-"pcbtemp"
+  names(data)[names(data)=="pcb.temp"]<-"pcbtemp"
+  
+  data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,dateformat), time))%>%
+    dplyr::select(-time)%>%
+    dplyr::rename(datetime=date)
+  
+  
+  data$hdr_deviceid <-deviceid
+  data$hdr_appv     <- softwareV
+  data$hdr_flowrate <- flowrate
+  data$hdr_timebase <- freq
+  data$hdr_startdate<-startdate
+  data$hdr_starttime <- starttime
+  data$hdr_origdateform<- origdtform
+  data$hdr_origtimeform<-origtmform
+  data$hdr_flowunit<-flowunit
+  data$hdr_pcbtempunit<-pcbtempunit
+  data$hdr_batteryunit <- batteryunit
+  data$hdr_bcunit<-bcunit
+  
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  data<-cbind(data, metadata)
   
     return(data)
 

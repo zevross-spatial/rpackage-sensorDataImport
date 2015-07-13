@@ -47,10 +47,22 @@ create table mae(
 	sen numeric(8,0),
 	atn numeric(10,5),
 	flow numeric(4,0),
-	temp numeric(4,0),
+	pcbtemp numeric(4,0),
 	status numeric(2,0),
 	battery numeric(3,0),
 	bc numeric(10,0),
+	hdr_deviceid varchar(50),
+  hdr_appv varchar(50),
+  hdr_flowrate varchar(50),
+  hdr_timebase varchar(10),
+  hdr_startdate varchar(20),
+  hdr_starttime varchar(10),
+  hdr_origdateform varchar(20),
+  hdr_origtimeform varchar(20),
+  hdr_flowunit varchar(20),
+  hdr_pcbtempunit varchar(20),
+  hdr_batteryunit varchar(20),
+  hdr_bcunit varchar(20),
 	subjectID character(8),
 	instrumentID character(6),
 	sessionID character(20),
@@ -59,6 +71,8 @@ projectID varchar(30),
 	uniquekey serial not null PRIMARY KEY,
     dateadded timestamp default current_timestamp
 );
+
+
 
 -- activity levels, particulate matter
 

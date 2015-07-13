@@ -342,4 +342,140 @@ process_abp<-function(filepath, filename, fileinfo, metainfilename){
 }
 
 "X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/ABPM data/BIKE0001_ABP_S01_150626.csv"
-                            
+
+
+
+# *****************************************************************************
+#  alreadyuploaded
+# *****************************************************************************
+
+
+already_uploaded("mpm", "BIKE0002_MPM01_S99_BK0001_150306.csv")
+
+# *****************************************************************************
+#  alreadyuploaded
+# *****************************************************************************
+
+# old version 
+# filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_MAE01_S01_150306.csv"
+# filename <- "BIKE0001_MAE01_S01_150306.csv"
+
+
+# new version
+#filepath<-"X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/MicroAeth Data/LTest1 - 104/AE51-S0-104-0903/BIKE0001_MAE04_S04_150623.csv"
+#filename<-"BIKE0001_MAE04_S04_150623.csv"
+#filepath<-"X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/MicroAeth Data/Ltest1 - 636/AE51-S4-636_20150622-165100.csv"
+
+
+fileinfo<-unlist(stringr::str_split(filename, "_"))
+fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
+fileinfo<-c(fileinfo, "columbiaBike")
+metainfilename<-TRUE
+
+
+process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
+  
+  headinfo<-read.csv(filepath,as.is=T, nrow=30, header=FALSE)
+  
+  # this is the old format
+  if(headinfo$V1[1] == "AethLabs"){
+    
+    manufacturer<-headinfo[1,1]
+    
+    vals<-sapply(trim(strsplit(headinfo[2:5,1], "=")), "[[", 2)
+    
+    deviceid<-vals[1]
+    softwareV<-vals[2]
+    flowrate<-vals[3]
+    freq<-vals[4]
+    startdate    <- NA
+    starttime    <- NA
+    origdtform   <- NA
+    origtmform   <- NA
+    flowunit     <- NA
+    pcbtempunit  <- NA
+    batteryunit  <- NA
+    bcunit       <- NA
+    
+    dateformat<- "%m/%d/%y"
+    toskip <- 7
+  }
+  
+  if(headinfo$V1[1] == "Sep = "){
+    
+    manufacturer <- headinfo[3,1]
+    
+    vals<-sapply(trim(strsplit(headinfo[4:15,1], "=")), "[[", 2)
+    
+    deviceid     <- vals[1]
+    softwareV    <- vals[2]
+    flowrate     <- vals[3]
+    freq         <- vals[4]
+    startdate    <- vals[5]
+    starttime    <- vals[6]
+    origdtform   <- vals[7]
+    origtmform   <- vals[8]
+    flowunit     <- vals[9]
+    pcbtempunit  <- vals[10]
+    batteryunit  <- vals[11]
+    bcunit       <- vals[12]
+    
+    
+    dateformat<-"%Y/%m/%d"
+    toskip <- 16
+    
+  }
+  
+
+  
+  colNames<-names(read.csv(filepath, as.is=T, nrow=1, skip=toskip))
+  #BC should be last column
+  colNames<-tolower(colNames[1:which(colNames=="BC")])
+  data<-read.csv(filepath, as.is=T, skip=toskip+2, header=FALSE)
+  
+  data%<>%dplyr::select(1:length(colNames)) # don't comment
+  
+  names(data)<-colNames
+  
+  names(data)[grep("date.yyyy.mm.dd.", names(data))]<-"date"
+  names(data)[names(data)=="temp"]<-"pcbtemp"
+  names(data)[names(data)=="pcb.temp"]<-"pcbtemp"
+  
+  data%<>%dplyr::mutate(time=addZero(time,8), date=paste(as.Date(date,dateformat), time))%>%
+    dplyr::select(-time)%>%
+    dplyr::rename(datetime=date)
+  
+  
+  data$hdr_deviceid <-deviceid
+  data$hdr_appv     <- softwareV
+  data$hdr_flowrate <- flowrate
+  data$hdr_timebase <- freq
+  data$hdr_startdate<-startdate
+  data$hdr_starttime <- starttime
+  data$hdr_origdateform<- origdtform
+  data$hdr_origtimeform<-origtmform
+  data$hdr_flowunit<-flowunit
+  data$hdr_pcbtempunit<-pcbtempunit
+  data$hdr_batteryunit <- batteryunit
+  data$hdr_bcunit<-bcunit
+    
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  data<-cbind(data, metadata)
+  
+  return(data)
+  
+  
+}
+
+upload_postgres<-function(tablename, data){
+  rows<-nrow(data)
+  #tablename<-"mae"
+  writeLines(paste("About to upload", rows, "rows to" , tablename))
+  
+  postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
+  
+  msg<-paste("Completed upload of", rows, "rows to" , tablename)
+  writeLines(msg)
+  
+}

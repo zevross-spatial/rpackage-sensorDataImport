@@ -381,6 +381,8 @@ upload_postgres<-function(tablename, data){
   
   writeLines(paste("About to upload", rows, "rows to" , tablename))
   
+  print(head(data))
+  
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
   
   msg<-paste("Completed upload of", rows, "rows to" , tablename)
@@ -509,8 +511,9 @@ already_uploaded<-function(tablename, filename, con=".connection"){
     
   q<-paste0("SELECT exists (SELECT 1 FROM ", tablename, " WHERE filename = '", filename, "' LIMIT 1);")
   res<-RPostgreSQL::dbGetQuery(.connection$con, q)
-  
-  return(res)
+  print(res)
+  print(as.logical(res))
+  return(as.logical(res))
   
   }
 

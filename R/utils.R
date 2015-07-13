@@ -20,6 +20,11 @@ NULL
 NULL
 
 
+#' @importFrom gdata trim
+#' @export
+NULL
+
+
 # *****************************************************************************
 # Test file prefix -----
 # *****************************************************************************
@@ -312,10 +317,12 @@ generate_metadata<-function(fileinfo, n, filename, metainfilename){
   
   l<-length(fileinfo)
   fin<-data.frame(matrix(fileinfo, nrow=n, ncol=l, byrow=TRUE))
-  if(l==4) names(fin)<-c("subjectid", "instrumentid", "sessionid", "projectid")
-  if(l==5) names(fin)<-c("subjectid", "instrumentid", "sessionid", "filterid", "projectid")
+  fin<-cbind(fin[,1:3], filename=rep(filename, nrow(fin)), fin[,4:ncol(fin), drop=FALSE])
   
-  fin$filename<-filename
+  if(l==4) names(fin)<-c("subjectid", "instrumentid", "sessionid","filename", "projectid")
+  if(l==5) names(fin)<-c("subjectid", "instrumentid", "sessionid", "filename", "filterid", "projectid")
+  
+  #fin$filename<-filename
   
   
   return(fin)

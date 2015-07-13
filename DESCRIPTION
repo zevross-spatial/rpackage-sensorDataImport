@@ -21,7 +21,8 @@ Imports:
   RPostgreSQL,
   XML,
   stringr,
-  data.table
+  data.table,
+  gdata
 VignetteBuilder: knitr
 
 
