@@ -441,7 +441,9 @@ find_gaps_assign_session <- function (datetime) {
   
   dat<-data.frame(from=from, to=to)
   dat$length<-(dat$to-dat$from)+1
-  dat$session_time<-datetime[dat$to]-datetime[dat$from]
+  
+  # you can subtract dates but the units might end up different
+  dat$session_time<-difftime(datetime[dat$to], datetime[dat$from], units="secs")
   
   # if the length of a session is less than 10 minutes
   # we will consider this a non-session
