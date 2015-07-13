@@ -69,14 +69,14 @@ filename_ok_biking<-function(filenames){
   
   #filenames<-c("BIKE0001_GPS01_S01_150306.gpx", "BIKE0001_ABP01_sdf_150306.gpx", "BIKE0001_ABP01_S01_150306.gpx")
   
-  req_length <- 4
+  req_length <- c(4,5)
   req_prefix <- c("GPS", "ABP", "MAE", "MPM", "HXI")
   
   filenames_split<-strsplit(filenames, "_")
   
   # test consistent file name length
   l <- sapply(filenames_split, length)
-  bad_length <- which(l!=req_length)
+  bad_length <- which(!l%in%req_length)
   
   
   # test prefix
@@ -443,7 +443,10 @@ find_gaps_assign_session <- function (datetime) {
   dat$length<-(dat$to-dat$from)+1
   dat$session_time<-datetime[dat$to]-datetime[dat$from]
   
-  dat$tooshort <- dat$session_time < 10*60
+  # if the length of a session is less than 10 minutes
+  # we will consider this a non-session
+  
+  dat$tooshort <- dat$session_time < 10 * 60
   
   dat$session_id <- "Non session"
   

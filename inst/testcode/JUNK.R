@@ -131,6 +131,7 @@ initiate_processing(filepath  = curpath,
 
 filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0002_MPM01_S99_BK0001_150306.csv"
 filename<-"BIKE0002_MPM01_S99_BK0001_150306.csv"
+projectid<-"columbiaBike"
 
 filepath<-"X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/MicroPEM/BIKE0001_MPM01_S01_150626.csv"
 filename<-"BIKE0001_MPM01_S01_150626.csv"
@@ -225,7 +226,8 @@ process_micropem<-function(filepath, filename, fileinfo,metainfilename){
   }
   
   
-  
+  proper_session     <- find_gaps_assign_session(data$datetime)
+  metadata$sessionid <- proper_session 
   
   metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
   data<-cbind(data, metadata)

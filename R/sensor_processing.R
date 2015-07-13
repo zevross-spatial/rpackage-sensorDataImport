@@ -215,6 +215,15 @@ process_micropem<-function(filepath, filename, fileinfo,metainfilename){
     }
     
     metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+    
+    # the generate metadata function returns the session ID from the filename
+    # which is fine for most files. But for micropem and abp we need to determine
+    # session from gaps in the time series.
+    
+    proper_session     <- find_gaps_assign_session(data$datetime)
+    metadata$sessionid <- proper_session 
+    
+    
     data<-cbind(data, metadata)
     
     return(data)
