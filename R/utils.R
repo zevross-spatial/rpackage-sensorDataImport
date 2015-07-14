@@ -29,13 +29,13 @@ NULL
 # Test file prefix -----
 # *****************************************************************************
 
-#' Make sure all the user-selected files have the right prefix.
+#' A test for whether the input filenames are OK. It is basically a switch
+#' to send to project-specific filename evaluators
 #' 
-#' @param prefixes are the prefixes of files
-#' @param filenames the full list of filenames the user uploaded
-#' @param stage is the stage of processing ("processing", "uploading",
-#' "pre-screening" right now.)
-#' @return user.
+#' @param filenames A vector of filenames (not paths)
+#' @param projectid The projectid grabbed from the shiny app pulldown
+#' @return Returns a list with the first item as a vector of TRUE/FALSE about whether
+#' each filename is OK and then a list of the filenames that are NOT Ok.
 #' @examples
 #' prefixes_ok(c("GPS", "AB"))
 #' @export
@@ -59,15 +59,16 @@ filename_ok<-function(filenames, projectid){
 # Test file prefix -----
 # *****************************************************************************
 
-#' Make sure all the user-selected files have the right prefix.
+#' A test for whether the input filenames are OK for the biking project
 #' 
-#' @param prefixes are the prefixes of files
-#' @param filenames the full list of filenames the user uploaded
-#' @param stage is the stage of processing ("processing", "uploading",
-#' "pre-screening" right now.)
-#' @return user.
+#' 
+#' @param filenames A vector of filenames (not paths)
+#' @param projectid The projectid grabbed from the shiny app pulldown
+#' @return Returns a list with the first item as a vector of TRUE/FALSE about whether
+#' each filename is OK and then a list of the filenames that are NOT Ok.
 #' @examples
 #' prefixes_ok(c("GPS", "AB"))
+#' @seealso \code{\link{filename_ok}}
 #' @export
 
 filename_ok_biking<-function(filenames){
@@ -106,7 +107,7 @@ filename_ok_biking<-function(filenames){
 # Test file prefix -----
 # *****************************************************************************
 
-#' Make sure all the user-selected files have the right prefix.
+#' For now this is deprecated
 #' 
 #' @param prefixes are the prefixes of files
 #' @param filenames the full list of filenames the user uploaded
@@ -133,7 +134,7 @@ prefixes_ok<-function(prefixes, allowed=c("GPS", "ABP", "MAE", "MPM", "HXI")){
 # Data processing or upload error report for Shiny
 # *****************************************************************************
 
-#' Report assemble the error report about which files were processed, uploaded
+#' Assemble the Shiny error report about which files were processed, uploaded
 #' or screened
 #' 
 #' @param currentfile_num is the number in sequence of the file where
@@ -189,10 +190,18 @@ error_report<-function(currentfile_num, filenames, stage){
 # parseFileName
 # *****************************************************************************
 
-#' xxt
+#' Start the file processing -- basically a switch to file type-specific 
+#' functions
 #' 
-#' @param sdf
-#' @return user.
+#' @param filepath The full path to the file (see details)
+#' @param filename The file name with suffix
+#' @param projectid The projectid from the Shiny pulldown
+#' @param metainfilename Not used now (see details)
+#' @details The filepath in most instances will be the filepath from the browser
+#' which is a temporary location. The metainfilename argument was added to allow
+#' some files to have no metadata in the filename so that we could handle differently
+#' for now this is not implemented.
+#' @return The processed dataset.
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
@@ -230,18 +239,19 @@ initiate_processing<-function(filepath, filename, projectid, metainfilename){
 # Allow autoincrement field and date added
 # *****************************************************************************
 
-# in order to write the tables to the postgresql database the dbWriteTable works
-# fine but when I want an autoincrement serial field and a auto date/time field
-# for when data was added I needed a hack like this. The dbWriteTable uses the
-# function postgresqlWriteTable so I'm creating a new functino called 
-# postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow
 
-#http://bit.ly/1E0Vsf6
 
-#' xxt
+#
+
+#' in order to write the tables to the postgresql database the dbWriteTable works
+#' fine but when I want an autoincrement serial field and a auto date/time field
+#' for when data was added I needed a hack like this. The dbWriteTable uses the
+#' function postgresqlWriteTable so I'm creating a new functino called 
+#' postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow
 #' 
 #' @param sdf
 #' @return user.
+#' @references \url{http://bit.ly/1E0Vsf6}
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
@@ -257,10 +267,10 @@ postgresqlWriteTableAlt <- RPostgreSQL::postgresqlWriteTable
 body(postgresqlWriteTableAlt) <- parse(text = new_body_lines)
 
 # *****************************************************************************
-# parseFileName
+# add zero
 # *****************************************************************************
 
-#' xxt
+#' Helper to add zero padding to numbers (mostly for dates/times)
 #' 
 #' @param sdf
 #' @return user.
@@ -278,12 +288,11 @@ addZero<-function(dat,width=2){
 # is error
 # *****************************************************************************
 
-#http://adv-r.had.co.nz/Exceptions-Debugging.html
-
-#' xxt
+#' Test if it's an error
 #' 
 #' @param sdf
 #' @return user.
+#' @references \url{http://adv-r.had.co.nz/Exceptions-Debugging.html}
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
@@ -295,8 +304,6 @@ is.error <- function(x) inherits(x, "try-error")
 # repeatFileInfo
 # *****************************************************************************
 
-# we are adding columns to the tables in the database with the metadata so
-# we need to metadata repeated for each record in the table
 
 #' A function to create a matrix of the metadata extracted from the file
 #' names for adding to a sensor table.

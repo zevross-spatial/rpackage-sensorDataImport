@@ -365,20 +365,24 @@ process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
 process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
   
 
-    #filepath<-"X:/projects/columbia_bike/data/client_data/20141001_sample_data_files/hexoskin/record-55556.csv"
-    data<-read.csv(filepath,as.is=T, check.names=FALSE)
-    
-    # names are there but followed by a space and junk
-    m<-regexpr("[^ ]*", names(data), perl=TRUE)
-    names(data)<-regmatches(names(data), m)
-    
-    data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
-    names(data)[names(data)=="timestamp"]<-"datetime"
-    
-
-    
-    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
-    data<-cbind(data, metadata)
+  data<-read.csv(filepath,as.is=T, check.names=FALSE)
+  
+  # names are there but followed by a space and junk
+  m<-regexpr("[^ ]*", names(data), perl=TRUE)
+  names(data)<-regmatches(names(data), m)
+  
+  data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
+  names(data)[names(data)=="timestamp"]<-"datetime"
+  
+  if(!"sleep_position"%in%names(data)) data$sleep_position <- NA
+  
+  # put them in order
+  data <- select(data, datetime, breathing_rate, heart_rate,   minute_ventilation,
+                 cadence, sleep_position, activity)
+  
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  data<-cbind(data, metadata)
     
     return(data)
   

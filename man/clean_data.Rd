@@ -21,7 +21,7 @@ cleaning_vars("hxi")
 \seealso{
 Other xxx: \code{\link{clean_abp}};
   \code{\link{clean_gps}}; \code{\link{clean_hxi}};
-  \code{\link{clean_mae}}; \code{\link{clean_pdr}};
-  \code{\link{cleaning_vars}}
+  \code{\link{clean_mae}}; \code{\link{clean_mpm}};
+  \code{\link{clean_pdr}}; \code{\link{cleaning_vars}}
 }
 

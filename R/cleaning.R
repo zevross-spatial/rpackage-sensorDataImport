@@ -169,6 +169,48 @@ clean_mae<-function(tablename, dat){
 
 clean_mpm<-function(tablename, dat){
   
+#   # TODO: I believe we will need to allow the user to set interactively
+#   compliance_threshold <- 0.02
+#   
+#   # This is from Ashlinn's code
+#   #### ADDING COMPLIANCE CRITERIA ###
+#   
+#   active.minute.average$sd_composite_above_threshold <- 
+#     ifelse(active.minute.average$Vector.Sum.Composite_SD > compliance_threshold, 1, 0)
+#   
+#   active.minute.average$sd_x_above_threshold <- 
+#     ifelse(active.minute.average$X.axis_SD > compliance_threshold, 1, 0)	
+#   
+#   active.minute.average$sd_y_above_threshold <- 
+#     ifelse(active.minute.average$Y.axis_SD > compliance_threshold, 1, 0) 
+#   
+#   active.minute.average$sd_z_above_threshold <- 
+#     ifelse(active.minute.average$Z.axis_SD > compliance_threshold, 1, 0) 
+#   
+#   ## **** NOTE **** To change the width of the rolling mean window 
+#   # for compliance, change the parameter for "width" w. 
+#   
+#   active.minute.average$sd_composite_rollmean <- 
+#     as.numeric(rollapply(active.minute.average$sd_composite_above_threshold, 
+#                          width=window_width,  FUN = mean, align = "center", 
+#                          na.rm = TRUE, fill = NA))  
+#   
+#   active.minute.average$compliance_rollmean <- 
+#     ifelse(active.minute.average$sd_composite_rollmean > 0, 1, 0)
+#   
+#   if (sum(!is.na(active.minute.average$compliance_rollmean)) > 0) {
+#     
+#     active.minute.average.complete <-  
+#       active.minute.average[complete.cases(active.minute.average),] 
+#     
+#   } else {
+#     
+#     active.minute.average.complete <- 
+#       active.minute.average
+#     
+#   }
+#   
+  
   
   print("I'm cleaning MPM data")
   

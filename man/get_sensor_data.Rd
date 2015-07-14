@@ -58,6 +58,14 @@ res<-get_sensor_data("hxi",
                      aggregation_unit="2 hours",
                      grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
                      summarize_vars=c("cadence", "breathing_rate"))
+
+res<-get_sensor_data("mpm",
+   clean_first = TRUE,
+   do_aggregate=TRUE,
+   xtravars  = NULL,
+   aggregation_unit="1 hour",
+   grouping_vars = c( "subjectid", "sessionid"),
+   summarize_vars = c("temperature", "rh", "flow"))
 }
 \seealso{
 Other postgresql functions: \code{\link{add_tables_db}};

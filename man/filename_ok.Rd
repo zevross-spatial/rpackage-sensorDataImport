@@ -2,23 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{filename_ok}
 \alias{filename_ok}
-\title{Make sure all the user-selected files have the right prefix.}
+\title{A test for whether the input filenames are OK. It is basically a switch
+to send to project-specific filename evaluators}
 \usage{
 filename_ok(filenames, projectid)
 }
 \arguments{
-\item{filenames}{the full list of filenames the user uploaded}
+\item{filenames}{A vector of filenames (not paths)}
 
-\item{prefixes}{are the prefixes of files}
-
-\item{stage}{is the stage of processing ("processing", "uploading",
-"pre-screening" right now.)}
+\item{projectid}{The projectid grabbed from the shiny app pulldown}
 }
 \value{
-user.
+Returns a list with the first item as a vector of TRUE/FALSE about whether
+each filename is OK and then a list of the filenames that are NOT Ok.
 }
 \description{
-Make sure all the user-selected files have the right prefix.
+A test for whether the input filenames are OK. It is basically a switch
+to send to project-specific filename evaluators
 }
 \examples{
 prefixes_ok(c("GPS", "AB"))

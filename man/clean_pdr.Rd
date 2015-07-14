@@ -24,6 +24,6 @@ cleaning_pdr("pdr", dat)
 Other xxx: \code{\link{clean_abp}};
   \code{\link{clean_data}}; \code{\link{clean_gps}};
   \code{\link{clean_hxi}}; \code{\link{clean_mae}};
-  \code{\link{cleaning_vars}}
+  \code{\link{clean_mpm}}; \code{\link{cleaning_vars}}
 }
 

@@ -586,6 +586,30 @@ fileinfo<-c(fileinfo, "columbiaBike")
 metainfilename<-TRUE
 
 
+process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
+  
+  
+  #filepath<-"X:/projects/columbia_bike/data/client_data/20141001_sample_data_files/hexoskin/record-55556.csv"
+  data<-read.csv(filepath,as.is=T, check.names=FALSE)
+  
+  # names are there but followed by a space and junk
+  m<-regexpr("[^ ]*", names(data), perl=TRUE)
+  names(data)<-regmatches(names(data), m)
+  
+  data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
+  names(data)[names(data)=="timestamp"]<-"datetime"
+  
+  
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  data<-cbind(data, metadata)
+  
+  return(data)
+  
+}
+
+
+
 
 dat<-process_hexoskin(filepath, filename, fileinfo, metainfilename)
 upload_postgres("hxi", dat)
