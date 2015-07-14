@@ -2,18 +2,32 @@
 % Please edit documentation in R/utils.R
 \name{initiate_processing}
 \alias{initiate_processing}
-\title{xxt}
+\title{Start the file processing -- basically a switch to file type-specific
+functions}
 \usage{
 initiate_processing(filepath, filename, projectid, metainfilename)
 }
 \arguments{
-\item{sdf}{}
+\item{filepath}{The full path to the file (see details)}
+
+\item{filename}{The file name with suffix}
+
+\item{projectid}{The projectid from the Shiny pulldown}
+
+\item{metainfilename}{Not used now (see details)}
 }
 \value{
-user.
+The processed dataset.
 }
 \description{
-xxt
+Start the file processing -- basically a switch to file type-specific
+functions
+}
+\details{
+The filepath in most instances will be the filepath from the browser
+which is a temporary location. The metainfilename argument was added to allow
+some files to have no metadata in the filename so that we could handle differently
+for now this is not implemented.
 }
 \examples{
 add(1, 1)

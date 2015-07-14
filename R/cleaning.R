@@ -13,12 +13,12 @@
 cleaning_vars<-function(tablename){
   
 switch(tablename,
-  "abp" = c(),
-  "gps" = c(),
-  "hxi" = c("instrumentid"),
-  "mae" = c(),
-  "mpm" = c("rh"),
-  "pdf" = c()
+  "abp" = c("sessionid"),
+  "gps" = c("sessionid"),
+  "hxi" = c("sessionid"),
+  "mae" = c("sessionid"),
+  "mpm" = c("sessionid"),
+  "pdf" = c("sessionid")
   
 )
   

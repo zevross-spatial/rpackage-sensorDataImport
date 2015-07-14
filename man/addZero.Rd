@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{addZero}
 \alias{addZero}
-\title{xxt}
+\title{Helper to add zero padding to numbers (mostly for dates/times)}
 \usage{
 addZero(dat, width = 2)
 }
@@ -13,7 +13,7 @@ addZero(dat, width = 2)
 user.
 }
 \description{
-xxt
+Helper to add zero padding to numbers (mostly for dates/times)
 }
 \examples{
 add(1, 1)

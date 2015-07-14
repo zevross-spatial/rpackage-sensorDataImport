@@ -15,6 +15,15 @@ NULL
 NULL
 
 
+#' @importFrom data.table data.table
+#' @export
+NULL
+
+#' @importFrom data.table setkey
+#' @export
+NULL
+
+
 #' @importFrom data.table :=
 #' @export
 NULL

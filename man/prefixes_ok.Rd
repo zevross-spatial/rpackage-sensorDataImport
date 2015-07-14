@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{prefixes_ok}
 \alias{prefixes_ok}
-\title{Make sure all the user-selected files have the right prefix.}
+\title{For now this is deprecated}
 \usage{
 prefixes_ok(prefixes, allowed = c("GPS", "ABP", "MAE", "MPM", "HXI"))
 }
@@ -18,7 +18,7 @@ prefixes_ok(prefixes, allowed = c("GPS", "ABP", "MAE", "MPM", "HXI"))
 user.
 }
 \description{
-Make sure all the user-selected files have the right prefix.
+For now this is deprecated
 }
 \examples{
 prefixes_ok(c("GPS", "AB"))

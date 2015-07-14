@@ -1,5 +1,5 @@
 ---
-title: "How to use this package"
+title: "Using the `sensorDataImport` package"
 author: "Zev Ross"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,50 +9,184 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+    library(knitr)
 
-## Vignette Info
+    options(width=100)
+    options(scipen=9999)
+    opts_chunk$set(echo=TRUE)
+    opts_chunk$set(message=FALSE)
+    opts_chunk$set(warning=FALSE)
+    opts_chunk$set(cache=FALSE)
+    opts_chunk$set(collapse=TRUE)
 
-Note the various macros within the `vignette` setion of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+## Installing
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+You need the `devtools` package installed and then you can use:
 
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```
+devtools::install_github("zross/sensorDataImport")
 ```
 
-Also a quote using `>`:
+Keep in mind that the package is in the early stages of development. The database and table creation scripts have not been adapted for Macs. But you should be able to run the code in a Mac console. For example, the code used to create the database is:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```
+createdb -h localhost -p 5432 -U postgres columbiaBike
+```
+
+The code to load the tables is: 
+
+```
+psql -p 5432 -U postgres -d columbiaBike -a -f create_tables.sql
+```
+
+The file `create_tables.sql` can be found in the sql folder in your package directory. Your package will be installed in one of the paths listed when you type:
+
+```
+.libPaths()
+```
+
+Within the folders you can find the sql folder and in that is a file called `create_tables.sql`. 
+
+## Launch app and connect
+
+To launch the Shiny app for uploading data you use:
+
+```
+library(sensorDataImport)
+runShiny("nyc")
+```
+
+On the left you will need to make sure the parameters are correct. You will want to select the biking project. Your port is likely 5432. If you have the right parameters you should see "Connected to DB" in green at the bottom left.
+
+## Uploading
+
+To upload you can simply use the upload button and select as many files as you want (using CTRL/CMD to select multiple) and then click OK. You will see a progress indicator. Your filenames need to follow our file naming conventions exactly.
+
+## Extracting and aggregating data
+
+For now the extraction and aggregation is done within R (rather than a Shiny app). In order to do this you will need a valid connection to the database. The password will be the password you used when you installed Postgres. Please let me know if you have problems with this piece.
+
+```
+library(sensorDataImport)
+get_connection("columbiaBike","PASSWORD",  host="localhost",
+    port=5432, user="postgres")
+```
+
+The `get_connection` function creates an object called `.connection` that should look like:
+
+```
+src:  postgres 9.3.4 [postgres@localhost:5433/columbiaBike]
+tbls: abp, gps, hxi, mae, mpm, pdr
+```
+
+With the valid connection you are ready to extract the data. The function is `get_sensor_data` and it allows you to get the raw data or aggregated data. The function arguments look like:
+
+```
+tablename = This is the three letter table name (e.g., 'gps')
+
+do_aggregate = Do you want to aggregate? Default is FALSE
+
+clean_first = Do you want to clean the data first (not really implemented). Defaults to TRUE
+
+aggregation_unit = What time unit do you want to aggregate to? Defaults to "15 min". Options might include ("10 min", "1 day", etc). Allows you to use "complete" which means essentially, a time unit of 50000 days.
+
+xtravars = In the RAW data, RAW data only, what extra variables do you want included. Defaults to "all" which gives you all the variables in the table
+
+summarize_vars = What are the variables you want to summarize (average, mean etc). Defaults to NULL which is the only value allowed if you're not aggregating. 
+
+grouping_vars = What variables should be used to aggregate by. Defaults to c("subjectid", "sessionid")
+```
+
+### Examples
+
+
+#### Get connection
+
+```{r}
+library(sensorDataImport)
+# your connection parameters will be different with, probably, port 5432
+get_connection("columbiaBike","spatial",  host="localhost",
+    port=5433, user="postgres")
+
+.connection
+
+
+```
+
+
+#### Get info on tables
+
+```{r}
+list_tables()
+table_exists("blah")
+table_exists("gps")
+get_column_names("hxi")
+get_row_count("mpm")
+
+
+```
+
+
+#### Grab raw data (but it will get cleaned first if there is a cleaning function):
+
+```{r}
+library(sensorDataImport)
+# your connection parameters will be different with, probably, port 5432
+get_connection("columbiaBike","spatial",  host="localhost",
+    port=5433, user="postgres")
+
+.connection
+gps_raw_clean <- get_sensor_data("gps")
+head(gps_raw_clean) 
+
+```
+
+
+
+#### For GPS, get subject-specific centroid by averaging all records by subject/session
+
+Note that this is NOT averaging by a time interval -- it's averaging all records by the grouping variables.
+
+
+```{r}
+# by default aggregate is by subject, session
+get_sensor_data("gps", do_aggregate=TRUE, aggregation_unit="complete",
+                                   xtravars=NULL, summarize_vars=c("latitude", "longitude"))
+
+```
+
+
+#### You can aggregate at odd intervals if desired
+
+The aggregation_unit argument accepts any number of minutes, hours or days.
+
+
+```{r}
+micropem <- get_sensor_data("mpm",
+                do_aggregate     = TRUE,
+                aggregation_unit = "13 min",
+                xtravars         = NULL,
+                summarize_vars   = c("temperature", "flow", "neph_rhcorrect"),
+                grouping_vars    = c("subjectid", "sessionid"))
+
+head(micropem)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

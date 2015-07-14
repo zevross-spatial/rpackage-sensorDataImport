@@ -6,7 +6,7 @@
 \usage{
 get_sensor_data(tablename, do_aggregate = FALSE, clean_first = TRUE,
   aggregation_unit = "15 min", xtravars = "all", summarize_vars = NULL,
-  grouping_vars = c("datetime", "subjectid", "sessionid"))
+  grouping_vars = c("subjectid", "sessionid"))
 }
 \arguments{
 \item{tablename}{What is the name of the table (as a string).}

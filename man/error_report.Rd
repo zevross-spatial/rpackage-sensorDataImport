@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{error_report}
 \alias{error_report}
-\title{Report assemble the error report about which files were processed, uploaded
+\title{Assemble the Shiny error report about which files were processed, uploaded
 or screened}
 \usage{
 error_report(currentfile_num, filenames, stage)
@@ -20,7 +20,7 @@ an error occurred}
 user.
 }
 \description{
-Report assemble the error report about which files were processed, uploaded
+Assemble the Shiny error report about which files were processed, uploaded
 or screened
 }
 \examples{

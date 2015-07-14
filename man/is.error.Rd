@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is.error}
 \alias{is.error}
-\title{xxt}
+\title{Test if it's an error}
 \usage{
 is.error(x)
 }
@@ -13,10 +13,13 @@ is.error(x)
 user.
 }
 \description{
-xxt
+Test if it's an error
 }
 \examples{
 add(1, 1)
 add(10, 1)
+}
+\references{
+\url{http://adv-r.had.co.nz/Exceptions-Debugging.html}
 }
 

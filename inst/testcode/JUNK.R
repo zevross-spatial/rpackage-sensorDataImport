@@ -52,16 +52,9 @@ x<-aggregate_data(dat,
                   grouping_vars = c("subjectid", "sessionid"),
                   summarize_vars=c("cadence", "breathing_rate"))
 
-
-get_sensor_data <- 
-
-do_aggregate = FALSE,
-clean_first = TRUE,
-aggregation_unit="15 min",
-vars = "datetime",
-summarize_vars = NULL, 
-grouping_vars = c("subjectid", "sessionid")
-                            
+clean_first<-TRUE
+  get_sensor_data(tablename = "gps", do_aggregate=TRUE, aggregation_unit="complete",
+                  xtravars=NULL, summarize_vars=c("latitude", "longitude"))
                             
                             
 res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="all") 
@@ -151,13 +144,14 @@ get_sensor_data <- function(tablename,
     vars_to_get <- xtravars
     if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
     
+    
+    clean_vars<-NULL
     if(clean_first){
       clean_vars <- cleaning_vars(tablename)
-      vars_to_get <- unique(c(vars_to_get, clean_vars))
     }
     
     
-    dat <- collect(select_(thetable, .dots=vars_to_get))
+    dat <- collect(select_(thetable, .dots=unique(c(vars_to_get, clean_vars))))
   }
   
   
@@ -170,7 +164,10 @@ get_sensor_data <- function(tablename,
     
     # remove the fields used for cleaning
     if(length(clean_vars)>0){
-      vars_to_get <- vars_to_get[!vars_to_get%in%clean_vars]
+      #any clean vars that are NOT needed for other things?
+      #clean_vars[clean_vars%in%vars_to_get]
+      #vars_to_get <- vars_to_get[vars_to_get%in%clean_vars]
+      
       dat <- select_(dat, .dots = vars_to_get)
     }
     
@@ -183,6 +180,15 @@ get_sensor_data <- function(tablename,
                           aggregation_unit = aggregation_unit,
                           summarize_vars = summarize_vars,
                           grouping_vars = grouping_vars)
+  }
+  
+  
+  # if the aggregation unit is complete then we're averaging with
+  # no regard to time and then the output should not include time
+  # info.
+  
+  if(aggregation_unit == "complete"){
+    dat<-ungroup(dat) %>% select(-c(interval, begin, end))
   }
   
   dat
@@ -579,6 +585,7 @@ upload_postgres<-function(tablename, data){
 filepath<-"X:/projects/columbia_bike/notes/issues_w_app/PrePilot_01/Hexoskin data/BIKE0001_HXI94_S01_150617.csv"
 filename<-"BIKE0001_HXI94_S01_150617.csv"
 
+filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_HXI01_S01A_150306.csv"
 
 fileinfo<-unlist(stringr::str_split(filename, "_"))
 fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
@@ -599,6 +606,11 @@ process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
   data$timestamp<-format(as.POSIXct((data$timestamp)/256, origin = "1970-01-01"), usetz=FALSE)
   names(data)[names(data)=="timestamp"]<-"datetime"
   
+  if(!"sleep_position"%in%names(data)) data$sleep_position <- NA
+  
+  # put them in order
+  data <- select(data, datetime, breathing_rate, heart_rate,   minute_ventilation,
+                 cadence, sleep_position, activity)
   
   
   metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)

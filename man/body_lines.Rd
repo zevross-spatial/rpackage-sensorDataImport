@@ -3,7 +3,11 @@
 \docType{data}
 \name{body_lines}
 \alias{body_lines}
-\title{xxt}
+\title{in order to write the tables to the postgresql database the dbWriteTable works
+fine but when I want an autoincrement serial field and a auto date/time field
+for when data was added I needed a hack like this. The dbWriteTable uses the
+function postgresqlWriteTable so I'm creating a new functino called
+postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow}
 \format{\preformatted{ chr [1:65] "\{" "    if (overwrite && append) " ...
 }}
 \usage{
@@ -16,11 +20,18 @@ body_lines
 user.
 }
 \description{
-xxt
+in order to write the tables to the postgresql database the dbWriteTable works
+fine but when I want an autoincrement serial field and a auto date/time field
+for when data was added I needed a hack like this. The dbWriteTable uses the
+function postgresqlWriteTable so I'm creating a new functino called
+postgresqlWriteTableAlt that takes care of it. Copied from stackoverflow
 }
 \examples{
 add(1, 1)
 add(10, 1)
+}
+\references{
+\url{http://bit.ly/1E0Vsf6}
 }
 \keyword{datasets}
 

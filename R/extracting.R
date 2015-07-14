@@ -61,7 +61,8 @@ agg_unit_ok <- function(aggregation_unit){
 #' @param summarize_vars What variables will be summarized. This should be a vector of variable names -- variables should be numeric.
 #' @param grouping_vars What variables will be used for aggregation (these are the keys)
 #' @return user.
-#' @examples
+#' @export
+#' @examples 
 #' res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="datetime") 
 #' res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))  
 #' 
@@ -106,7 +107,7 @@ get_sensor_data <- function(tablename,
                             aggregation_unit="15 min",
                             xtravars = "all",
                             summarize_vars = NULL, 
-                            grouping_vars = c("datetime", "subjectid", "sessionid")
+                            grouping_vars = c("subjectid", "sessionid")
                             ){
   
   #tablename<-"mpm"
@@ -149,15 +150,19 @@ get_sensor_data <- function(tablename,
     # if they're cleaning then add the vars needed for clearning
   }else{
     vars_to_get <- xtravars #should be NULL if aggregating
+    
+    # note that I'm manually adding "sessionid" because, even if it's
+    # not a grouping variable, we will still need to filter out the
+    # non sessions in the cleaning phase
     if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
     
+    clean_vars<-NULL
     if(clean_first){
       clean_vars <- cleaning_vars(tablename)
-      vars_to_get <- unique(c(vars_to_get, clean_vars))
     }
     
     
-    dat <- collect(select_(thetable, .dots=vars_to_get))
+    dat <- collect(select_(thetable, .dots=unique(c(vars_to_get, clean_vars))))
   }
   
   
@@ -168,17 +173,9 @@ get_sensor_data <- function(tablename,
     
     dat <- clean_data(tablename, dat)
     
-    # remove the fields used for cleaning
-    if(length(clean_vars)>0){
-      
-      # make sure the cleaning var is not ALSO a summarize or grouping
-      # var
-      
-      toremove<-clean_vars[!clean_vars%in%c(summarize_vars, grouping_vars)]
-      
-      vars_to_get <- vars_to_get[!vars_to_get%in%toremove]
-      dat <- select_(dat, .dots = vars_to_get)
-    }
+    # This will get rid of the cleaning variables
+    dat <- select_(dat, .dots = vars_to_get)
+
 
   }
  
@@ -191,13 +188,21 @@ get_sensor_data <- function(tablename,
                    grouping_vars = grouping_vars)
   }
   
+  # if the aggregation unit is complete then we're averaging with
+  # no regard to time and then the output should not include time
+  # info.
+  
+  if(aggregation_unit == "complete"){
+    dat<-ungroup(dat) %>% select(-c(interval, begin, end))
+  }
+  
   dat
   
    
 }
 
 # *****************************************************************************
-# aggregat_data
+# aggregate_data
 # *****************************************************************************
 
 #' This function aggregates data
@@ -207,6 +212,7 @@ get_sensor_data <- function(tablename,
 #' @param dbname Give the database a name.
 #' @param aggregation unit. examples include "5 min", "2 hour", 
 #' @return user.
+#' @export
 #' @examples xxx
 
 

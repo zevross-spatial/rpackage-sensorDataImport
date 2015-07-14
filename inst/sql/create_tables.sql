@@ -131,6 +131,7 @@ create table hxi(
   heart_rate numeric(3,0),
   minute_ventilation numeric(12, 2),
   cadence numeric(10,4),
+  sleep_position numeric(10,4),
   activity numeric(14,10),
   subjectID character(8),
   instrumentID character(6),
