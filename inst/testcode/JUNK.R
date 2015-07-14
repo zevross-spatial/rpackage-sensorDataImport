@@ -589,3 +589,13 @@ metainfilename<-TRUE
 
 dat<-process_hexoskin(filepath, filename, fileinfo, metainfilename)
 upload_postgres("hxi", dat)
+
+
+
+# *****************************************************************************
+#  clean
+# *****************************************************************************
+
+
+
+

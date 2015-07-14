@@ -91,6 +91,15 @@ agg_unit_ok <- function(aggregation_unit){
 #'                      aggregation_unit="2 hours",
 #'                      grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
 #'                      summarize_vars=c("cadence", "breathing_rate"))
+#'                      
+#'res<-get_sensor_data("mpm",
+#'    clean_first = TRUE,
+#'    do_aggregate=TRUE,
+#'    xtravars  = NULL,
+#'    aggregation_unit="1 hour",
+#'    grouping_vars = c( "subjectid", "sessionid"),
+#'    summarize_vars = c("temperature", "rh", "flow"))
+                     
 get_sensor_data <- function(tablename, 
                             do_aggregate = FALSE,
                             clean_first = TRUE,
