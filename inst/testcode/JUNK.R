@@ -629,8 +629,50 @@ upload_postgres("hxi", dat)
 
 
 # *****************************************************************************
-#  clean
+#  comparing
 # *****************************************************************************
+library(dplyr)
+con<-src_postgres(dbname="columbiaBike", host="localhost",
+                  password="spatial", 
+                  port=5433, 
+                  user="postgres")
+
+x<-collect(tbl(con, "mpm"))
+x<-mutate(x, hr = format(datetime, "%Y-%m-%d %H"),
+          sessionid = as.numeric(sessionid))
+
+x2<-group_by(x, hr, subjectid, sessionid) %>% 
+  summarize(avgtemp = mean(temperature, na.rm=T), cnt=sum(!is.na(temperature)))
+
+
+
+
+library(sensorDataImport)
+
+get_connection("columbiaBike","spatial",  host="localhost",
+               port=5433, user="postgres")
+
+micropem <- get_sensor_data("mpm",
+                            do_aggregate     = TRUE,
+                            aggregation_unit = "1 hour",
+                            xtravars         = NULL,
+                            summarize_vars   = c("temperature", "flow", "neph_rhcorrect"),
+                            grouping_vars    = c("subjectid", "sessionid"))
+
+micropem <- mutate(micropem, hr = format(begin, "%Y-%m-%d %H"))
+
+head(micropem)
+
+
+xx<-merge(x2, micropem, by=c("hr", "subjectid", "sessionid"))
+plot(xx$avgtemp, xx$temperature_avg)
+plot(xx$cnt, xx$temperature_cnt)
+abline(0,1)
+
+
+micropem[5,]
+head(x2[,c("hr", "subjectid", "sessionid")])
+head(micropem[,c("hr", "subjectid", "sessionid")])
 
 
 

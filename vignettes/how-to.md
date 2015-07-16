@@ -1,7 +1,7 @@
 ---
 title: "Using the `sensorDataImport` package"
 author: "Zev Ross"
-date: "`r Sys.Date()`"
+date: "2015-07-14"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{how-to}
@@ -10,18 +10,7 @@ vignette: >
 ---
 
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-    library(knitr)
 
-    #options(width=100)
-    options(scipen=9999)
-    opts_chunk$set(echo=TRUE)
-    opts_chunk$set(message=FALSE)
-    opts_chunk$set(warning=FALSE)
-    opts_chunk$set(cache=FALSE)
-    opts_chunk$set(collapse=TRUE)
-
-```
 
 
 ## Installing
@@ -60,10 +49,6 @@ To launch the Shiny app for uploading data you use:
 library(sensorDataImport)
 runShiny("nyc")
 ```
-
-**You need to be connected to the DB to upload**
-
-On the "to-do" list we will grey out the upload button if you're not connected but for now you are allowed to click on upload of you're not connected but you will get errors and will need to close and restart!
 
 On the left you will need to make sure the parameters are correct. You will want to select the biking project. Your port is likely 5432. If you have the right parameters you should see "Connected to DB" in green at the bottom left.
 
@@ -111,43 +96,67 @@ grouping_vars = What variables should be used to aggregate by. Defaults to c("su
 
 #### Get connection
 
-```{r}
+
+```r
 library(sensorDataImport)
 # your connection parameters will be different with, probably, port 5432
 get_connection("columbiaBike","spatial",  host="localhost",
     port=5433, user="postgres")
 
 .connection
-
-
+## src:  postgres 9.3.4 [postgres@localhost:5433/columbiaBike]
+## tbls: abp, gps, hxi, mae, mpm, pdr
 ```
 
 
 #### Get info on tables
 
-```{r}
+
+```r
 list_tables()
+## [1] "gps" "abp" "mae" "mpm" "hxi" "pdr"
 table_exists("blah")
+## [1] FALSE
 table_exists("gps")
+## [1] TRUE
 get_column_names("hxi")
+##           column_name                   data_type
+## 1            datetime timestamp without time zone
+## 2      breathing_rate                     numeric
+## 3          heart_rate                     numeric
+## 4  minute_ventilation                     numeric
+## 5             cadence                     numeric
+## 6      sleep_position                     numeric
+## 7            activity                     numeric
+## 8           subjectid                   character
+## 9        instrumentid                   character
+## 10          sessionid                   character
+## 11           filename           character varying
+## 12          projectid           character varying
+## 13          uniquekey                     integer
+## 14          dateadded timestamp without time zone
 get_row_count("mpm")
-
-
+##   count
+## 1 33622
 ```
 
 
 #### Grab raw data (but it will get cleaned first if there is a cleaning function):
 
-```{r}
+
+```r
 library(sensorDataImport)
 # your connection parameters will be different with, probably, port 5432
 get_connection("columbiaBike","spatial",  host="localhost",
     port=5433, user="postgres")
 
 .connection
+## src:  postgres 9.3.4 [postgres@localhost:5433/columbiaBike]
+## tbls: abp, gps, hxi, mae, mpm, pdr
 gps_raw_clean <- get_sensor_data("gps")
+## [1] "I'm cleaning GPS data"
 head(gps_raw_clean) 
-
+## Source: local data frame [6 x 0]
 ```
 
 
@@ -157,11 +166,21 @@ head(gps_raw_clean)
 Note that this is NOT averaging by a time interval -- it's averaging all records by the grouping variables.
 
 
-```{r}
+
+```r
 # by default aggregate is by subject, session
 get_sensor_data("gps", do_aggregate=TRUE, aggregation_unit="complete",
                                    xtravars=NULL, summarize_vars=c("latitude", "longitude"))
-
+## [1] "I'm cleaning GPS data"
+## Source: local data frame [5 x 9]
+## 
+##   subjectid sessionid latitude_avg latitude_sd latitude_cnt longitude_avg longitude_sd
+## 1  BIKE0001        01     40.89911  0.05539662         3624     -73.93822   0.01585117
+## 2  BIKE0001        02     40.89854  0.05549700         3677     -73.93870   0.01617592
+## 3  BIKE0001        03     40.89827  0.05513719         3738     -73.93871   0.01603509
+## 4  BIKE0001        04     40.89829  0.05612170         3578     -73.93851   0.01613981
+## 5  BIKE0001        10     40.16865  0.01308769         3203     -74.02161   0.00512813
+## Variables not shown: longitude_cnt (int), tot_cnt (int)
 ```
 
 
@@ -170,114 +189,35 @@ get_sensor_data("gps", do_aggregate=TRUE, aggregation_unit="complete",
 The aggregation_unit argument accepts any number of minutes, hours or days.
 
 
-```{r}
+
+```r
 micropem <- get_sensor_data("mpm",
                 do_aggregate     = TRUE,
                 aggregation_unit = "13 min",
                 xtravars         = NULL,
                 summarize_vars   = c("temperature", "flow", "neph_rhcorrect"),
                 grouping_vars    = c("subjectid", "sessionid"))
+## [1] "I'm cleaning MPM data"
 
 head(micropem)
-
+## Source: local data frame [6 x 15]
+## Groups: interval, begin, end, subjectid
+## 
+##   interval               begin                 end subjectid sessionid temperature_avg
+## 1   13 min 2015-06-16 20:51:00 2015-06-16 21:04:00  BIKE0001         1        27.07000
+## 2   13 min 2015-06-16 21:04:00 2015-06-16 21:17:00  BIKE0001         1        27.26923
+## 3   13 min 2015-06-16 21:17:00 2015-06-16 21:30:00  BIKE0001         1        27.27692
+## 4   13 min 2015-06-16 21:30:00 2015-06-16 21:43:00  BIKE0001         1        27.23846
+## 5   13 min 2015-06-16 21:43:00 2015-06-16 21:56:00  BIKE0001         1        27.13846
+## 6   13 min 2015-06-16 21:56:00 2015-06-16 22:09:00  BIKE0001         1        27.10000
+## Variables not shown: temperature_sd (dbl), temperature_cnt (int), flow_avg (dbl), flow_sd (dbl),
+##   flow_cnt (int), neph_rhcorrect_avg (dbl), neph_rhcorrect_sd (dbl), neph_rhcorrect_cnt (int),
+##   tot_cnt (int)
 ```
 
 
 
 
-# A complete and relevant example
-
-#### Get connected
-
-```{r}
-get_connection("columbiaBike","spatial",  host="localhost",
-               port=5433, user="postgres")
-```
-
-
-
-#### Grab the data
-
-
-```{r}
-# get the hex data at one minute
-# this might take some time
-hex <- get_sensor_data("hxi",
-                            do_aggregate     = TRUE,
-                            aggregation_unit = "1 min",
-                            xtravars         = NULL,
-                            summarize_vars   = c("breathing_rate", "heart_rate", "minute_ventilation", "cadence"),
-                            grouping_vars    = c("subjectid", "sessionid"))
-
-
-
-
-# careful, no compliance or HEPA correction applied
-micropem <- get_sensor_data("mpm",
-                            do_aggregate     = TRUE,
-                            aggregation_unit = "1 min",
-                            xtravars         = NULL,
-                            summarize_vars   = c("temperature", "flow", "neph_rhcorrect"),
-                            grouping_vars    = c("subjectid", "sessionid"))
-
-
-
-gps<- get_sensor_data("gps",
-                      do_aggregate     = TRUE,
-                      aggregation_unit = "1 min",
-                      xtravars         = NULL,
-                      summarize_vars   = c("latitude", "longitude"),
-                      grouping_vars    = c("subjectid", "sessionid"))
-```
-
-
-#### Add date and see if there's overlap
-
-For the pre-pilot data the dates/times do not seem to correspond that well so let's add date to make it easier to see where they match.
-
-```{r}
-library(dplyr)
-hex <- mutate(hex, date = format(begin, "%Y-%m-%d"))
-micropem <- mutate(micropem, date = format(begin, "%Y-%m-%d"))
-gps <- mutate(gps, date = format(begin, "%Y-%m-%d"))
-
-
-# take a look at unique combos
-
-select(hex, date, subjectid, sessionid) %>% distinct
-select(micropem, date, subjectid, sessionid) %>% distinct
-select(gps, date, subjectid, sessionid) %>% distinct
-```
-
-
-
-#### Join the data
-
-In theory this would work -- but in the pre-pilot testing data there is not a lot of matching data.
-
-```{r}
-hex_pem <- inner_join(hex, micropem, by=c("subjectid", "sessionid",  "begin", "end"))
-hex_gps <- inner_join(hex, gps, by=c("subjectid","sessionid",  "begin", "end"))
-pem_gps <- inner_join(micropem, gps, by=c("subjectid", "sessionid",  "begin", "end"))
-
-# clean up example
-pem_gps <- mutate(pem_gps, date = date.y) %>% 
-  select(-c(interval.x, interval.y, date.x))
-```
-
-
-#### A map
-
-```{r, fig.width=8, fig.height=8}
-library(ggplot2)
-library(ggmap)
-qmap("George Washington Bridge, NYC", zoom = 11, color = "bw", legend = "topleft")+
-  geom_point(data=pem_gps, aes(longitude_avg, latitude_avg, color=temperature_avg))+
-  scale_color_gradient(low="darkkhaki", high="darkgreen")
-```
-
-
-  
 
 
 

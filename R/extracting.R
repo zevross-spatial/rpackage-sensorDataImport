@@ -191,12 +191,16 @@ get_sensor_data <- function(tablename,
   # if the aggregation unit is complete then we're averaging with
   # no regard to time and then the output should not include time
   # info.
+  dat <- ungroup(dat)
   
   if(aggregation_unit == "complete"){
-    dat<-ungroup(dat) %>% select(-c(interval, begin, end))
+    dat<-dat %>% select(-c(interval, begin, end))
   }
   
-  dat
+  # since users are more familiar with base R let's return
+  # data frame instead of tbl_df
+  
+  data.frame(dat)
   
    
 }

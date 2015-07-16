@@ -476,7 +476,7 @@ find_gaps_assign_session <- function (datetime) {
   dat$session_id <- "Non session"
   
   
-  dat$session_id[!dat$tooshort]<-1:sum(!dat$tooshort)
+  dat$session_id[!dat$tooshort]<-addZero(1:sum(!dat$tooshort))
   
   session<-rep(dat$session_id, times=dat$length)
   
@@ -485,10 +485,6 @@ find_gaps_assign_session <- function (datetime) {
   return(session)
   
 }
-
-
-
-
 
 
 
