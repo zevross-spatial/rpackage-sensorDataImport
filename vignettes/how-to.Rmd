@@ -32,6 +32,30 @@ You need the `devtools` package installed and then you can use:
 devtools::install_github("zross/sensorDataImport")
 ```
 
+
+
+## Database and tables
+
+This vignette assumes you have already installed PostgreSQL on a Windows machine. Once PostgreSQL and the package have been installed you will need to install the database and tables. Note that if you already have a database and table installation you will need to delete the database and re-install if the table structures have changed. Keep in mind that this will delete all data and should only be done if you're sure that this is OK. 
+
+1) If you need to delete the database and reinstall open pgAdmin III, the software to administer the database. Find the database you want to delete in the "object browser" then right click and choose Delete/Drop
+
+2) To reinstall the database (on WINDOWS) you nead to load the sensorDataImport package with `library(sensorDataImport)` and then type:
+
+```
+create_database("columbiaBike")
+```
+
+3) To reinstall the tables you then type:
+
+```
+add_tables_db("columbiaBike")
+```
+
+## Notes about Macs
+
+
+
 Keep in mind that the package is in the early stages of development. The database and table creation scripts have not been adapted for Macs. But you should be able to run the code in a Mac console. For example, the code used to create the database is:
 
 ```

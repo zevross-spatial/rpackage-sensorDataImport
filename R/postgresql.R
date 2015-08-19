@@ -392,6 +392,112 @@ upload_postgres<-function(tablename, data){
 
 
 # *****************************************************************************
+# Get file names from a database
+# *****************************************************************************
+
+#' This function is for getting subject IDs from a table
+#' 
+#' @family postgresql functions
+#' @param tablename the table name.
+#' @return user
+#' @examples test
+#' @export
+
+get_subjectid<-function(tablename,  con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  #if not a valid connection of table does not exist
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+    
+    #else a valid connection and table exist
+  }else{
+    
+    
+    q <- paste0("SELECT DISTINCT(subjectid) FROM ", tablename)
+    res<-RPostgreSQL::dbGetQuery(.connection$con, q)
+    
+  }
+  as.vector(t(res))
+}
+
+
+# *****************************************************************************
+# Get file names from a database
+# *****************************************************************************
+
+#' This function is for getting the file names associated with a specific table
+#' 
+#' @family postgresql functions
+#' @param tablename the table name.
+#' @param data the data to upload
+#' @return user
+#' @examples test
+#' @export
+
+get_filenames<-function(tablename,  con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  #if not a valid connection of table does not exist
+  if(!valcon || !tableexists){
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+    
+    #else a valid connection and table exist
+  }else{
+    
+
+      q <- paste0("SELECT DISTINCT(filename) FROM ", tablename)
+      res<-RPostgreSQL::dbGetQuery(.connection$con, q)
+      
+    }
+  as.vector(t(res))
+}
+
+
+# *****************************************************************************
+# Get file names from a database
+# *****************************************************************************
+
+#' This function is for getting the file names associated with a specific table
+#' 
+#' @family postgresql functions
+#' @param tablename the table name.
+#' @param data the data to upload
+#' @return user
+#' @examples test
+#' @export
+
+get_filenames_forSubject<-function(tablename, subjectid, con=".connection"){
+  
+  valcon<-valid_connection(con)
+  tableexists<-table_exists(tablename)
+  
+  #if not a valid connection of table does not exist
+  if(!valcon || !tableexists){
+    
+    stop(paste("Either you don't have a valid database connection or the table does not exist"))
+    
+    #else a valid connection and table exist
+  }else if(!subjectid%in%get_subjectid(tablename)){
+    
+    stop(paste0("Rider ID ", subjectid, " does not exist in table ", tablename))
+    
+  }else{
+    q <- paste0("SELECT DISTINCT(filename) FROM ", tablename, " WHERE subjectid='", subjectid, "'")
+    res<-RPostgreSQL::dbGetQuery(.connection$con, q)
+    
+  }
+  as.vector(t(res))
+}
+
+
+
+
+# *****************************************************************************
 # Delete data ---------------------------
 # *****************************************************************************
 

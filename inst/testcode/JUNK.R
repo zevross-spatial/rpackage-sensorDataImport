@@ -674,6 +674,8 @@ micropem[5,]
 head(x2[,c("hr", "subjectid", "sessionid")])
 head(micropem[,c("hr", "subjectid", "sessionid")])
 
+# *****************************************************************************
+#  comparing
+# *****************************************************************************
 
-
-
+knitr::knit("D:/work/r_packages/sensorDataImport/vignettes/how-to.Rmd", "D:/work/r_packages/sensorDataImport.wiki/Examples.md")
