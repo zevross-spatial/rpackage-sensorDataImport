@@ -82,6 +82,11 @@ res<-get_sensor_data("gps",
 # gives error, check xtravars
 res<-get_sensor_data("hxi", xtravars=c("datetime", "asdfjasf")) #gives error
 
+
+tablename<-"gps"
+do_aggregate <- FALSE
+
+
 # gives error check grouping vars
 res<-get_sensor_data("hxi", 
                      do_aggregate=TRUE, 
@@ -104,7 +109,7 @@ get_sensor_data <- function(tablename,
 ){
   
   vars_to_get<-NULL
-  clean_vars<-NULL
+  clean_vars<-NULL #variables needed to do cleaning
   valcon<-valid_connection()
   tableexists<-table_exists(tablename)
   con<-.connection$con
@@ -141,9 +146,12 @@ get_sensor_data <- function(tablename,
     # if they're aggregating then include the grouping and summarizing vars
     # if they're cleaning then add the vars needed for clearning
   }else{
-    vars_to_get <- xtravars
-    if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
+    vars_to_get <- xtravars #should be NULL if aggregating
     
+    # note that I'm manually adding "sessionid" because, even if it's
+    # not a grouping variable, we will still need to filter out the
+    # non sessions in the cleaning phase
+    if(do_aggregate) vars_to_get <- unique(c("datetime", vars_to_get, grouping_vars, summarize_vars))
     
     clean_vars<-NULL
     if(clean_first){
@@ -162,14 +170,9 @@ get_sensor_data <- function(tablename,
     
     dat <- clean_data(tablename, dat)
     
-    # remove the fields used for cleaning
-    if(length(clean_vars)>0){
-      #any clean vars that are NOT needed for other things?
-      #clean_vars[clean_vars%in%vars_to_get]
-      #vars_to_get <- vars_to_get[vars_to_get%in%clean_vars]
-      
-      dat <- select_(dat, .dots = vars_to_get)
-    }
+    # This will get rid of the cleaning variables
+    dat <- select_(dat, .dots = vars_to_get)
+    
     
   }
   
@@ -182,16 +185,15 @@ get_sensor_data <- function(tablename,
                           grouping_vars = grouping_vars)
   }
   
-  
   # if the aggregation unit is complete then we're averaging with
   # no regard to time and then the output should not include time
   # info.
+  dat <- ungroup(dat)
   
   if(aggregation_unit == "complete"){
-    dat<-ungroup(dat) %>% select(-c(interval, begin, end))
+    dat<-dat %>% select(-c(interval, begin, end))
   }
-  
-  dat
+  data.frame(dat)
   
   
 }

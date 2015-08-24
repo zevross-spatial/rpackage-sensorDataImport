@@ -100,6 +100,8 @@ agg_unit_ok <- function(aggregation_unit){
 #'    aggregation_unit="1 hour",
 #'    grouping_vars = c( "subjectid", "sessionid"),
 #'    summarize_vars = c("temperature", "rh", "flow"))
+#'    
+#'    
                      
 get_sensor_data <- function(tablename, 
                             do_aggregate = FALSE,
@@ -143,7 +145,9 @@ get_sensor_data <- function(tablename,
   # variables
   
   if(!do_aggregate && tolower(xtravars) == "all" ){
+    
     dat<-collect(thetable)
+    vars_to_get <- names(dat)
     
     # otherwise start with the user selected variables
     # if they're aggregating then include the grouping and summarizing vars
