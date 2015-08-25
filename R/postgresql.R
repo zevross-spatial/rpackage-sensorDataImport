@@ -381,6 +381,10 @@ upload_postgres<-function(tablename, data){
   
   writeLines(paste("About to upload", rows, "rows to" , tablename))
   
+  
+  timezone <- ifelse(tablename == "gps","UTC","America/New_York")
+  data$datetime <- paste0(data$datetime, timezone)
+  
   print(head(data))
   
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)

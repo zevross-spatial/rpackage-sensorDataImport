@@ -85,7 +85,12 @@ res<-get_sensor_data("hxi", xtravars=c("datetime", "asdfjasf")) #gives error
 
 tablename<-"gps"
 do_aggregate <- FALSE
+xtravars <- "all"
+aggregation_unit="2 hours"
+summarize_vars = NULL
+grouping_vars = c("datetime", "subjectid", "sessionid")
 
+x<-get_sensor_data("gps")
 
 # gives error check grouping vars
 res<-get_sensor_data("hxi", 
@@ -97,7 +102,7 @@ res<-get_sensor_data("hxi",
 
 
 
-
+x<-get_sensor_data("gps")
 
 get_sensor_data <- function(tablename, 
                             do_aggregate = FALSE,
@@ -140,7 +145,10 @@ get_sensor_data <- function(tablename,
   # variables
   
   if(!do_aggregate && tolower(xtravars) == "all" ){
+    
+    
     dat<-collect(thetable)
+    vars_to_get <- names(dat)
     
     # otherwise start with the user selected variables
     # if they're aggregating then include the grouping and summarizing vars
