@@ -268,7 +268,7 @@ initiate_processing<-function(filepath, filename, projectid, metainfilename){
 body_lines <- deparse(body(RPostgreSQL::postgresqlWriteTable))
 new_body_lines <- sub(
   'postgresqlTableRef(name), "FROM STDIN")', 
-  'postgresqlTableRef(name), "(", paste(shQuote(names(value)), collapse = ","), ") FROM STDIN")', 
+  'postgresqlTableRef(name), "(", paste(shQuote(names(value), type = "cmd"), collapse = ","), ") FROM STDIN")', 
   body_lines,
   fixed = TRUE
 )

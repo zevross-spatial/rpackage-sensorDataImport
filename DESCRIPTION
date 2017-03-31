@@ -24,6 +24,4 @@ Imports:
   data.table,
   gdata
 VignetteBuilder: knitr
-
-
-
+RoxygenNote: 6.0.1
