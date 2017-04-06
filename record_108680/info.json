@@ -1,0 +1,23 @@
+{
+    "timestamp": 1473960287.0039062,
+    "request": "/api/v1/data/?record=108680",
+    "start": 377333833473,
+    "user": 7665,
+    "decoder_version": "0.5.3",
+    "start_date": "2016-09-15T17:24:47.003906",
+    "algo": {
+        "record_id": 108680,
+        "created": "2016-07-06T21:28:06.889481",
+        "algorithms": {
+            "ecg": "2.1.0",
+            "acceleration": "2.1.0",
+            "sleep_phase": "2.1.0",
+            "sleep_position": "2.1.0",
+            "respiration": "2.1.0",
+            "hrv": "2.1.0",
+            "activity_detection": "2.1.0"
+        },
+        "id": 3,
+        "resource_uri": "/api/algo/3/"
+    }
+}
