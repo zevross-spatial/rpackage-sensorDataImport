@@ -1,6 +1,7 @@
 
 library(sensorDataImport)
 library(shiny)
+library(ggplot2)
 
 setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 
@@ -71,6 +72,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = 'Processing and uploading:\n',
                    value = 0, {   
                      
+                     plots <- list()
                      # loop through files
                      for(i in 1:nfiles){
                        
@@ -143,6 +145,32 @@ shinyServer(function(input, output, session) {
                        validate(need(!is.error(upload), upload_msg))
                        
                        #*******************************************************
+                       # Create a plot
+                       #******************************************************* 
+
+                       p<-try({plot_qaqc(
+                         tablename=tolower(curfiletype),
+                         dat=data)}, silent=TRUE)
+                       
+                       if(!is.error(p)){
+                         plots <- append(plots, p)
+                       }
+                       
+                       
+                       plot_msg <- NULL
+                       
+                       # if there is an error in the upload
+                       if(is.error(p)) {
+                         
+                         plot_msg = error_report(currentfile_num=i, 
+                                                   filenames=filenames, 
+                                                   stage="uploading")     
+                       }
+                       
+                       # end session and report error in data handling
+                       validate(need(!is.error(p), plot_msg))                       
+                       
+                       #*******************************************************
                        # Update progress indicator and clean up
                        #*******************************************************               
                        
@@ -155,7 +183,7 @@ shinyServer(function(input, output, session) {
       
       
     }#end else re: infile
-    return(filenames)
+    return(list(filenames = filenames, plots = p))
   }) # end reactive process file
   
   
@@ -165,7 +193,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$contents<-renderUI({
-    HTML(paste(process(), collapse = '<br/>'))
+    HTML(paste(process()$filenames, collapse = '<br/>'))
     
   })
 
@@ -176,7 +204,21 @@ shinyServer(function(input, output, session) {
   })
   
   
+  output$plotsQAQC <- renderUI({
+    list(
+    h2("Quality assurance plots"),
+    plotOutput("plot1")
+    )
 
+  })
+
+  output$plot1 <- renderPlot({
+
+    p <- process()$plots
+    return(p[[1]])
+  })
+  
+  
   
 })
 
