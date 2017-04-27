@@ -1,3 +1,5 @@
+-- A number of 23.5141 has precision 6, scale 4
+
 -- GPS data
 
 DROP TABLE IF EXISTS gps;
@@ -79,7 +81,8 @@ projectID varchar(30),
 DROP TABLE IF EXISTS mpm;
 create table mpm(
 	datetime timestamp,
-	neph_rhcorrect numeric(12,2),
+	neph_rhcorrect numeric(12,3),
+	neph_rhcorrect_hr numeric(12,3),
 	temperature numeric(5,2),
 	RH numeric(5,2),
 	battery  numeric(10,4),
@@ -90,7 +93,9 @@ create table mpm(
 	yaxis   numeric(10,4),
 	zaxis   numeric(10,4),
 	vectorsumcomp   numeric(10,4),
-	action varchar(100),
+	shut_down_reason varchar(100),
+	wearing_compliance varchar(100),
+	validity_wearing_compliance varchar(100),
 	hdr_filename varchar(100),
 	hdr_downloaddate varchar(10),
 	hdr_downloadtime varchar(10),
