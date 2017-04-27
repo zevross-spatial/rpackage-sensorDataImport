@@ -378,7 +378,6 @@ column_types<-function(tablename, column_names, con=".connection"){
 
 upload_postgres<-function(tablename, data){
   rows<-nrow(data)
-  
   writeLines(paste("About to upload", rows, "rows to" , tablename))
   
   
@@ -386,7 +385,6 @@ upload_postgres<-function(tablename, data){
   data$datetime <- paste0(data$datetime, timezone)
   
   print(head(data))
-  
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
   
   msg<-paste("Completed upload of", rows, "rows to" , tablename)

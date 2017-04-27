@@ -26,7 +26,7 @@ hex_extract_convert <- function(thefile){
     system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir, "/", bn_folder))
   }
   
-  if(os = ''){
+  if(os == ''){
     
   }
   

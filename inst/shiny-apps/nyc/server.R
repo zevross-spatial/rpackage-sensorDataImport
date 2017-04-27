@@ -122,6 +122,8 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Data upload
                        #*******************************************************
+                       
+                       
                        upload<-try({upload_postgres(
                          tablename=tolower(curfiletype),
                          data=data)}, silent=TRUE)

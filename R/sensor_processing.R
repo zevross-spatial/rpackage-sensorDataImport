@@ -141,8 +141,10 @@ process_abp<-function(filepath, filename, fileinfo, metainfilename){
 #' @export
 
 process_micropem<-function(filepath, filename, fileinfo,metainfilename){
-
     #filepath<-"X:/projects/columbia_bike/data/client_data/20150205_microPem/UGF320417N_KHC0226.csv"
+    
+    # ---- Extract header-related information
+  
     # Grab the header information -- n=50 to make sure I have all lines
     # but this includes extra lines
     nonParsed<-readLines(file(filepath, "r"), warn=FALSE, n=50)
@@ -176,10 +178,12 @@ process_micropem<-function(filepath, filename, fileinfo,metainfilename){
     
     names(headerinfo)<-c(headers1, headers2)
     
+    # ---- Get the data without the header
     
     data<-read.csv(filepath, as.is=T, skip=endHeader+numBlanks, header=FALSE)
-    names(data)<-c("date", "time", "neph_rhcorrect", "temperature", "rh", "battery", "inlpressure", "oripressure", "flow",
-                   "xaxis", "yaxis", "zaxis", "vectorsumcomp", "action")
+    names(data)<-c("date", "time", "neph_rhcorrect", "neph_rhcorrect_hr", "temperature", "rh", "battery", "inlpressure", "oripressure", "flow",
+                   "xaxis", "yaxis", "zaxis", "vectorsumcomp", "shut_down_reason",
+                   "wearing_compliance", "validity_wearing_compliance")
     
     
     #I'm seeing that they might have a line called "Errored Line"
@@ -191,11 +195,7 @@ process_micropem<-function(filepath, filename, fileinfo,metainfilename){
     data$neph_rhcorrect[data$rh < 0 & !is.na(data$rh)]<-NA
     data$rh[data$rh<0]<-NA
     
-    # need to add the header info, each as it's own record
-    # this is bad form making data global
-#     invisible(mapply(function(x,i){
-#       data[[i]]<<-x
-#     }, headerinfo, names(headerinfo)))
+    # ---- make header info into data.frame
     
     h<-data.frame(matrix(headerinfo, nrow=nrow(data), ncol=length(headerinfo), byrow=TRUE))
     names(h)<-names(headerinfo)
