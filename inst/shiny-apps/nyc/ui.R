@@ -63,7 +63,10 @@ shinyUI(fluidPage(
 
                       br()
               ),
-             tabPanel("Plots", plotOutput("plot1"))
+             tabPanel("Plots", 
+                      #actionButton("getplots", "Get most recent plots..."),
+                      uiOutput("plotsQAQC")
+                      )
            )
            
 

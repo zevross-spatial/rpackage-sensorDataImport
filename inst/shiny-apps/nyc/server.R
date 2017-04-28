@@ -210,23 +210,17 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # output$plotsQAQC <- renderUI({
-  #   list(
-  #   h2("Quality assurance plots"),
-  #   plotOutput("plot1")
-  #   )
-  # 
-  # })
+  output$plotsQAQC <- renderUI({
+    list(
+    h2("Quality assurance plots"),
+    plotOutput("plots")
+    )
 
-  output$plot1 <- renderPlot({
-    
+  })
+
+  output$plots <- renderPlot({
+    #input$getplots
     p <- process()$plots
-    # p <- ggplot(cars, aes(speed, dist)) + geom_point()
-    # p2 <- ggplot(cars, aes(speed, dist)) + geom_point()
-    # l <- list()
-    # l[[1]] <- p
-    # l[[2]] <- p2
-    # l[[3]] <- p
     return(do.call(grid.arrange, c(p, ncol = 1)))
   })
   
