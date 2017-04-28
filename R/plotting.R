@@ -11,8 +11,9 @@
 #' plotting_vars("hxi")
 #' @export
 
-plot_qaqc<-function(tablename, dat, save = TRUE){
-# tablename <- tolower(curfiletype)
+plot_qaqc<-function(tablename, dat, save = TRUE, savepath = ""){
+
+  dat$datetime <- as.POSIXct(dat$datetime)
   p <- switch(tablename,
          "abp" = plot_abp(tablename, dat),
          "gps" = plot_gps(tablename, dat),
@@ -47,10 +48,11 @@ plot_qaqc<-function(tablename, dat, save = TRUE){
 
 plot_abp<-function(tablename, dat){
   
-  
+  dat <- data.frame(a = 1:10, b = 1:10)
+  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting ABP data")
   
-  return(dat)
+  return(p)
   
 }
 
@@ -71,10 +73,11 @@ plot_abp<-function(tablename, dat){
 
 plot_gps<-function(tablename, dat){
   
-  
+  dat <- data.frame(a = 1:10, b = 1:10)
+  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting GPS data")
   
-  return(dat)
+  return(p)
   
 }
 
@@ -95,10 +98,11 @@ plot_gps<-function(tablename, dat){
 
 plot_hxi<-function(tablename, dat){
   
-  
+  dat <- data.frame(a = 1:10, b = 1:10)
+  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting HXI data")
   
-  return(dat)
+  return(p)
   
 }
 
@@ -119,10 +123,11 @@ plot_hxi<-function(tablename, dat){
 
 plot_mae<-function(tablename, dat){
   
-  
+  dat <- data.frame(a = 1:10, b = 1:10)
+  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting MAE data")
   
-  return(dat)
+  return(p)
   
 }
 
@@ -142,13 +147,21 @@ plot_mae<-function(tablename, dat){
 #' @export
 
 plot_mpm<-function(tablename, dat){
-  
 
-  dat <- data.frame(a = 1:10, b = 1:10)
-  p <- ggplot(dat, aes(a, b)) + geom_point()
+
   print("I'm plotting MPM data")
+  res1 <- filter(dat, !is.na(neph_rhcorrect_hr))
+  p1 <- ggplot(res1, aes(datetime, neph_rhcorrect_hr)) + geom_point() +
+    ggtitle("MPM RH-Corrected Nephelometer HR")
 
-  return(p)
+  res2 <- filter(dat, !is.na(vectorsumcomp))
+  p2 <- ggplot(res2, aes(datetime, vectorsumcomp)) + geom_point() + 
+    ggtitle("MPM vector sum comp")
+  print("I'm done plotting MPM data")
+
+
+
+  return(grid.arrange(p1, p2 ,ncol = 1))
   
 }
 
@@ -169,10 +182,11 @@ plot_mpm<-function(tablename, dat){
 
 plot_pdr<-function(tablename, dat){
   
-  
+  dat <- data.frame(a = 1:10, b = 1:10)
+  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting PDR data")
   
-  return(dat)
+  return(p)
   
 }
 

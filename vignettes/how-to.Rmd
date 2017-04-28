@@ -108,7 +108,7 @@ get_connection("columbiaBike","PASSWORD",  host="localhost",
 The `get_connection` function creates an object called `.connection` that should look like:
 
 ```
-src:  postgres 9.3.4 [postgres@localhost:5433/columbiaBike]
+src:  postgres 9.3.4 [postgres@localhost:5432/columbiaBike]
 tbls: abp, gps, hxi, mae, mpm, pdr
 ```
 
@@ -137,9 +137,10 @@ grouping_vars = What variables should be used to aggregate by. Defaults to c("su
 
 ```{r}
 library(sensorDataImport)
-# your connection parameters will be different with, probably, port 5432
+# your connection parameters will be different -- the host
+# for you should probably be "localhost"
 get_connection("columbiaBike","spatial",  host="localhost",
-    port=5433, user="postgres")
+    port=5432, user="postgres")
 
 .connection
 
@@ -166,7 +167,7 @@ get_row_count("mpm")
 library(sensorDataImport)
 # your connection parameters will be different with, probably, port 5432
 get_connection("columbiaBike","spatial",  host="localhost",
-    port=5433, user="postgres")
+    port=5432, user="postgres")
 
 .connection
 gps_raw_clean <- get_sensor_data("gps")
@@ -215,7 +216,7 @@ head(micropem)
 
 ```{r}
 get_connection("columbiaBike","spatial",  host="localhost",
-               port=5433, user="postgres")
+               port=5432, user="postgres")
 ```
 
 

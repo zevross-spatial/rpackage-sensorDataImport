@@ -201,7 +201,7 @@ error_report<-function(currentfile_num, filenames, stage){
 
 
 # *****************************************************************************
-# parseFileName
+# initiate processing
 # *****************************************************************************
 
 #' Start the file processing -- basically a switch to file type-specific 
@@ -243,7 +243,12 @@ initiate_processing<-function(filepath, filename, projectid, metainfilename){
                          MPM = process_micropem(filepath, filename, fileinfo, metainfilename),
                          HXI = process_hexoskin(filepath, filename, fileinfo, metainfilename))
   
-
+  
+  
+  # timezone <- ifelse(filetype == "gps","UTC","America/New_York")
+  # process_result$datetime <- paste0(process_result$datetime, timezone)
+  
+  
       return(process_result)
   
 }

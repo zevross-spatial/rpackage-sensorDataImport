@@ -4,7 +4,7 @@
 \alias{get_sensor_data}
 \title{This function extracts data from the database.}
 \usage{
-get_sensor_data(tablename, do_aggregate = FALSE, clean_first = TRUE,
+get_sensor_data(tablename, do_aggregate = FALSE, clean_first = FALSE,
   aggregation_unit = "15 min", xtravars = "all", summarize_vars = NULL,
   grouping_vars = c("subjectid", "sessionid"))
 }

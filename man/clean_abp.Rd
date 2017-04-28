@@ -24,5 +24,9 @@ cleaning_abp("abp", dat)
 Other xxx: \code{\link{clean_data}},
   \code{\link{clean_gps}}, \code{\link{clean_hxi}},
   \code{\link{clean_mae}}, \code{\link{clean_mpm}},
-  \code{\link{clean_pdr}}, \code{\link{cleaning_vars}}
+  \code{\link{clean_pdr}}, \code{\link{cleaning_vars}},
+  \code{\link{plot_abp}}, \code{\link{plot_gps}},
+  \code{\link{plot_hxi}}, \code{\link{plot_mae}},
+  \code{\link{plot_mpm}}, \code{\link{plot_pdr}},
+  \code{\link{plot_qaqc}}
 }

@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Data processing
                        #*******************************************************
-                       
+           
                        # try and process the data
                        data <- try({initiate_processing(filepath  = curpath, 
                                                  filename  = curfilename,
@@ -153,7 +153,7 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Create a plot
                        #******************************************************* 
-
+                       
                        p<-try({plot_qaqc(
                          tablename=tolower(curfiletype),
                          dat=data)}, silent=TRUE)

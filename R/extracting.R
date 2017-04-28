@@ -105,7 +105,7 @@ agg_unit_ok <- function(aggregation_unit){
                      
 get_sensor_data <- function(tablename, 
                             do_aggregate = FALSE,
-                            clean_first = TRUE,
+                            clean_first = FALSE,
                             aggregation_unit="15 min",
                             xtravars = "all",
                             summarize_vars = NULL, 
@@ -146,7 +146,7 @@ get_sensor_data <- function(tablename,
   
   if(!do_aggregate && tolower(xtravars) == "all" ){
     
-    dat<-collect(thetable)
+    dat<-collect(thetable, n = Inf)
     vars_to_get <- names(dat)
     
     # otherwise start with the user selected variables
