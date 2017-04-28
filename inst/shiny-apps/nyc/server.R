@@ -2,6 +2,7 @@
 library(sensorDataImport)
 library(shiny)
 library(ggplot2)
+library(gridExtra)
 
 setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 
@@ -9,6 +10,9 @@ setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 options(shiny.maxRequestSize = 1000*1024^2)
 
 shinyServer(function(input, output, session) {
+  
+  plot_reactive <- reactiveValues(makeplot = FALSE)
+  
   writeLines("Begin NYC Shiny server, about to connect to DB")
   
   projectid<-reactive({
@@ -72,7 +76,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = 'Processing and uploading:\n',
                    value = 0, {   
                      
-                     plots <- list()
+                     plots <<- list()
                      # loop through files
                      for(i in 1:nfiles){
                        
@@ -83,10 +87,12 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Has file already been uploaded?
                        #*******************************************************
+                       
+                
                        already<-try({already_uploaded(tablename = tolower(curfiletype),
                                                       filename  = curfilename )}, silent=TRUE)
                        
-                       print(already)
+                    
                        already_msg<-NULL
                        
                        if(already) {
@@ -153,7 +159,7 @@ shinyServer(function(input, output, session) {
                          dat=data)}, silent=TRUE)
                        
                        if(!is.error(p)){
-                         plots <- append(plots, p)
+                         plots[[i]] <<- p
                        }
                        
                        
@@ -181,9 +187,9 @@ shinyServer(function(input, output, session) {
                      
                    })#end withProgress
       
-      
+      #plot_reactive$makeplot <- !plot_reactive$makeplot
     }#end else re: infile
-    return(list(filenames = filenames, plots = p))
+    return(list(filenames = filenames, plots = plots))
   }) # end reactive process file
   
   
@@ -204,18 +210,24 @@ shinyServer(function(input, output, session) {
   })
   
   
-  output$plotsQAQC <- renderUI({
-    list(
-    h2("Quality assurance plots"),
-    plotOutput("plot1")
-    )
-
-  })
+  # output$plotsQAQC <- renderUI({
+  #   list(
+  #   h2("Quality assurance plots"),
+  #   plotOutput("plot1")
+  #   )
+  # 
+  # })
 
   output$plot1 <- renderPlot({
-
+    
     p <- process()$plots
-    return(p[[1]])
+    # p <- ggplot(cars, aes(speed, dist)) + geom_point()
+    # p2 <- ggplot(cars, aes(speed, dist)) + geom_point()
+    # l <- list()
+    # l[[1]] <- p
+    # l[[2]] <- p2
+    # l[[3]] <- p
+    return(do.call(grid.arrange, c(p, ncol = 1)))
   })
   
   

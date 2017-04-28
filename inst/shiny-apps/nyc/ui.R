@@ -63,7 +63,7 @@ shinyUI(fluidPage(
 
                       br()
               ),
-             tabPanel("Plots", uiOutput("plotsQAQC"))
+             tabPanel("Plots", plotOutput("plot1"))
            )
            
 
