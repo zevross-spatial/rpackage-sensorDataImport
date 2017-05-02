@@ -112,7 +112,7 @@ get_sensor_data <- function(tablename,
                             grouping_vars = c("subjectid", "sessionid")
                             ){
   
-  #tablename<-"mpm"
+  #tablename<-"hxi"
   vars_to_get<-NULL
   clean_vars<-NULL #variables needed to do cleaning
   valcon<-valid_connection()
