@@ -4,7 +4,7 @@
 \alias{plot_qaqc}
 \title{A function that lists the variables that will be needed in the plotting step}
 \usage{
-plot_qaqc(tablename, dat, save = TRUE)
+plot_qaqc(tablename, dat, save = TRUE, savepath = "")
 }
 \arguments{
 \item{tablename}{the table to be ploted}
@@ -23,8 +23,10 @@ Other xxx: \code{\link{clean_abp}},
   \code{\link{clean_data}}, \code{\link{clean_gps}},
   \code{\link{clean_hxi}}, \code{\link{clean_mae}},
   \code{\link{clean_mpm}}, \code{\link{clean_pdr}},
-  \code{\link{cleaning_vars}}, \code{\link{plot_abp}},
-  \code{\link{plot_gps}}, \code{\link{plot_hxi}},
-  \code{\link{plot_mae}}, \code{\link{plot_mpm}},
-  \code{\link{plot_pdr}}
+  \code{\link{cleaning_vars}},
+  \code{\link{forplot_filter_add_runtime}},
+  \code{\link{plot_abp}}, \code{\link{plot_gps}},
+  \code{\link{plot_hxi}}, \code{\link{plot_mae}},
+  \code{\link{plot_mpm}}, \code{\link{plot_pdr}},
+  \code{\link{sensor_ggplot}}
 }

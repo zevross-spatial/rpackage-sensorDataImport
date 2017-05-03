@@ -25,8 +25,9 @@ Other xxx: \code{\link{clean_abp}},
   \code{\link{clean_data}}, \code{\link{clean_hxi}},
   \code{\link{clean_mae}}, \code{\link{clean_mpm}},
   \code{\link{clean_pdr}}, \code{\link{cleaning_vars}},
+  \code{\link{forplot_filter_add_runtime}},
   \code{\link{plot_abp}}, \code{\link{plot_gps}},
   \code{\link{plot_hxi}}, \code{\link{plot_mae}},
   \code{\link{plot_mpm}}, \code{\link{plot_pdr}},
-  \code{\link{plot_qaqc}}
+  \code{\link{plot_qaqc}}, \code{\link{sensor_ggplot}}
 }

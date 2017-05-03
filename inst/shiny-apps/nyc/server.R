@@ -4,10 +4,12 @@ library(shiny)
 library(ggplot2)
 library(gridExtra)
 
+
 setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 
 
 options(shiny.maxRequestSize = 1000*1024^2)
+
 
 shinyServer(function(input, output, session) {
   
@@ -52,6 +54,8 @@ shinyServer(function(input, output, session) {
       paths     <- input$file1$datapath #temporary paths for the files
       filenames <- input$file1$name #names of files
       
+      .numberPlots <<- nfiles
+      
       metainfilename<-isolate(input$metadatainfilename) # not used now
 
 
@@ -88,7 +92,7 @@ shinyServer(function(input, output, session) {
                        # Has file already been uploaded?
                        #*******************************************************
                        
-                
+                      
                        already<-try({already_uploaded(tablename = tolower(curfiletype),
                                                       filename  = curfilename )}, silent=TRUE)
                        
@@ -131,7 +135,7 @@ shinyServer(function(input, output, session) {
                        # Data upload
                        #*******************************************************
                        
-                       
+                 
                        upload<-try({upload_postgres(
                          tablename=tolower(curfiletype),
                          data=data)}, silent=TRUE)
@@ -220,9 +224,11 @@ shinyServer(function(input, output, session) {
 
   output$plots <- renderPlot({
     #input$getplots
+    
     p <- process()$plots
+    .numberPlots <<- length(p)
     return(do.call(grid.arrange, c(p, ncol = 1)))
-  })
+  }, height = 750 * .numberPlots)
   
   
   

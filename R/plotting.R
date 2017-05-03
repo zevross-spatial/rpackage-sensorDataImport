@@ -10,20 +10,20 @@
 #' @param thevar the variable that will be used for NA filtering
 #' @return new dataset with no NA for the var and new sessionid
 #' @examples
-#' xxxx
+#' plotting_hxi("hxi", dat)
+#' @export
 
 forplot_filter_add_runtime <- function(dat, thevar){
-
-if(!any(names(dat)=="datetime") && any(names(dat)=="begin")) 
-  dat$datetime <- dat$begin
-dat <- dat[!is.na(dat[[thevar]]),]
-dat <- group_by(dat, sessionid) %>% 
-  mutate(runtime = paste("(runtime of", 
-                         round(max(datetime)-min(datetime),1), "hours)"),
-         firstdate = as.Date(min(datetime)))
-dat$sessionid <- paste0("Session ", trimws(dat$sessionid), ", ", dat$firstdate,
-                        " ", dat$runtime)
-dat
+  #dat <- hxiA
+  if(!any(names(dat)=="datetime") && any(names(dat)=="begin")) dat$datetime <- dat$begin
+  dat <- dat[!is.na(dat[[thevar]]),]
+  dat <- group_by(dat, sessionid) %>% 
+    mutate(runtime = paste("(runtime of", 
+                           round(max(datetime)-min(datetime),1), "hours)"),
+           firstdate = as.Date(min(datetime)))
+  dat$sessionid <- paste0("Session ", trimws(dat$sessionid), ", ", dat$firstdate,
+                          " ", dat$runtime)
+  dat
 }
 
 
@@ -38,14 +38,21 @@ dat
 #' @param title the plot title
 #' @return a ggplot
 #' @examples
-#' xxxx
+#' plotting_hxi("hxi", dat)
+#' @export
 
 sensor_ggplot <- function(dat, var, title){
-  if(!any(names(dat)=="datetime") && any(names(dat)=="begin")) 
-    dat$datetime <- dat$begin
-  ggplot(dat, aes_string("datetime", var)) + geom_point() + 
+  # dat <- hxiA
+  # var <- "activity_avg"
+  # title <- "a"
+  if(!any(names(dat)=="datetime") && any(names(dat)=="begin")){dat$datetime <- dat$begin}
+  
+  ggplot(dat, aes_string("datetime", var)) + geom_point(color = "blue", alpha = 0.75) + 
     ggtitle(title) +
-    facet_wrap(~sessionid, scales = "free", ncol = 1)
+    facet_wrap(~sessionid, scales = "free", ncol = 1) +
+    theme(
+      strip.text = element_text(size = rel(1.3), face = "bold")
+    )
 }
 
 
@@ -64,16 +71,16 @@ sensor_ggplot <- function(dat, var, title){
 #' @export
 
 plot_qaqc<-function(tablename, dat, save = TRUE, savepath = ""){
-
+  
   dat$datetime <- as.POSIXct(dat$datetime)
   p <- switch(tablename,
-         "abp" = plot_abp(tablename, dat),
-         "gps" = plot_gps(tablename, dat),
-         "hxi" = plot_hxi(tablename, dat),
-         "mae" = plot_mae(tablename, dat),
-         "mpm" = plot_mpm(tablename, dat),
-         "pdr" = plot_pdr(tablename, dat)
-         
+              "abp" = plot_abp(tablename, dat),
+              "gps" = plot_gps(tablename, dat),
+              "hxi" = plot_hxi(tablename, dat),
+              "mae" = plot_mae(tablename, dat),
+              "mpm" = plot_mpm(tablename, dat),
+              "pdr" = plot_pdr(tablename, dat)
+              
   )
   
   if(save){
@@ -127,8 +134,8 @@ plot_gps<-function(tablename, dat){
   gpsDat <- get_sensor_data("gps", clean_first = FALSE)
   # Plot 1 - (RH-Corrected Nephelometer HR)
   
-  gps1 <- filter_add_runtime(gpsDat, "longitude")
-  p <-sensor_ggplot(gps1, "longitude", "Longitude (as a surrogate for non-missing data)")
+  gps1 <- forplot_filter_add_runtime(gpsDat, "longitude")
+  p <-sensor_ggplot(gps1, "longitude", "GPS: Longitude (as a surrogate for non-missing data)")
   
   print("I'm plotting GPS data")
   
@@ -153,24 +160,33 @@ plot_gps<-function(tablename, dat){
 
 plot_hxi<-function(tablename, dat){
   
-  
-  # res1 <- filter(res, !is.na(activity))
-  # res1$sessionid <- paste("Session", trimws(res1$sessionid))
-  # ggplot(res1, aes(datetime, activity)) + geom_point() + 
-  #   ggtitle("HXI activity") +
-  #   facet_wrap(~sessionid, scales = "free", ncol = 1)
-  
-  # res1 <- filter(res, !is.na(minute_ventilation))
-  # res1$sessionid <- paste("Session", trimws(res1$sessionid))
-  # ggplot(res1, aes(datetime, minute_ventilation)) + geom_point() + 
-  #   ggtitle("HXI minute_ventilation") +
-  #   facet_wrap(~sessionid, scales = "free", ncol = 1)
-  
-  dat <- data.frame(a = 1:10, b = 1:10)
-  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
   print("I'm plotting HXI data")
+  hxiA<- aggregate_data(dat,
+                        aggregation_unit = "1 min",
+                        summarize_vars = c("activity", "minute_ventilation"),
+                        grouping_vars = c("subjectid", "sessionid"))
   
-  return(p)
+  hxiB <- dat
+  # Plot 1 - (RH-Corrected Nephelometer HR)
+
+  hxi1 <- forplot_filter_add_runtime(hxiA, "activity_avg")
+  p1 <- sensor_ggplot(hxi1, "activity_avg", "Hexoskin: Activity (1 minute average)")
+  
+  # Plot 2 - 
+  # CAREFUL THAT THIS IS CORRECT THEY ASK FOR MINUTE VENTILATION ADJUSTED
+  # THIS MUST BE IN THE BINARY FILES
+  hxi1 <- forplot_filter_add_runtime(hxiA, "minute_ventilation_avg")
+  p2 <- sensor_ggplot(hxi1, "minute_ventilation_avg", "Hexoskin: Minute ventilation (1 minute average)")
+  
+  
+  # Plot 3: 
+  
+  hxi1 <- forplot_filter_add_runtime(hxiB, "heart_rate")
+  p3 <- sensor_ggplot(hxi1, "heart_rate", "Hexoskin: Heart rate")
+  
+  
+  
+  return(grid.arrange(p1, p2, p3, ncol = 1))
   
 }
 
@@ -191,16 +207,21 @@ plot_hxi<-function(tablename, dat){
 
 plot_mae<-function(tablename, dat){
   
-  # res1 <- filter(res, !is.na(bc))
-  # ggplot(res1, aes(datetime, bc)) + geom_point() + 
-  #   ggtitle("MPM RH-Corrected Nephelometer HR") +
-  #   facet_wrap(~sessionid, scales = "free", ncol = 1)
   
-  dat <- data.frame(a = 1:10, b = 1:10)
-  p <- ggplot(dat, aes(a, b)) + geom_point() + ggtitle(tablename)
-  print("I'm plotting MAE data")
   
-  return(p)
+  # Plot 1: bc also include run time
+  
+  mae1 <- forplot_filter_add_runtime(dat, "bc")
+  p1 <- sensor_ggplot(mae1, "bc", "Microaeth: BC")
+  
+  
+  # Plot 2
+  
+  
+  mae1 <- forplot_filter_add_runtime(dat, "atn")
+  p2 <- sensor_ggplot(mae1, "atn", "Microaeth: ATN")
+  
+  return(grid.arrange(p1, p2 ,ncol = 1))
   
 }
 
@@ -220,33 +241,24 @@ plot_mae<-function(tablename, dat){
 #' @export
 
 plot_mpm<-function(tablename, dat){
-
-
-  print("I'm plotting MPM data")
   
-  mpm <- get_sensor_data("mpm", clean_first = FALSE)
+  
+  print("I'm plotting MPM data")
   
   # Plot 1 - (RH-Corrected Nephelometer HR)
   
-  mpm1 <- filter_add_runtime(mpm, "neph_rhcorrect_hr")
-  p1 <- sensor_ggplot(mpm1, "neph_rhcorrect_hr", "RH-Corrected Nephelometer HR")
+  mpm1 <- forplot_filter_add_runtime(dat, "neph_rhcorrect_hr")
+  p1 <- sensor_ggplot(mpm1, "neph_rhcorrect_hr", "MicroPEM: RH-Corrected Nephelometer HR")
   
   # Plot 2 - 
   
-  mpm1 <- filter_add_runtime(mpm, "vectorsumcomp")
-  p2 <- sensor_ggplot(mpm1, "vectorsumcomp", "Vector Sum Composite (activity)")
+  mpm1 <- forplot_filter_add_runtime(dat, "vectorsumcomp")
+  p2 <- sensor_ggplot(mpm1, "vectorsumcomp", "MicroPEM: Vector Sum Composite (activity)")
   
-  # res1 <- filter(dat, !is.na(neph_rhcorrect_hr))
-  # p1 <- ggplot(res1, aes(datetime, neph_rhcorrect_hr)) + geom_point() +
-  #   ggtitle("MPM RH-Corrected Nephelometer HR")
-  # 
-  # res2 <- filter(dat, !is.na(vectorsumcomp))
-  # p2 <- ggplot(res2, aes(datetime, vectorsumcomp)) + geom_point() + 
-  #   ggtitle("MPM vector sum comp")
   print("I'm done plotting MPM data")
-
-
-
+  
+  
+  
   return(grid.arrange(p1, p2 ,ncol = 1))
   
 }

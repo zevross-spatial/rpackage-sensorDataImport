@@ -29,8 +29,9 @@ Other postgresql functions: \code{\link{add_tables_db}},
   \code{\link{get_connection}},
   \code{\link{get_filenames_forSubject}},
   \code{\link{get_filenames}}, \code{\link{get_row_count}},
-  \code{\link{get_sensor_data}}, \code{\link{list_tables}},
-  \code{\link{table_exists}},
+  \code{\link{get_sensor_data}},
+  \code{\link{kill_pg_connections}},
+  \code{\link{list_tables}}, \code{\link{table_exists}},
   \code{\link{upload_postgres}},
   \code{\link{valid_connection}}
 }

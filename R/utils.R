@@ -39,6 +39,10 @@ NULL
 NULL
 
 
+#' @importFrom RPostgreSQL dbListConnections dbDisconnect PostgreSQL
+#' @export
+NULL
+
 # *****************************************************************************
 # Test file prefix -----
 # *****************************************************************************

@@ -381,15 +381,15 @@ upload_postgres<-function(tablename, data){
   writeLines(paste("About to upload", rows, "rows to" , tablename))
   
   
-  timezone <- ifelse(tablename == "gps","UTC","America/New_York")
-  data$datetime <- paste0(data$datetime, timezone)
+
+  
   
   print(head(data))
   postgresqlWriteTableAlt(.connection$con, tablename, data, append=TRUE, row.names=FALSE)
   
   msg<-paste("Completed upload of", rows, "rows to" , tablename)
   writeLines(msg)
-
+  #kill_pg_connections()
 }
 
 
@@ -642,4 +642,33 @@ my_fun <- function(a, b) {
   }
 }
 
+# *****************************************************************************
+# Kill connections ---------------------------
+# *****************************************************************************
 
+#' Tests if data has already been uploaded
+#' 
+#' This function tests whether the filename exists in the given table
+#' there is no check to see if the date or data are the same -- based only on 
+#' filename
+#' 
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return Nothing
+#' @examples
+#' xyz
+#' @export
+
+kill_pg_connections <- function () {
+  
+  all_cons <- dbListConnections(PostgreSQL())
+  
+  print(all_cons)
+  
+  for(con in all_cons)
+    +  dbDisconnect(con)
+  
+  print(paste(length(all_cons), " connections killed."))
+  
+}
