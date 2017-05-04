@@ -672,3 +672,5 @@ kill_pg_connections <- function () {
   print(paste(length(all_cons), " connections killed."))
   
 }
+
+

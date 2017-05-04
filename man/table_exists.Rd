@@ -29,6 +29,8 @@ Other postgresql functions: \code{\link{add_tables_db}},
   \code{\link{get_sensor_data}},
   \code{\link{get_subjectid}},
   \code{\link{kill_pg_connections}},
-  \code{\link{list_tables}}, \code{\link{upload_postgres}},
+  \code{\link{list_tables}},
+  \code{\link{process_hexoskin}},
+  \code{\link{upload_postgres}},
   \code{\link{valid_connection}}
 }

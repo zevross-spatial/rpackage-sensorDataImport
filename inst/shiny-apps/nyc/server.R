@@ -10,6 +10,7 @@ setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 
 options(shiny.maxRequestSize = 1000*1024^2)
 
+.numberPlots <<- 1
 
 shinyServer(function(input, output, session) {
   
@@ -80,6 +81,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = 'Processing and uploading:\n',
                    value = 0, {   
                      
+                     cat("blah")
                      plots <<- list()
                      # loop through files
                      for(i in 1:nfiles){
@@ -117,7 +119,7 @@ shinyServer(function(input, output, session) {
                                                  projectid = projectid,
                                                  metainfilename = metainfilename)}, silent=TRUE)
                       
-                       
+                       browser()
                        data_msg <- NULL
                        
                        # if there is an error in the data processing

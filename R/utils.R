@@ -627,3 +627,34 @@ readGPXelement<-function (gpx.file, element)
 
 
 
+# *****************************************************************************
+# GPS
+# *****************************************************************************
+
+#' Function for averaging the data from the binary files in the hexoskin to one
+#' second. Specifically for the acceleration X, Y, Z files
+#' 
+#' @param .data the acceleration data files
+#' @return averaged data
+#' @examples
+#' xyz
+#' xyz
+#' @export
+
+hex_average_to_second <- function(.data){
+  
+  savenames <- names(.data)
+  names(.data) <- letters[1:ncol(.data)]
+  .data <- mutate(.data, timesecond = round(a)) 
+  
+  # See Git issue 46, average 0 and 1
+  .data$timesecond[.data$timesecond==0] <- 1
+  
+  
+  .data <- group_by(.data, timesecond) %>% summarise(avg = mean(b))
+  
+  names(.data) <- savenames
+  
+  .data
+}
+

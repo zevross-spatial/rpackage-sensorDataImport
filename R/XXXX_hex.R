@@ -4,12 +4,13 @@
 #/Users/zevross/junk/hex/record_108680
 
 
-#file1 <- "/Users/zevross/junk/hex_test/record_116113.zip"
+#file1 <- "/Users/zevross/git-repos/sensorDataImport/inst/example_data/BIKE0002_HXI01_S01A_150306.zip"
 
 hex_extract_convert <- function(thefile){
   
   # thefile <- file1
   # tmpdir <- "/Users/zevross/junk/hex/record_108680"
+  #"/var/folders/67/5936qfdd7fb2rtrxbm19bmnw0000gn/T/RtmpjAEAGw"
   
   os <- .Platform$OS.type
   bn <- basename(thefile)
@@ -17,17 +18,19 @@ hex_extract_convert <- function(thefile){
   tmpdir <- tempdir()
   tmpdir <- gsub("//", "/", tmpdir)
   unzip(zipfile = thefile, exdir = tmpdir)
+  dirs <- list.dirs(tmpdir, recursive = FALSE)
+  tmpdir <- dirs[grep("record_", dirs)]
+
   
-  tmpdir <- paste0(tmpdir, "/", bn_folder)
-  
+  print(paste("Unzipped to", tmpdir))
   
   if(os == 'unix'){
     #system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", "/Users/zevross/junk/hex/record_108680"))
-    system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir, "/", bn_folder))
+    system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir))
   }
   
-  if(os == ''){
-    
+  if(os == 'windows'){
+    system(paste0("inst/hexapps/windows/HxConvertSourceFile.exe ", tmpdir))
   }
   
   # rjsonlite
@@ -41,9 +44,9 @@ hex_extract_convert <- function(thefile){
   acceleration_Y <- read.csv(paste0(tmpdir, "/acceleration_Y.csv"), as.is = TRUE, col.names = c("second", "acceleration_y"))
   acceleration_Z <- read.csv(paste0(tmpdir, "/acceleration_Z.csv"), as.is = TRUE, col.names = c("second", "acceleration_z")) 
   
-  acceleration_X <- avgToSecond(acceleration_X)
-  acceleration_Y <- avgToSecond(acceleration_Y)
-  acceleration_Z <- avgToSecond(acceleration_Z)
+  acceleration_X <- hex_average_to_second(acceleration_X)
+  acceleration_Y <- hex_average_to_second(acceleration_Y)
+  acceleration_Z <- hex_average_to_second(acceleration_Z)
   
   activity <- read.csv(paste0(tmpdir, "/activity.csv"), as.is = TRUE, col.names = c("second", "activity")) 
   breathing_rate <- read.csv(paste0(tmpdir, "/breathing_rate.csv"), as.is = TRUE, col.names = c("second", "breathing_rate")) 
@@ -72,37 +75,13 @@ hex_extract_convert <- function(thefile){
  
   res$datetime <- startdate + res$second
   
-  
+  res
     
 }
 
 
 
-createDateTime <- function(seconds, startdate){
-  #seconds_column <- "timesecond"
-  #startdate <- 
-  .data$datetime <- startdate + .data[[seconds_column]]
-  
-}
 
-avgToSecond <- function(.data){
-  
-  # .data <- acceleration_X
-  # startdate <- info$start_date
-  savenames <- names(.data)
-  names(.data) <- letters[1:ncol(.data)]
-  .data <- mutate(.data, timesecond = round(a)) 
-  
-  # See Git issue 46, average 0 and 1
-  .data$timesecond[.data$timesecond==0] <- 1
-  
-  
-  .data <- group_by(.data, timesecond) %>% summarise(avg = mean(b))
-
-  names(.data) <- savenames
-
-  .data
-}
 
 
 

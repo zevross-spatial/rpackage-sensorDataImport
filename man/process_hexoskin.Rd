@@ -2,17 +2,41 @@
 % Please edit documentation in R/sensor_processing.R
 \name{process_hexoskin}
 \alias{process_hexoskin}
-\title{Process hexoskin}
+\title{Process hexoskin data}
 \usage{
 process_hexoskin(filepath, filename, fileinfo, metainfilename)
 }
+\arguments{
+\item{dbname}{the database.}
+
+\item{host}{database host, usually 'localhost'}
+}
 \value{
-user.
+Nothing
 }
 \description{
-Process hexoskin
+This function uses the utilities provided by the makers of hexoskin to convert
+the binary files in the ZIP to CSVs. Then we combine the individual pieces into
+one file
 }
 \examples{
-add(1, 1)
-add(10, 1)
+xyz
+}
+\seealso{
+Other postgresql functions: \code{\link{add_tables_db}},
+  \code{\link{agg_unit_ok}}, \code{\link{aggregate_data}},
+  \code{\link{already_uploaded}},
+  \code{\link{backup_database}},
+  \code{\link{column_exists}}, \code{\link{column_types}},
+  \code{\link{create_database}}, \code{\link{delete_data}},
+  \code{\link{get_column_names}},
+  \code{\link{get_connection}},
+  \code{\link{get_filenames_forSubject}},
+  \code{\link{get_filenames}}, \code{\link{get_row_count}},
+  \code{\link{get_sensor_data}},
+  \code{\link{get_subjectid}},
+  \code{\link{kill_pg_connections}},
+  \code{\link{list_tables}}, \code{\link{table_exists}},
+  \code{\link{upload_postgres}},
+  \code{\link{valid_connection}}
 }

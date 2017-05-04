@@ -355,7 +355,8 @@ process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
 # Process hexoskin file
 # -----------------------------------------------------------------------------
 
-#' Process hexoskin
+#' This was the original function for processing the hexoskin and it is replaced
+#' by a function that uses the binary file
 #' 
 #' @param sdf
 #' @return user.
@@ -363,7 +364,7 @@ process_microaeth<-function(filepath, filename, fileinfo,metainfilename){
 #' add(1, 1)
 #' add(10, 1)
 #' @export
-process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
+process_hexoskin_old<-function(filepath, filename, fileinfo,metainfilename){
   
 
   data<-read.csv(filepath,as.is=T, check.names=FALSE)
@@ -388,6 +389,100 @@ process_hexoskin<-function(filepath, filename, fileinfo,metainfilename){
     return(data)
   
 }
+
+
+#' Process hexoskin data
+#' 
+#' This function uses the utilities provided by the makers of hexoskin to convert
+#' the binary files in the ZIP to CSVs. Then we combine the individual pieces into
+#' one file
+#' 
+#' @family postgresql functions
+#' @param dbname the database.
+#' @param host database host, usually 'localhost'
+#' @return Nothing
+#' @examples
+#' xyz
+#' @export
+#' 
+process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
+  
+  # thefile <- file1
+  # tmpdir <- "/Users/zevross/junk/hex/record_108680"
+  #"/var/folders/67/5936qfdd7fb2rtrxbm19bmnw0000gn/T/RtmpjAEAGw"
+
+  
+  os <- .Platform$OS.type
+  bn <- basename(thefile)
+  bn_folder <- gsub(".zip", "", bn)
+  tmpdir <- tempdir()
+  tmpdir <- gsub("//", "/", tmpdir)
+  unzip(zipfile = thefile, exdir = tmpdir)
+  dirs <- list.dirs(tmpdir, recursive = FALSE)
+  
+  # TODO: Note I'm assuming that the files all start with record_
+  # but I'm not sure if this is the case
+  tmpdir <- dirs[grep("record_", dirs)]
+  
+  print(paste("Unzipped to", tmpdir))
+  
+  if(os == 'unix'){
+    #system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", "/Users/zevross/junk/hex/record_108680"))
+    system(paste0("../../hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir))
+  }
+  
+  if(os == 'windows'){
+    system(paste0("inst/hexapps/windows/HxConvertSourceFile.exe ", tmpdir))
+  }
+  
+  # rjsonlite
+  info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
+  # info$start_date: "2016-09-15T17:24:47.003906"
+  # format(as.POSIXct((info$timestamp), origin = "1970-01-01"), usetz=FALSE)
+  startdate <- as.POSIXct(gsub('T' , '', info$start_date), origin = "1970-01-01", tz = "GMT")
+  startdate <- as.POSIXct(format(startdate, tz = "America/New_York"))
+  
+  acceleration_X <- read.csv(paste0(tmpdir, "/acceleration_X.csv"), as.is = TRUE, col.names = c("second", "acceleration_x")) 
+  acceleration_Y <- read.csv(paste0(tmpdir, "/acceleration_Y.csv"), as.is = TRUE, col.names = c("second", "acceleration_y"))
+  acceleration_Z <- read.csv(paste0(tmpdir, "/acceleration_Z.csv"), as.is = TRUE, col.names = c("second", "acceleration_z")) 
+  
+  acceleration_X <- hex_average_to_second(acceleration_X)
+  acceleration_Y <- hex_average_to_second(acceleration_Y)
+  acceleration_Z <- hex_average_to_second(acceleration_Z)
+  
+  activity <- read.csv(paste0(tmpdir, "/activity.csv"), as.is = TRUE, col.names = c("second", "activity")) 
+  breathing_rate <- read.csv(paste0(tmpdir, "/breathing_rate.csv"), as.is = TRUE, col.names = c("second", "breathing_rate")) 
+  cadence <- read.csv(paste0(tmpdir, "/cadence.csv"), as.is = TRUE, col.names = c("second", "cadence"))
+  device_position <- read.csv(paste0(tmpdir, "/device_position.csv"), as.is = TRUE, col.names = c("second", "device_position")) 
+  device_position <- device_position[device_position$second!=0,]
+  
+  heart_rate <- read.csv(paste0(tmpdir, "/heart_rate.csv"), as.is = TRUE, col.names = c("second", "heart_rate")) 
+  minute_ventilation_adjusted <- read.csv(paste0(tmpdir, "/minute_ventilation_adjusted.csv"), as.is = TRUE, col.names = c("second", "minute_ventilation_adjusted")) 
+  minute_ventilation_raw<- read.csv(paste0(tmpdir, "/minute_ventilation_raw.csv"), as.is = TRUE, col.names = c("second", "minute_ventilation_raw")) 
+  tidal_volume_adjusted <- read.csv(paste0(tmpdir, "/tidal_volume_adjusted.csv"), as.is = TRUE, col.names = c("second", "tidal_volume_adjusted")) 
+  tidal_volume_raw <- read.csv(paste0(tmpdir, "/tidal_volume_raw.csv"), as.is = TRUE, col.names = c("second", "tidal_volume_raw")) 
+  
+  res <- full_join(acceleration_X, acceleration_Y) %>% 
+    full_join(., acceleration_Z) %>% 
+    full_join(., activity) %>% 
+    full_join(., breathing_rate) %>% 
+    full_join(., cadence) %>% 
+    full_join(., device_position) %>% 
+    full_join(., heart_rate) %>% 
+    full_join(., minute_ventilation_adjusted) %>% 
+    full_join(., minute_ventilation_raw) %>% 
+    full_join(., tidal_volume_adjusted) %>% 
+    full_join(., tidal_volume_raw) 
+  
+  
+  res$datetime <- startdate + res$second
+  
+  return(res)
+  
+}
+
+
+
 
 # *****************************************************************************
 # Process pdr ---------------------------
