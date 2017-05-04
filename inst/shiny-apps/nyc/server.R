@@ -112,14 +112,13 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Data processing
                        #*******************************************************
-           
+                      
                        # try and process the data
                        data <- try({initiate_processing(filepath  = curpath, 
                                                  filename  = curfilename,
                                                  projectid = projectid,
                                                  metainfilename = metainfilename)}, silent=TRUE)
                       
-                       browser()
                        data_msg <- NULL
                        
                        # if there is an error in the data processing

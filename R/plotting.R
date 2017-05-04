@@ -161,9 +161,10 @@ plot_gps<-function(tablename, dat){
 plot_hxi<-function(tablename, dat){
   
   print("I'm plotting HXI data")
+
   hxiA<- aggregate_data(dat,
                         aggregation_unit = "1 min",
-                        summarize_vars = c("activity", "minute_ventilation"),
+                        summarize_vars = c("activity", "minute_ventilation_adjusted"),
                         grouping_vars = c("subjectid", "sessionid"))
   
   hxiB <- dat
@@ -175,8 +176,8 @@ plot_hxi<-function(tablename, dat){
   # Plot 2 - 
   # CAREFUL THAT THIS IS CORRECT THEY ASK FOR MINUTE VENTILATION ADJUSTED
   # THIS MUST BE IN THE BINARY FILES
-  hxi1 <- forplot_filter_add_runtime(hxiA, "minute_ventilation_avg")
-  p2 <- sensor_ggplot(hxi1, "minute_ventilation_avg", "Hexoskin: Minute ventilation (1 minute average)")
+  hxi1 <- forplot_filter_add_runtime(hxiA, "minute_ventilation_adjusted_avg")
+  p2 <- sensor_ggplot(hxi1, "minute_ventilation_adjusted_avg", "Hexoskin: Minute ventilation adjusted (1 minute average)")
   
   
   # Plot 3: 

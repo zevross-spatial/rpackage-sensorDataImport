@@ -411,7 +411,6 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   # tmpdir <- "/Users/zevross/junk/hex/record_108680"
   #"/var/folders/67/5936qfdd7fb2rtrxbm19bmnw0000gn/T/RtmpjAEAGw"
 
-  
   os <- .Platform$OS.type
   bn <- basename(thefile)
   bn_folder <- gsub(".zip", "", bn)
@@ -442,13 +441,13 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   startdate <- as.POSIXct(gsub('T' , '', info$start_date), origin = "1970-01-01", tz = "GMT")
   startdate <- as.POSIXct(format(startdate, tz = "America/New_York"))
   
-  acceleration_X <- read.csv(paste0(tmpdir, "/acceleration_X.csv"), as.is = TRUE, col.names = c("second", "acceleration_x")) 
-  acceleration_Y <- read.csv(paste0(tmpdir, "/acceleration_Y.csv"), as.is = TRUE, col.names = c("second", "acceleration_y"))
-  acceleration_Z <- read.csv(paste0(tmpdir, "/acceleration_Z.csv"), as.is = TRUE, col.names = c("second", "acceleration_z")) 
+  acceleration_x <- read.csv(paste0(tmpdir, "/acceleration_X.csv"), as.is = TRUE, col.names = c("second", "acceleration_x")) 
+  acceleration_y <- read.csv(paste0(tmpdir, "/acceleration_Y.csv"), as.is = TRUE, col.names = c("second", "acceleration_y"))
+  acceleration_z <- read.csv(paste0(tmpdir, "/acceleration_Z.csv"), as.is = TRUE, col.names = c("second", "acceleration_z")) 
   
-  acceleration_X <- hex_average_to_second(acceleration_X)
-  acceleration_Y <- hex_average_to_second(acceleration_Y)
-  acceleration_Z <- hex_average_to_second(acceleration_Z)
+  acceleration_x <- hex_average_to_second(acceleration_x)
+  acceleration_y <- hex_average_to_second(acceleration_y)
+  acceleration_z <- hex_average_to_second(acceleration_z)
   
   activity <- read.csv(paste0(tmpdir, "/activity.csv"), as.is = TRUE, col.names = c("second", "activity")) 
   breathing_rate <- read.csv(paste0(tmpdir, "/breathing_rate.csv"), as.is = TRUE, col.names = c("second", "breathing_rate")) 
@@ -462,8 +461,8 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   tidal_volume_adjusted <- read.csv(paste0(tmpdir, "/tidal_volume_adjusted.csv"), as.is = TRUE, col.names = c("second", "tidal_volume_adjusted")) 
   tidal_volume_raw <- read.csv(paste0(tmpdir, "/tidal_volume_raw.csv"), as.is = TRUE, col.names = c("second", "tidal_volume_raw")) 
   
-  res <- full_join(acceleration_X, acceleration_Y) %>% 
-    full_join(., acceleration_Z) %>% 
+  res <- full_join(acceleration_x, acceleration_y) %>% 
+    full_join(., acceleration_z) %>% 
     full_join(., activity) %>% 
     full_join(., breathing_rate) %>% 
     full_join(., cadence) %>% 
@@ -477,7 +476,15 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
   res$datetime <- startdate + res$second
   
-  return(res)
+  data <- dplyr::select(res, datetime, acceleration_x, acceleration_y, acceleration_z,
+                 activity, breathing_rate, cadence, device_position,
+                 heart_rate, minute_ventilation_adjusted, minute_ventilation_raw,
+                 tidal_volume_adjusted, tidal_volume_raw)
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  data<-cbind(data, metadata)
+  
+  return(data)
   
 }
 
