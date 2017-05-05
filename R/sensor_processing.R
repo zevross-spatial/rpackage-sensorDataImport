@@ -407,16 +407,10 @@ process_hexoskin_old<-function(filepath, filename, fileinfo,metainfilename){
 #' 
 process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
-  # thefile <- file1
-  # tmpdir <- "/Users/zevross/junk/hex/record_108680"
-  #"/var/folders/67/5936qfdd7fb2rtrxbm19bmnw0000gn/T/RtmpjAEAGw"
-
   os <- .Platform$OS.type
-  bn <- basename(thefile)
-  bn_folder <- gsub(".zip", "", bn)
   tmpdir <- tempdir()
   tmpdir <- gsub("//", "/", tmpdir)
-  unzip(zipfile = thefile, exdir = tmpdir)
+  unzip(zipfile = filepath, exdir = tmpdir)
   dirs <- list.dirs(tmpdir, recursive = FALSE)
   
   # TODO: Note I'm assuming that the files all start with record_
@@ -436,8 +430,7 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
   # rjsonlite
   info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
-  # info$start_date: "2016-09-15T17:24:47.003906"
-  # format(as.POSIXct((info$timestamp), origin = "1970-01-01"), usetz=FALSE)
+
   startdate <- as.POSIXct(gsub('T' , '', info$start_date), origin = "1970-01-01", tz = "GMT")
   startdate <- as.POSIXct(format(startdate, tz = "America/New_York"))
   

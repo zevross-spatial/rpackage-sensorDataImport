@@ -10,7 +10,8 @@ setwd(system.file("shiny-apps", "nyc", package = "sensorDataImport"))
 
 options(shiny.maxRequestSize = 1000*1024^2)
 
-.numberPlots <<- 1
+w <- NULL
+h <- NULL
 
 shinyServer(function(input, output, session) {
   
@@ -55,7 +56,7 @@ shinyServer(function(input, output, session) {
       paths     <- input$file1$datapath #temporary paths for the files
       filenames <- input$file1$name #names of files
       
-      .numberPlots <<- nfiles
+      
       
       metainfilename<-isolate(input$metadatainfilename) # not used now
 
@@ -81,7 +82,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = 'Processing and uploading:\n',
                    value = 0, {   
                      
-                     cat("blah")
+    
                      plots <<- list()
                      # loop through files
                      for(i in 1:nfiles){
@@ -112,7 +113,7 @@ shinyServer(function(input, output, session) {
                        #*******************************************************
                        # Data processing
                        #*******************************************************
-                      
+       
                        # try and process the data
                        data <- try({initiate_processing(filepath  = curpath, 
                                                  filename  = curfilename,
@@ -162,12 +163,17 @@ shinyServer(function(input, output, session) {
                        p<-try({plot_qaqc(
                          tablename=tolower(curfiletype),
                          dat=data)}, silent=TRUE)
-                       
+                      
                        if(!is.error(p)){
-                         plots[[i]] <<- p
+                         # yuck on this code right here
+                         if(class(p)[1] == "list"){
+                           plots <<- append(plots, p)
+                         }else{
+                           plots <<- append(plots, list(p))
+                         }
                        }
                        
-                       
+                       h <<- 267 * length(plots)
                        plot_msg <- NULL
                        
                        # if there is an error in the upload
@@ -227,11 +233,17 @@ shinyServer(function(input, output, session) {
     #input$getplots
     
     p <- process()$plots
-    .numberPlots <<- length(p)
-    return(do.call(grid.arrange, c(p, ncol = 1)))
-  }, height = 750 * .numberPlots)
+    
+    
+    
+    saveRDS(p, "/Users/zevross/junk/p.RDS")
+    return(grid.arrange(grobs = p, ncol = 1, heights = unit(rep(7, length(p)), "cm")))
+    #return(do.call(grid.arrange, c(p, ncol = 1, heights = c(7, "cm"))))
+  }, res=90, height=exprToFunction(ifelse(is.null(h), 600, h)))
   
   
   
 })
+
+
 

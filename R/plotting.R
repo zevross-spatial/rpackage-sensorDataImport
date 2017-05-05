@@ -186,8 +186,8 @@ plot_hxi<-function(tablename, dat){
   p3 <- sensor_ggplot(hxi1, "heart_rate", "Hexoskin: Heart rate")
   
   
-  
-  return(grid.arrange(p1, p2, p3, ncol = 1))
+  return(list(p1, p2, p3))
+  #return(grid.arrange(p1, p2, p3, ncol = 1))
   
 }
 
@@ -222,8 +222,7 @@ plot_mae<-function(tablename, dat){
   mae1 <- forplot_filter_add_runtime(dat, "atn")
   p2 <- sensor_ggplot(mae1, "atn", "Microaeth: ATN")
   
-  return(grid.arrange(p1, p2 ,ncol = 1))
-  
+  return(list(p1, p2))
 }
 
 
@@ -259,8 +258,8 @@ plot_mpm<-function(tablename, dat){
   print("I'm done plotting MPM data")
   
   
-  
-  return(grid.arrange(p1, p2 ,ncol = 1))
+  return(list(p1, p2))
+  #return(grid.arrange(p1, p2 ,ncol = 1))
   
 }
 
