@@ -181,7 +181,7 @@ shinyServer(function(input, output, session) {
                          
                          plot_msg = error_report(currentfile_num=i, 
                                                    filenames=filenames, 
-                                                   stage="uploading")     
+                                                   stage="plotting")     
                        }
                        
                        # end session and report error in data handling
@@ -233,12 +233,9 @@ shinyServer(function(input, output, session) {
     #input$getplots
     
     p <- process()$plots
-    
-    
-    
-    saveRDS(p, "/Users/zevross/junk/p.RDS")
+
+    #sapply(p, function(x) ggsave(x, "/Users/zevross/junk/"))
     return(grid.arrange(grobs = p, ncol = 1, heights = unit(rep(7, length(p)), "cm")))
-    #return(do.call(grid.arrange, c(p, ncol = 1, heights = c(7, "cm"))))
   }, res=90, height=exprToFunction(ifelse(is.null(h), 600, h)))
   
   

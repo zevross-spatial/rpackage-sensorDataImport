@@ -43,6 +43,11 @@ NULL
 #' @export
 NULL
 
+#' @importFrom tools file_ext
+#' @export
+NULL
+
+
 # *****************************************************************************
 # Test file prefix -----
 # *****************************************************************************
@@ -173,7 +178,7 @@ error_report<-function(currentfile_num, filenames, stage){
     completed<-" No files uploaded successfully."
     notcompleted<-""
     
-  }else{
+  }else if(stage !=plotting) {
 
     complete<-filenames[1:(i-1)]
     notcomplete<-filenames[i:length(filenames)]
@@ -185,6 +190,16 @@ error_report<-function(currentfile_num, filenames, stage){
                         paste(notcomplete, collapse=", "), 
                         " NOT UPLOADED.", sep="")
 
+  } else{
+    complete<-filenames[1:(i)]
+    notcomplete<-filenames[i:length(filenames)]
+    completed<-paste(" Files ", 
+                     paste(complete, collapse=", "), 
+                     " uploaded successfully.", sep="")
+    
+    notcompleted<-paste(" Files ", 
+                        paste(notcomplete, collapse=", "), 
+                        " NOT UPLOADED.", sep="")
   }
   
   
