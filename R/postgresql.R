@@ -71,7 +71,7 @@ add_tables_db<-function(dbname, port=5432, user="postgres"){
 #' @export
 backup_database<-function(outpath, outnameprefix, con=".connection", custom_compress=TRUE){  
   
-  
+  # NOT YET READY
   #fix trailing slash which is not handled in Windows  
   last<-substring(outpath,nchar(outpath), nchar(outpath))
   if(last=="/") outpath<-substring(outpath,1, nchar(outpath)-1)
@@ -110,11 +110,84 @@ backup_database<-function(outpath, outnameprefix, con=".connection", custom_comp
                outnameprefix,
                suffix)
   
-  cat(bash, file=paste0(outpath, "/tmp.bat"))
-  system(paste0(outpath, "/tmp.bat"))
-  file.remove(paste0(outpath, "/tmp.bat"))
+
+  system(bash)
+
    
 }
+
+
+
+
+# *****************************************************************************
+# Restore database ---------------------------
+# *****************************************************************************
+
+#' Restore database with pg_restore
+#' 
+#' \code{createDatabase} will create a new postgresql database.
+#' @family postgresql functions
+#' @param outpath is the FOLDER you want the backup saved in
+#' @param outnameprefix is the filename without the file type suffix (suffix is generated
+#' automatically)
+#' @param con is the name of the database connection
+#' @param custom_compress is whether or not you want to use a custom-pre-compressed dump
+#' format. If FALSE a standard SQL file is generated.
+#' @return user.
+#' @examples
+#' backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
+#' @export
+restore_database<-function(dump_path, con=".connection", create_new=TRUE, new_db_name = "newDB"){  
+
+  # NOT YET READY
+  
+  # create_new <- TRUE
+  # new_db_name <- "newDB2"
+  # dump_path <- "/Users/zevross/blah.dump"
+  if(!valid_connection(con)){
+    stop(paste(con, "is NOT valid database connection"))
+  }
+  
+  if(!file.exists(outpath)){
+    stop("No path by that name exists")
+  }
+  
+  
+  con_info<-eval(as.name(con))$info
+  
+  if(create_new){
+    
+    bash<-paste0("createdb --username=", 
+                 con_info$user,
+                 " --port=", 
+                 con_info$port, 
+                 " ",  
+                 new_db_name)
+    
+    system(bash)
+  }
+  
+  # create_new <- FALSE
+  bash<-paste0("pg_restore --username=", 
+               con_info$user,
+               " --port=", 
+               con_info$port, 
+               " -d ",  
+               ifelse(create_new, new_db_name, "postgres"), # postgres db just to issue the command 
+               " ",
+              dump_path)
+  
+  # This works if columbiaBike is gone and you want to restore it
+  # pg_restore --username=postgres --port=5432 -C -d postgres  /Users/zevross/junk/blah.dump
+  
+  # This works to create a new database with the same tables etc as the other one.
+  #pg_restore --username=postgres --port=5432  -d mydb /Users/zevross/junk/blah.dump
+  system(bash)
+  
+  
+}
+
+
 
 
 # *****************************************************************************
