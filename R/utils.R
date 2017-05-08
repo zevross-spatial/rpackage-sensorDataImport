@@ -178,7 +178,7 @@ error_report<-function(currentfile_num, filenames, stage){
     completed<-" No files uploaded successfully."
     notcompleted<-""
     
-  }else if(stage !=plotting) {
+  }else if(stage !="plotting") {
 
     complete<-filenames[1:(i-1)]
     notcomplete<-filenames[i:length(filenames)]

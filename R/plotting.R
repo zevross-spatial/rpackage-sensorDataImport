@@ -88,13 +88,12 @@ plot_qaqc<-function(tablename, dat, save = TRUE, savepath = ""){
     if(class(p)[1] == "list"){
       for(i in 1:length(p)){
         
-        
-        ggsave(paste0("/Users/zevross/junk/plot_", tools::file_path_sans_ext(dat$filename[1]), "_", i, ".png"), 
+        ggsave(paste0(savepath, "/plot_", tools::file_path_sans_ext(dat$filename[1]), "_", i, ".png"), 
                p[[i]], 
                width = 6, height = 4, units = "in")
       }
     }else{
-      ggsave(paste0("/Users/zevross/junk/plot_", tools::file_path_sans_ext(dat$filename[1]), "_", ".png"), 
+      ggsave(paste0(savepath, "/plot_", tools::file_path_sans_ext(dat$filename[1]), "_", ".png"), 
              p, 
              width = 6, height = 4, units = "in")
     }

@@ -160,9 +160,11 @@ shinyServer(function(input, output, session) {
                        # Create a plot
                        #******************************************************* 
                        
+                   
                        p<-try({plot_qaqc(
                          tablename=tolower(curfiletype),
-                         dat=data)}, silent=TRUE)
+                         dat=data,
+                         savepath = isolate(input$directory__chosen_dir))}, silent=TRUE)
                       
                        if(!is.error(p)){
                          # yuck on this code right here
@@ -237,6 +239,25 @@ shinyServer(function(input, output, session) {
     #sapply(p, function(x) ggsave(x, "/Users/zevross/junk/"))
     return(grid.arrange(grobs = p, ncol = 1, heights = unit(rep(7, length(p)), "cm")))
   }, res=90, height=exprToFunction(ifelse(is.null(h), 600, h)))
+  
+  
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$directory
+    },
+    handlerExpr = {
+      if (input$directory > 0) {
+        # condition prevents handler execution on initial app launch
+        
+        # launch the directory selection dialog with initial path read from the widget
+        path = choose.dir(default = readDirectoryInput(session, 'directory'))
+        
+        # update the widget value
+        updateDirectoryInput(session, 'directory', value = path)
+      }
+    }
+  )
   
   
   

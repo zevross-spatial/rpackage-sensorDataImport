@@ -31,6 +31,8 @@ shinyUI(fluidPage(
              textInput("password", label = h3("password"), 
                        value = "spatial"),
              br(),
+             directoryInput('directory', label = 'Select a directory for plots and backups', value = '~'),
+             br(),
              htmlOutput('dbconnectinfo')
            )
     ),# end main panel
