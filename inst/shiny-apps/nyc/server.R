@@ -260,6 +260,11 @@ shinyServer(function(input, output, session) {
   )
   
   
+  observeEvent(input$do_backup,{
+    backup_database(paste0(input$directory__chosen_dir, "/columbiaBike_", gsub("[[:punct:]]| ", "", Sys.time())))
+  })
+  
+  
   
 })
 

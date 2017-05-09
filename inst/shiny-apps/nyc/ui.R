@@ -33,6 +33,8 @@ shinyUI(fluidPage(
              br(),
              directoryInput('directory', label = 'Select a directory for plots and backups', value = '~'),
              br(),
+             actionButton("do_backup", "Create new backup", icon("hdd-o")),
+             br(),
              htmlOutput('dbconnectinfo')
            )
     ),# end main panel
