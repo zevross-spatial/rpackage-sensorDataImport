@@ -35,6 +35,6 @@ runShiny <- function(example, package="sensorDataImport") {
   # find and launch the app
   appDir <- system.file("shiny-apps", example, package=package)
   #pp
-  shiny::runApp(appDir)
+  shiny::runApp(appDir, launch.browser = TRUE)
   #shiny::runApp("C:/Users/Zev Ross/R/win-library/3.1/bikeData/shiny-apps/nyc")
 }

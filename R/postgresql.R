@@ -74,35 +74,10 @@ backup_database<-function(outpath_nosuffix, con=".connection"){
     stop(paste(con, "is NOT valid database connection"))
   }
   
-  # if(!file.exists(outpath_nosuffix)){
-  #   stop("No path by that name exists")
-  # }
-  
- 
-  # For now  just write to dump file
-  # ifelse(custom_compress, {custom_compress<-"-Fc"
-  #                          suffix<-".dump"
-  #                          }, 
-  #                         {custom_compress<-""
-  #                          suffix<-".sql"
-  #                          })
   
   con_info<-eval(as.name(con))$info
 
-  # browser()
-  # bash<-paste0("pg_dump --username=", 
-  #              con_info$user,
-  #              " ", 
-  #              " --port=", 
-  #              con_info$port, 
-  #              " ",  
-  #              con_info$dbname, 
-  #              " > \"",
-  #              outpath_nosuffix,
-  #              ".dump\"")
 
-  
-  
   system2("pg_dump", c("--username", con_info$user, "--port", 
                        con_info$port, "--host", "localhost", "--dbname", 
                        con_info$dbname),
