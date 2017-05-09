@@ -23,5 +23,6 @@ Change the value of a directoryInput on the client
 Sends a message to the client, telling it to change the value of the input
 object.  For \code{directoryInput} objects, this changes the value displayed
 in the text-field and triggers a client-side change event.  A directory
-selection dialog is not displayed.
+selection dialog is not displayed. This script
+was created by W. Lee Pang https://github.com/wleepang/shiny-directory-input
 }

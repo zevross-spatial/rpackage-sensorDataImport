@@ -24,7 +24,8 @@ This widget relies on \link{\code{choose.dir}} to present an interactive
 dialog to users for selecting a directory on the local filesystem.  Therefore,
 this widget is intended for shiny apps that are run locally - i.e. on the
 same system that files/directories are to be accessed - and not from hosted
-applications (e.g. from shinyapps.io).
+applications (e.g. from shinyapps.io). This script
+was created by W. Lee Pang https://github.com/wleepang/shiny-directory-input
 }
 \seealso{
 \link{updateDirectoryInput}, \link{readDirectoryInput}, \link[utils]{choose.dir}

@@ -8,12 +8,14 @@
 #' @details
 #' Uses an Apple Script to display a folder selection dialog.  With \code{default = NA},
 #' the initial folder selection is determined by default behavior of the
-#' "choose folder" Apple Script command.  Otherwise, paths are expanded with
+#' "choose folder" Apple Script command.  Otherwise, paths are expanded with. This script
+#' was created by W. Lee Pang https://github.com/wleepang/shiny-directory-input
 #' \link{path.expand}.
 #'
 #' @return
 #' A length one character vector, character NA if 'Cancel' was selected.
 #'
+#' @export
 if (Sys.info()['sysname'] == 'Darwin') {
   choose.dir = function(default = NA, caption = NA) {
     command = 'osascript'
@@ -80,13 +82,15 @@ if (Sys.info()['sysname'] == 'Darwin') {
 #' dialog to users for selecting a directory on the local filesystem.  Therefore,
 #' this widget is intended for shiny apps that are run locally - i.e. on the
 #' same system that files/directories are to be accessed - and not from hosted
-#' applications (e.g. from shinyapps.io).
+#' applications (e.g. from shinyapps.io). This script
+#' was created by W. Lee Pang https://github.com/wleepang/shiny-directory-input
 #'
 #' @return
 #' A directory input control that can be added to a UI definition.
 #'
 #' @seealso
 #' \link{updateDirectoryInput}, \link{readDirectoryInput}, \link[utils]{choose.dir}
+#' @export
 directoryInput = function(inputId, label, value = NULL) {
   if (!is.null(value) && !is.na(value)) {
     value = path.expand(value)
@@ -146,8 +150,9 @@ directoryInput = function(inputId, label, value = NULL) {
 #' Sends a message to the client, telling it to change the value of the input
 #' object.  For \code{directoryInput} objects, this changes the value displayed
 #' in the text-field and triggers a client-side change event.  A directory
-#' selection dialog is not displayed.
-#'
+#' selection dialog is not displayed. This script
+#' was created by W. Lee Pang https://github.com/wleepang/shiny-directory-input
+#' @export
 updateDirectoryInput = function(session, inputId, value = NULL, ...) {
   if (is.null(value)) {
     value = choose.dir(...)
@@ -164,6 +169,7 @@ updateDirectoryInput = function(session, inputId, value = NULL, ...) {
 #' Reads the value of the text field associated with a \code{directoryInput}
 #' object that stores the user selected directory path.
 #'
+#' @export
 readDirectoryInput = function(session, inputId) {
   session$input[[sprintf('%s__chosen_dir', inputId)]]
 }

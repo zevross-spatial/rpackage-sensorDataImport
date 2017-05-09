@@ -1,5 +1,7 @@
 #' @import dplyr
 #' @import XML
+#' @import digest
+#' @import Rcpp
 
 #' @importFrom magrittr %<>%
 #' @export
