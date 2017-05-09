@@ -57,25 +57,18 @@ add_tables_db<-function(dbname, port=5432, user="postgres"){
 
 #' Backup database with pg_dump
 #' 
-#' \code{createDatabase} will create a new postgresql database.
+#' \code{backup_database} will backup the database as a compressed dump file or uncompressed SQL file.
 #' @family postgresql functions
-#' @param outpath is the FOLDER you want the backup saved in
-#' @param outnameprefix is the filename without the file type suffix (suffix is generated
+#' @param outpath_nosuffix is the full path and file name of the backup file to be generated with no suffix
 #' automatically)
 #' @param con is the name of the database connection
 #' @param custom_compress is whether or not you want to use a custom-pre-compressed dump
 #' format. If FALSE a standard SQL file is generated.
 #' @return user.
 #' @examples
-#' backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
+#' backup_database("x:/junk", con=".connection", custom_compress=TRUE)
 #' @export
-backup_database<-function(outpath, outnameprefix, con=".connection", custom_compress=TRUE){  
-  
-  # NOT YET READY
-  #fix trailing slash which is not handled in Windows  
-  last<-substring(outpath,nchar(outpath), nchar(outpath))
-  if(last=="/") outpath<-substring(outpath,1, nchar(outpath)-1)
-  
+backup_database<-function(outpath_nosuffix, con=".connection"){  
   
   if(!valid_connection(con)){
     stop(paste(con, "is NOT valid database connection"))
@@ -85,13 +78,14 @@ backup_database<-function(outpath, outnameprefix, con=".connection", custom_comp
     stop("No path by that name exists")
   }
   
-  
-  ifelse(custom_compress, {custom_compress<-"-Fc"
-                           suffix<-".dump"
-                           }, 
-                          {custom_compress<-""
-                           suffix<-".sql"
-                           })
+ 
+  # For now  just write to dump file
+  # ifelse(custom_compress, {custom_compress<-"-Fc"
+  #                          suffix<-".dump"
+  #                          }, 
+  #                         {custom_compress<-""
+  #                          suffix<-".sql"
+  #                          })
   
   con_info<-eval(as.name(con))$info
 
@@ -105,15 +99,11 @@ backup_database<-function(outpath, outnameprefix, con=".connection", custom_comp
                " ",  
                con_info$dbname, 
                " > ",
-               outpath,
-               "/",
-               outnameprefix,
+               outpath_nosuffix,
                suffix)
-  
 
   system(bash)
 
-   
 }
 
 
@@ -125,25 +115,21 @@ backup_database<-function(outpath, outnameprefix, con=".connection", custom_comp
 
 #' Restore database with pg_restore
 #' 
-#' \code{createDatabase} will create a new postgresql database.
+#' \code{restore_database} will restore the database saved from the backup_database function.
 #' @family postgresql functions
-#' @param outpath is the FOLDER you want the backup saved in
-#' @param outnameprefix is the filename without the file type suffix (suffix is generated
-#' automatically)
+#' @param dump_path is the full path and file name for the dump file or SQL file
 #' @param con is the name of the database connection
-#' @param custom_compress is whether or not you want to use a custom-pre-compressed dump
-#' format. If FALSE a standard SQL file is generated.
+#' @param create_new if this is FALSE then it will create the database using the original DB name. So if the original
+#' was columbiaBike it will create a new columbiaBike. If TRUE then it will create a new database with the name specificied
+#' in new_db_name
+#' @param new_db_name if creating a new db then this is the name of the new db
 #' @return user.
 #' @examples
-#' backup_database("x:/junk", "mybackup", con=".connection", custom_compress=TRUE)
+#' restore_database("/Users/xyz/backup.dump", con=".connection", create_new = TRUE, new_db_name = "columbiaBike_backup")
 #' @export
 restore_database<-function(dump_path, con=".connection", create_new=TRUE, new_db_name = "newDB"){  
 
-  # NOT YET READY
-  
-  # create_new <- TRUE
-  # new_db_name <- "newDB2"
-  # dump_path <- "/Users/zevross/blah.dump"
+
   if(!valid_connection(con)){
     stop(paste(con, "is NOT valid database connection"))
   }
@@ -167,11 +153,12 @@ restore_database<-function(dump_path, con=".connection", create_new=TRUE, new_db
     system(bash)
   }
   
-  # create_new <- FALSE
+  # create_new <- TRUE
   bash<-paste0("pg_restore --username=", 
                con_info$user,
                " --port=", 
                con_info$port, 
+               ifelse(create_new, "", " -C"),
                " -d ",  
                ifelse(create_new, new_db_name, "postgres"), # postgres db just to issue the command 
                " ",
@@ -182,6 +169,7 @@ restore_database<-function(dump_path, con=".connection", create_new=TRUE, new_db
   
   # This works to create a new database with the same tables etc as the other one.
   #pg_restore --username=postgres --port=5432  -d mydb /Users/zevross/junk/blah.dump
+  
   system(bash)
   
   
