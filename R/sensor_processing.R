@@ -424,8 +424,9 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
     system(paste0("../../hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir))
   }
   
+
   if(os == 'windows'){
-    system(paste0("inst/hexapps/windows/HxConvertSourceFile.exe ", tmpdir))
+    system(paste0("../../hexapps/windows/HxConvertSourceFile.exe ", tmpdir))
   }
   
   # rjsonlite
