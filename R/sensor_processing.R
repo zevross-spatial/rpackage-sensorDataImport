@@ -408,14 +408,18 @@ process_hexoskin_old<-function(filepath, filename, fileinfo,metainfilename){
 process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
   os <- .Platform$OS.type
-  tmpdir <- tempdir()
-  tmpdir <- gsub("//", "/", tmpdir)
+  origdir <- tempdir()
+  origdir <- gsub("//", "/", origdir)
+  tmpdir <- origdir
+  preUnzip <- list.dirs(tmpdir, recursive = FALSE)
   unzip(zipfile = filepath, exdir = tmpdir)
   dirs <- list.dirs(tmpdir, recursive = FALSE)
   
-  # TODO: Note I'm assuming that the files all start with record_
-  # but I'm not sure if this is the case
-  tmpdir <- dirs[grep("record_", dirs)]
+  dirs <- dirs[!dirs%in%preUnzip]
+  tmpdir <- dirs[!grepl("__", dirs)]
+  
+  if(length(tmpdir ) != 1) stop("there is an issue with the path to the hex data")
+  
   
   print(paste("Unzipped to", tmpdir))
   
@@ -478,6 +482,7 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
   data<-cbind(data, metadata)
   
+  #unlink(origdir, recursive = TRUE, force = TRUE)
   return(data)
   
 }
