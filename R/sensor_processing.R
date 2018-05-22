@@ -57,13 +57,13 @@ process_abp<-function(filepath, filename, fileinfo, metainfilename){
   #filepath<-X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/ABPM data/BIKE0001_ABP01_S01_150627.abp"
     #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_ABP01_S01_150306.abp"
 
-  rl<-readLines(file(filepath,encoding="UTF-16LE"), warn=FALSE)
-    endOfIntro<-max(grep("Unknown line", rl))+1
+  rl<-readLines(file(filepath), warn=FALSE) #,encoding="UTF-16LE" no longer needed with new ABP
+    endOfIntro<-suppressWarnings(max(which(!is.na(as.numeric(rl)))))#max(grep("Unknown line", rl))+1
     endOfFile<-grep("XML", rl)-1
     
     
     ID <- read.csv(filepath, 
-                   fileEncoding="UTF-16LE", 
+                   #fileEncoding="UTF-16LE", 
                    header=F, 
                    nrows=endOfIntro, 
                    sep=" ", 
@@ -75,7 +75,7 @@ process_abp<-function(filepath, filename, fileinfo, metainfilename){
     
     cntobs <- as.numeric(ID[endOfIntro,1]) # this is not always in the same place, sometimes it's row 8 and sometimes row 9
     data <- read.csv(filepath, 
-                     fileEncoding="UTF-16LE", 
+                     #fileEncoding="UTF-16LE", 
                      header=F, 
                      skip=endOfIntro, 
                      nrows=cntobs,
@@ -87,7 +87,7 @@ process_abp<-function(filepath, filename, fileinfo, metainfilename){
     timestart <-endOfIntro+cntobs
     
     DS <- read.csv(filepath, 
-                   fileEncoding="UTF-16LE", 
+                   #fileEncoding="UTF-16LE", 
                    header=F, 
                    skip=timestart, 
                    nrows= cntobs,
@@ -423,6 +423,10 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
   print(paste("Unzipped to", tmpdir))
   
+  info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
+  info$decoder_version <- "0.5.3"
+  cat(jsonlite::toJSON(info, auto_unbox = TRUE), file = paste0(tmpdir, "/info.json"))
+  
   if(os == 'unix'){
     #system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", "/Users/zevross/junk/hex/record_108680"))
     system(paste0("../../hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", tmpdir))
@@ -434,7 +438,6 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   }
   
   # rjsonlite
-  info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
 
   startdate <- as.POSIXct(gsub('T' , '', info$start_date), origin = "1970-01-01", tz = "GMT")
   startdate <- as.POSIXct(format(startdate, tz = "America/New_York"))
