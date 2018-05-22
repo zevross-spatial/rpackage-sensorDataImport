@@ -28,7 +28,7 @@ process_gps<-function(filepath, filename, fileinfo,metainfilename){
     data%<>%select(datetime, which(!names(data)%in%"datetime"))%>%
       mutate(datetime = gsub("T|Z", " ", datetime))
     
-    
+    data <- data %>% mutate(datetime = format(as.POSIXct(datetime, tz = "UTC"), tz = "America/New_York"))
     metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
 
     
