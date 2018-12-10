@@ -60,6 +60,8 @@ agg_unit_ok <- function(aggregation_unit){
 #' @param xtravars what extra variables should be extracted when grabbing raw data. Should be NULL if aggregating! Note that this should be a vector of variable names or the word "all" to get all variables.
 #' @param summarize_vars What variables will be summarized. This should be a vector of variable names -- variables should be numeric.
 #' @param grouping_vars What variables will be used for aggregation (these are the keys)
+#' @param timestart the beginning time to filter on in format 2010-01-01 00:00:00
+#' @param timeend the end time to filter on in format 2010-01-01 00:00:00
 #' @return user.
 #' @export
 #' @examples 
@@ -67,6 +69,11 @@ agg_unit_ok <- function(aggregation_unit){
 #' res<-get_sensor_data("hxi", xtravars=c("datetime", "subjectid"))  
 #' 
 #' res<-get_sensor_data("gps")
+#' 
+#' res<-get_sensor_data("hxi", clean_first=FALSE, xtravars="datetime",
+#'     timestart = "2017-07-27 06:45:00",
+#'     timeend = "2017-07-27 06:45:08") 
+#' 
 #' res<-get_sensor_data(tablename= "hxi", 
 #'                      do_aggregate=TRUE, 
 #'                      xtravars= NULL,
@@ -93,13 +100,6 @@ agg_unit_ok <- function(aggregation_unit){
 #'                      grouping_vars = c("datetime", "subjectid", "asdlfjsdlfj"),
 #'                      summarize_vars=c("cadence", "breathing_rate"))
 #'                      
-#'res<-get_sensor_data("mpm",
-#'    clean_first = TRUE,
-#'    do_aggregate=TRUE,
-#'    xtravars  = NULL,
-#'    aggregation_unit="1 hour",
-#'    grouping_vars = c( "subjectid", "sessionid"),
-#'    summarize_vars = c("temperature", "rh", "flow"))
 #'    
 #'    
                      
@@ -109,7 +109,9 @@ get_sensor_data <- function(tablename,
                             aggregation_unit="15 min",
                             xtravars = "all",
                             summarize_vars = NULL, 
-                            grouping_vars = c("subjectid", "sessionid")
+                            grouping_vars = c("subjectid", "sessionid"),
+                            timestart = "1900-01-01 00:00:00",
+                            timeend = "2100-01-01 00:00:00"
                             ){
   
   #tablename<-"hxi"
@@ -138,9 +140,21 @@ get_sensor_data <- function(tablename,
   
   
   
+
+  #thetable<-tbl(.connection, tablename)
   
-  thetable<-tbl(.connection, tablename)
+  sql_q <- paste0("SELECT * FROM ", 
+                tablename, 
+                " WHERE datetime > '", 
+                timestart,
+                "'::timestamp and datetime < '",
+                timeend,
+                "'::timestamp")
   
+  thetable <- tbl(.connection, sql(sql_q))
+
+  
+
   # if user has "all" for vars and is not aggregating get all
   # variables
   
