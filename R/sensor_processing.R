@@ -55,75 +55,75 @@ process_gps<-function(filepath, filename, fileinfo,metainfilename){
 #' @export
 process_abp<-function(filepath, filename, fileinfo, metainfilename){
   #filepath<-X:/projects/columbia_bike/data/client_data/20150710_prepilotdata/PrePilot_01/ABPM data/BIKE0001_ABP01_S01_150627.abp"
-    #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_ABP01_S01_150306.abp"
-
-  rl<-readLines(file(filepath), warn=FALSE) #,encoding="UTF-16LE" no longer needed with new ABP
-    endOfIntro<-suppressWarnings(max(which(!is.na(as.numeric(rl)))))#max(grep("Unknown line", rl))+1
-    endOfFile<-grep("XML", rl)-1
-    
-    
-    ID <- read.csv(filepath, 
-                   #fileEncoding="UTF-16LE", 
+  #filepath<-"X:/projects/columbia_bike/bikeStats/bikeApp/sample_data/BIKE0001_ABP01_S01_150306.abp"
+  browser()
+  rl<-readLines(file(filepath,encoding="UTF-16LE"), warn=FALSE)
+  endOfIntro<-max(grep("Unknown line", rl))+1
+  endOfFile<-grep("XML", rl)-1
+  
+  
+  ID <- read.csv(filepath, 
+                 fileEncoding="UTF-16LE", 
+                 header=F, 
+                 nrows=endOfIntro, 
+                 sep=" ", 
+                 stringsAsFactors=F,
+                 blank.lines.skip = FALSE) # I kept blank lines so that we have consistency with file
+  #visit <- ID[1,1]      # assumes that visit number is entered for first name
+  studyid <- ID[1,2]    # assumes that study id is entered for last name
+  #session <- ID[2,1]    # assumes that session id is entered for patient id 
+  
+  cntobs <- as.numeric(ID[endOfIntro,1]) # this is not always in the same place, sometimes it's row 8 and sometimes row 9
+  data <- read.csv(filepath, 
+                   fileEncoding="UTF-16LE", 
                    header=F, 
-                   nrows=endOfIntro, 
-                   sep=" ", 
-                   stringsAsFactors=F,
-                   blank.lines.skip = FALSE) # I kept blank lines so that we have consistency with file
-    #visit <- ID[1,1]      # assumes that visit number is entered for first name
-    studyid <- ID[1,2]    # assumes that study id is entered for last name
-    #session <- ID[2,1]    # assumes that session id is entered for patient id 
-    
-    cntobs <- as.numeric(ID[endOfIntro,1]) # this is not always in the same place, sometimes it's row 8 and sometimes row 9
-    data <- read.csv(filepath, 
-                     #fileEncoding="UTF-16LE", 
-                     header=F, 
-                     skip=endOfIntro, 
-                     nrows=cntobs,
-                     blank.lines.skip = FALSE) # load BP data 
-    
-    data <- data[,1:7]
-    names(data) <- c("hour", "minute", "systolic_bp", "mean_arterial_p", "diastolic_bp", "heart_rate", "event_code")
-    
-    timestart <-endOfIntro+cntobs
-    
-    DS <- read.csv(filepath, 
-                   #fileEncoding="UTF-16LE", 
-                   header=F, 
-                   skip=timestart, 
-                   nrows= cntobs,
-                   blank.lines.skip = FALSE)
-    
-    names(DS) <- c( "month", "day","year", "code")
-    data$studyid <- studyid
-    
-    data <- cbind(data, DS)
-    
-    
-    # addZero is function to pad in helper functions
-    data[,c("hour", "minute", "month", "day")]<-
-      lapply(data[,c("hour", "minute", "month", "day")],addZero)
-    
-    
-    data$event_code<-as.character(data$event_code)
-    data$event_code[data$event_code==""]<-NA
-    
-    data$datetime <- paste("20", data$year, "-", data$month,"-", data$day," ", data$hour,":", data$minute,":00", sep="")
-    #BP$datetime <- ymd_hm(BP$datetime), uses lubridate
-    #BP$file <- basename(file)
-    data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
-    
-    metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
-    
-    # the generate metadata function returns the session ID from the filename
-    # which is fine for most files. But for micropem and abp we need to determine
-    # session from gaps in the time series.
-    
-    proper_session     <- find_gaps_assign_session(data$datetime)
-    metadata$sessionid <- proper_session 
-    
-    data<-cbind(data, metadata)
-    
-    return(data)
+                   skip=endOfIntro, 
+                   nrows=cntobs,
+                   blank.lines.skip = FALSE) # load BP data 
+  
+  data <- data[,1:7]
+  names(data) <- c("hour", "minute", "systolic_bp", "mean_arterial_p", "diastolic_bp", "heart_rate", "event_code")
+  
+  timestart <-endOfIntro+cntobs
+  
+  DS <- read.csv(filepath, 
+                 fileEncoding="UTF-16LE", 
+                 header=F, 
+                 skip=timestart, 
+                 nrows= cntobs,
+                 blank.lines.skip = FALSE)
+  
+  names(DS) <- c( "month", "day","year", "code")
+  data$studyid <- studyid
+  
+  data <- cbind(data, DS)
+  
+  
+  # addZero is function to pad in helper functions
+  data[,c("hour", "minute", "month", "day")]<-
+    lapply(data[,c("hour", "minute", "month", "day")],addZero)
+  
+  
+  data$event_code<-as.character(data$event_code)
+  data$event_code[data$event_code==""]<-NA
+  
+  data$datetime <- paste("20", data$year, "-", data$month,"-", data$day," ", data$hour,":", data$minute,":00", sep="")
+  #BP$datetime <- ymd_hm(BP$datetime), uses lubridate
+  #BP$file <- basename(file)
+  data%<>% dplyr::select(datetime, which(!names(data)%in%c("datetime","day", "month", "year", "hour", "minute")))
+  
+  metadata<-generate_metadata(fileinfo, nrow(data), filename, metainfilename)
+  
+  # the generate metadata function returns the session ID from the filename
+  # which is fine for most files. But for micropem and abp we need to determine
+  # session from gaps in the time series.
+  
+  proper_session     <- find_gaps_assign_session(data$datetime)
+  metadata$sessionid <- proper_session 
+  
+  data<-cbind(data, metadata)
+  
+  return(data)
   
 }
 
