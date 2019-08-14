@@ -406,7 +406,7 @@ process_hexoskin_old<-function(filepath, filename, fileinfo,metainfilename){
 #' @export
 #' 
 process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
-  
+  browser()
   os <- .Platform$OS.type
   origdir <- tempdir()
   origdir <- gsub("//", "/", origdir)
@@ -423,9 +423,9 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   
   print(paste("Unzipped to", tmpdir))
   
-  info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
-  info$decoder_version <- "0.5.3"
-  cat(jsonlite::toJSON(info, auto_unbox = TRUE), file = paste0(tmpdir, "/info.json"))
+  #info <- jsonlite::fromJSON(paste0(tmpdir, "/info.json")) 
+  #info$decoder_version <- "0.5.3"
+  #cat(jsonlite::toJSON(info, auto_unbox = TRUE), file = paste0(tmpdir, "/info.json"))
   
   if(os == 'unix'){
     #system(paste0("inst/hexapps/mac/HxConvertSourceFile.app/Contents/MacOS/HxConvertSourceFile ", "/Users/zevross/junk/hex/record_108680"))

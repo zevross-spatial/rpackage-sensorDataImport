@@ -247,7 +247,7 @@ initiate_processing<-function(filepath, filename, projectid, metainfilename){
   # this is metadata and each element of fileinfo will become a column
   # where each row has the same value.
   
-  
+
   if(projectid=="columbiaBike") fileinfo<-unlist(stringr::str_split(filename, "_"))
   if(projectid!="columbiaBike") fileinfo<-c("abc", "def", "ghi", "jkl")
   fileinfo<-fileinfo[-length(fileinfo)] # we don't need date
