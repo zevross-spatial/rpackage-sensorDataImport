@@ -414,7 +414,6 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   preUnzip <- list.dirs(tmpdir, recursive = FALSE)
   unzip(zipfile = filepath, exdir = tmpdir)
   dirs <- list.dirs(tmpdir, recursive = FALSE)
-  
   dirs <- dirs[!dirs%in%preUnzip]
   tmpdir <- dirs[!grepl("__", dirs)]
   
