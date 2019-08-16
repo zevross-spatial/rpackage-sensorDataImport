@@ -452,7 +452,7 @@ process_hexoskin <- function(filepath, filename, fileinfo,metainfilename){
   activity <- read.csv(paste0(tmpdir, "/activity.csv"), as.is = TRUE, col.names = c("second", "activity")) 
   breathing_rate <- read.csv(paste0(tmpdir, "/breathing_rate.csv"), as.is = TRUE, col.names = c("second", "breathing_rate")) 
   cadence <- read.csv(paste0(tmpdir, "/cadence.csv"), as.is = TRUE, col.names = c("second", "cadence"))
-  device_position <- read.csv(paste0(tmpdir, "/DevicePositionition.csv"), as.is = TRUE, col.names = c("second", "device_position")) 
+  device_position <- read.csv(paste0(tmpdir, "/device_position.csv"), as.is = TRUE, col.names = c("second", "device_position")) 
   device_position <- device_position[device_position$second!=0,]
   
   heart_rate <- read.csv(paste0(tmpdir, "/heart_rate.csv"), as.is = TRUE, col.names = c("second", "heart_rate")) 
